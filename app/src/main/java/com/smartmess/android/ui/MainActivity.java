@@ -318,7 +318,9 @@ public class MainActivity extends AppCompatActivity {
         if (drawerItemProfile != null) {
             drawerItemProfile.setOnClickListener(v -> {
                 closeDrawer();
-                showProfileDialog();
+                Intent intent = new Intent(MainActivity.this, com.smartmess.android.ui.members.ActivityUserProfile.class);
+                intent.putExtra(com.smartmess.android.ui.members.ActivityUserProfile.EXTRA_USER_ID, sessionManager.getUserId());
+                startActivity(intent);
             });
         }
 

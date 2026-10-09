@@ -1,14 +1,23 @@
 package com.smartmess.android.model;
 
 public class User {
+    public static final String ROLE_MANAGER = "manager";
+    public static final String ROLE_ASSISTANT = "assistant";
+    public static final String ROLE_MEMBER = "member";
+
+    public static final String STATUS_ACTIVE = "active";
+    public static final String STATUS_ON_LEAVE = "on_leave";
+    public static final String STATUS_LEFT = "left";
+
     private long id;
     private String uuid;
     private long messId;
     private String name;
     private String phone;
     private String password;
-    private String role; // 'superadmin', 'manager', 'assistant', 'member'
-    private String status; // 'active', 'inactive', 'left'
+    private String role; // 'manager', 'assistant', 'member'
+    private String status; // 'active', 'on_leave', 'left'
+    private String avatarUrl;
     private String createdAt;
     private String updatedAt;
 
@@ -47,6 +56,9 @@ public class User {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
+    public String getAvatarUrl() { return avatarUrl; }
+    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
+
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 
@@ -59,6 +71,22 @@ public class User {
 
     public boolean isAssistant() {
         return "assistant".equalsIgnoreCase(role);
+    }
+
+    public boolean isMember() {
+        return "member".equalsIgnoreCase(role) || (!isManager() && !isAssistant());
+    }
+
+    public boolean isActive() {
+        return STATUS_ACTIVE.equalsIgnoreCase(status);
+    }
+
+    public boolean isOnLeave() {
+        return STATUS_ON_LEAVE.equalsIgnoreCase(status) || "vacation".equalsIgnoreCase(status);
+    }
+
+    public boolean hasLeft() {
+        return STATUS_LEFT.equalsIgnoreCase(status) || "inactive".equalsIgnoreCase(status);
     }
 
     public boolean canLogExpenses() {

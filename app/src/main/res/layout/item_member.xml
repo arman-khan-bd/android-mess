@@ -11,11 +11,20 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="14dp">
+        android:padding="12dp">
+
+        <!-- Avatar Image -->
+        <ImageView
+            android:id="@+id/ivItemMemberAvatar"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:src="@drawable/ic_member"
+            android:contentDescription="Avatar" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -31,17 +40,32 @@
                     android:layout_height="wrap_content"
                     android:text="Member Name"
                     android:textColor="@color/text_primary"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvRoleBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/badge_credit"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_payer_badge"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
                     android:text="Manager"
                     android:textColor="@color/primary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvStatusBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/badge_credit"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:text="Active"
+                    android:textColor="@color/credit_green"
                     android:textSize="10sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -51,18 +75,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
+                android:fontFamily="monospace"
                 android:text="01711000001"
                 android:textColor="@color/text_secondary"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSendDueSms"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SMS Due"
-            android:textSize="11sp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            android:layout_height="36dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="Due SMS"
+            android:textAllCaps="false"
+            android:textSize="11sp" />
 
     </LinearLayout>
 

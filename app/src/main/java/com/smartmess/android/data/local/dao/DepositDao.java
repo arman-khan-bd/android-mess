@@ -75,6 +75,26 @@ public class DepositDao {
         return list;
     }
 
+    public List<Deposit> getUserDeposits(long messId, long userId) {
+        List<Deposit> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT d.*, u." + UserEntry.COL_NAME + " as user_name FROM " + DepositEntry.TABLE_NAME + " d "
+                + "LEFT JOIN " + UserEntry.TABLE_NAME + " u ON d." + DepositEntry.COL_USER_ID + " = u." + UserEntry.COL_ID + " "
+                + "WHERE d." + DepositEntry.COL_MESS_ID + " = ? AND d." + DepositEntry.COL_USER_ID + " = ? "
+                + "ORDER BY d." + DepositEntry.COL_DEPOSIT_DATE + " DESC, d." + DepositEntry.COL_ID + " DESC";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(messId), String.valueOf(userId)});
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Deposit deposit = cursorToDeposit(cursor);
+                int nameIdx = cursor.getColumnIndex("user_name");
+                if (nameIdx >= 0) deposit.setUserName(cursor.getString(nameIdx));
+                list.add(deposit);
+            }
+            cursor.close();
+        }
+        return list;
+    }
+
     public double getTotalUserDeposits(long messId, long userId, String startDate, String endDate) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String query = "SELECT SUM(" + DepositEntry.COL_AMOUNT + ") FROM " + DepositEntry.TABLE_NAME

@@ -105,6 +105,28 @@
             android:name=".ui.members.AddMemberActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.members.ActivityUserProfile"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.members.ActivityMemberManage"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.members.ActivityMessInvite"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="mess.e-bd.shop"
+                    android:pathPrefix="/join" />
+            </intent-filter>
+        </activity>
 
         <!-- SMS Management & Costing -->
         <activity

@@ -52,6 +52,11 @@ public class FragmentMemberList extends Fragment {
         sessionManager = new SessionManager(requireContext());
         planGateManager = new PlanGateManager(requireContext());
 
+        MaterialButton btnInviteMember = v.findViewById(R.id.btnInviteMember);
+        if (btnInviteMember != null) {
+            btnInviteMember.setOnClickListener(view -> startActivity(new Intent(requireContext(), ActivityMessInvite.class)));
+        }
+
         btnAddMember.setOnClickListener(view -> {
             long messId = sessionManager.getMessId();
             if (!planGateManager.canAddMember(messId)) {
@@ -80,16 +85,21 @@ public class FragmentMemberList extends Fragment {
     private void loadMembers() {
         if (!isAdded()) return;
         long messId = sessionManager.getMessId();
-        List<User> list = userDao.getActiveMembersByMess(messId);
+        List<User> list = userDao.getAllMembersByMess(messId);
         MemberAdapter adapter = new MemberAdapter(requireContext(), list);
         rvMembers.setAdapter(adapter);
 
-        tvMemberCountHeader.setText("Active Members (" + list.size() + ")");
+        int activeCount = 0;
+        for (User u : list) {
+            if (u.isActive()) activeCount++;
+        }
+
+        tvMemberCountHeader.setText("Mess Members (" + list.size() + " Total • " + activeCount + " Active)");
 
         if (!planGateManager.isPro()) {
             bannerMemberLimit.setVisibility(View.VISIBLE);
             int max = planGateManager.getActivePlanForMess(messId).getMaxMembers();
-            tvMemberLimitText.setText("Free Tier (" + list.size() + "/" + max + " Members) • Tap to unlock Unlimited");
+            tvMemberLimitText.setText("Free Tier (" + activeCount + "/" + max + " Active) • Tap to unlock Unlimited");
         } else {
             bannerMemberLimit.setVisibility(View.GONE);
         }

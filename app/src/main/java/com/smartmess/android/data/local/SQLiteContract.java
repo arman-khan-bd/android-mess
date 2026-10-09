@@ -32,6 +32,7 @@ public final class SQLiteContract {
         public static final String COL_PASSWORD = "password";
         public static final String COL_ROLE = "role";
         public static final String COL_STATUS = "status";
+        public static final String COL_AVATAR_URL = "avatar_url";
         public static final String COL_CREATED_AT = "created_at";
         public static final String COL_UPDATED_AT = "updated_at";
     }

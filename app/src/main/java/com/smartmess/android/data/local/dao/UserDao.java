@@ -28,6 +28,7 @@ public class UserDao {
         values.put(UserEntry.COL_PASSWORD, user.getPassword());
         values.put(UserEntry.COL_ROLE, user.getRole());
         values.put(UserEntry.COL_STATUS, user.getStatus());
+        values.put(UserEntry.COL_AVATAR_URL, user.getAvatarUrl());
         values.put(UserEntry.COL_CREATED_AT, user.getCreatedAt());
         values.put(UserEntry.COL_UPDATED_AT, user.getUpdatedAt());
 
@@ -61,7 +62,23 @@ public class UserDao {
     }
 
     public List<User> getAllMembers(long messId) {
-        return getActiveMembersByMess(messId);
+        return getAllMembersByMess(messId);
+    }
+
+    public List<User> getAllMembersByMess(long messId) {
+        List<User> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(UserEntry.TABLE_NAME, null,
+                UserEntry.COL_MESS_ID + " = ?",
+                new String[]{String.valueOf(messId)},
+                null, null, UserEntry.COL_NAME + " ASC");
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                list.add(cursorToUser(cursor));
+            }
+            cursor.close();
+        }
+        return list;
     }
 
     public List<User> getActiveMembersByMess(long messId) {
@@ -102,6 +119,31 @@ public class UserDao {
         db.update(UserEntry.TABLE_NAME, values, UserEntry.COL_ID + " = ?", new String[]{String.valueOf(userId)});
     }
 
+    public void updateStatus(long userId, String newStatus) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(UserEntry.COL_STATUS, newStatus);
+        values.put(UserEntry.COL_UPDATED_AT, com.smartmess.android.utils.DateTimeUtils.getCurrentDateTime());
+        db.update(UserEntry.TABLE_NAME, values, UserEntry.COL_ID + " = ?", new String[]{String.valueOf(userId)});
+    }
+
+    public void updateRoleAndStatus(long userId, String newRole, String newStatus) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        if (newRole != null) values.put(UserEntry.COL_ROLE, newRole);
+        if (newStatus != null) values.put(UserEntry.COL_STATUS, newStatus);
+        values.put(UserEntry.COL_UPDATED_AT, com.smartmess.android.utils.DateTimeUtils.getCurrentDateTime());
+        db.update(UserEntry.TABLE_NAME, values, UserEntry.COL_ID + " = ?", new String[]{String.valueOf(userId)});
+    }
+
+    public void updateAvatar(long userId, String avatarUrl) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(UserEntry.COL_AVATAR_URL, avatarUrl);
+        values.put(UserEntry.COL_UPDATED_AT, com.smartmess.android.utils.DateTimeUtils.getCurrentDateTime());
+        db.update(UserEntry.TABLE_NAME, values, UserEntry.COL_ID + " = ?", new String[]{String.valueOf(userId)});
+    }
+
     private User cursorToUser(Cursor cursor) {
         User user = new User();
         user.setId(cursor.getLong(cursor.getColumnIndexOrThrow(UserEntry.COL_ID)));
@@ -112,6 +154,10 @@ public class UserDao {
         user.setPassword(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.COL_PASSWORD)));
         user.setRole(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.COL_ROLE)));
         user.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.COL_STATUS)));
+        int avatarCol = cursor.getColumnIndex(UserEntry.COL_AVATAR_URL);
+        if (avatarCol >= 0 && !cursor.isNull(avatarCol)) {
+            user.setAvatarUrl(cursor.getString(avatarCol));
+        }
         user.setCreatedAt(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.COL_CREATED_AT)));
         user.setUpdatedAt(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.COL_UPDATED_AT)));
         return user;

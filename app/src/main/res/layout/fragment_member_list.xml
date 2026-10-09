@@ -28,6 +28,20 @@
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnInviteMember"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginEnd="6dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingHorizontal="10dp"
+            android:text="Invite QR"
+            android:textSize="11sp"
+            app:icon="@drawable/ic_lucide_smartphone"
+            app:iconSize="13dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddMember"
             android:layout_width="wrap_content"
             android:layout_height="36dp"

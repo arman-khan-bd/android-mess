@@ -59,6 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + UserEntry.COL_PASSWORD + " TEXT, "
                 + UserEntry.COL_ROLE + " TEXT DEFAULT 'member', "
                 + UserEntry.COL_STATUS + " TEXT DEFAULT 'active', "
+                + UserEntry.COL_AVATAR_URL + " TEXT, "
                 + UserEntry.COL_CREATED_AT + " TEXT, "
                 + UserEntry.COL_UPDATED_AT + " TEXT);");
 

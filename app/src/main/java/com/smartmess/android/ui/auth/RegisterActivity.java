@@ -87,6 +87,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         setupPathSelectors();
 
+        String incomingCode = getIntent().getStringExtra("EXTRA_INVITE_CODE");
+        if (incomingCode != null && !incomingCode.trim().isEmpty()) {
+            selectPath(false);
+            etInviteCode.setText(incomingCode.trim().toUpperCase());
+        }
+
         btnRegister.setOnClickListener(v -> performRegistration());
         tvGoToLogin.setOnClickListener(v -> finish());
     }
