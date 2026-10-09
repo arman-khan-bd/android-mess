@@ -24,6 +24,14 @@ import java.util.UUID;
 public class SmartMessApp extends Application {
 
     @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(base);
+        try {
+            androidx.multidex.MultiDex.install(this);
+        } catch (Throwable ignored) {}
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
         DatabaseHelper.getInstance(this);

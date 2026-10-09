@@ -8,10 +8,11 @@ android {
 
     defaultConfig {
         applicationId "com.smartmess.android"
-        minSdk 21
+        minSdk 19
         targetSdk 34
         versionCode 1
         versionName "1.0.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,6 +37,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.work:work-runtime:2.9.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
     
     // Network & Serialization
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'

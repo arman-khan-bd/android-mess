@@ -1,0 +1,91 @@
+name: Build Android App (Android 4.4+ Supported)
+
+on:
+  push:
+    branches: [ "main", "master", "develop" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build Type (debug, release, both)'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - debug
+          - release
+          - both
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Android App (API 19+ KitKat to Android 14)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.5
+          cache-read-only: false
+
+      - name: Ensure Gradle Wrapper & Permissions
+        run: |
+          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            echo "Generating Gradle Wrapper jar..."
+            gradle wrapper --gradle-version 8.5
+          fi
+          chmod +x gradlew
+          ls -la gradlew gradle/wrapper/
+
+      - name: Verify Android 4 Compatibility (API 19 minSdk)
+        run: |
+          echo "Auditing app/build.gradle for Android 4 (minSdk 19) support..."
+          grep -E "minSdk\s+19" app/build.gradle
+          grep -E "multiDexEnabled\s+true" app/build.gradle
+
+      - name: Build Debug APK
+        if: ${{ github.event.inputs.build_type == 'debug' || github.event.inputs.build_type == 'both' || github.event_name != 'workflow_dispatch' }}
+        run: |
+          ./gradlew assembleDebug --stacktrace --no-daemon
+
+      - name: Build Release APK (Unsigned)
+        if: ${{ github.event.inputs.build_type == 'release' || github.event.inputs.build_type == 'both' || github.event_name != 'workflow_dispatch' }}
+        run: |
+          ./gradlew assembleRelease --stacktrace --no-daemon
+
+      - name: Locate & Verify Built APKs
+        run: |
+          echo "Listing generated APK artifacts in app/build/outputs/apk/:"
+          find app/build/outputs/apk -type f -name "*.apk" -ls || true
+
+      - name: Upload Debug APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartmess-debug-apk-api19
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartmess-release-unsigned-apk-api19
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 14
+          if-no-files-found: warn
