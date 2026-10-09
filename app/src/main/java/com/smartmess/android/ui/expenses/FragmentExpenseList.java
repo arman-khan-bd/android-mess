@@ -48,7 +48,7 @@ public class FragmentExpenseList extends Fragment {
         sessionManager = new SessionManager(requireContext());
         planGateManager = new PlanGateManager(requireContext());
 
-        btnAddExpense.setOnClickListener(view -> startActivity(new Intent(requireContext(), ActivityAddExpense.class)));
+        btnAddExpense.setOnClickListener(view -> startActivity(new Intent(requireContext(), ActivityAddBazar.class)));
 
         tvHistoryGateBanner.setOnClickListener(view -> {
             planGateManager.showUpgradeBottomSheet(getParentFragmentManager(), "Lifetime Ledger History",
