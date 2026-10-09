@@ -111,6 +111,9 @@ public class RegisterActivity extends AppCompatActivity {
                 String token = resp != null && resp.getToken() != null ? resp.getToken() : "offline_token";
                 runOnUiThread(() -> {
                     sessionManager.createSession(userId, userUuid, name, phone, "manager", messId, messUuid, finalMessName, token);
+                    if (resp != null && resp.getPlanCapabilities() != null) {
+                        sessionManager.updatePlanCapabilities(resp.getPlanCapabilities());
+                    }
                     pbRegister.setVisibility(View.GONE);
                     Toast.makeText(RegisterActivity.this, "Mess created successfully! Invite code: " + code, Toast.LENGTH_LONG).show();
                     startActivity(new Intent(RegisterActivity.this, com.smartmess.android.ui.MainActivity.class));

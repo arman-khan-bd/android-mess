@@ -1,5 +1,7 @@
 package com.smartmess.android.data.remote.dto;
 
+import com.google.gson.JsonElement;
+import com.google.gson.annotations.SerializedName;
 import com.smartmess.android.model.Mess;
 import com.smartmess.android.model.User;
 
@@ -9,6 +11,9 @@ public class RegisterResponse {
     private String token;
     private User user;
     private Mess mess;
+
+    @SerializedName("plan_capabilities")
+    private JsonElement planCapabilities;
 
     public boolean isSuccess() { return success; }
     public void setSuccess(boolean success) { this.success = success; }
@@ -24,4 +29,7 @@ public class RegisterResponse {
 
     public Mess getMess() { return mess; }
     public void setMess(Mess mess) { this.mess = mess; }
+
+    public JsonElement getPlanCapabilities() { return planCapabilities; }
+    public void setPlanCapabilities(JsonElement planCapabilities) { this.planCapabilities = planCapabilities; }
 }

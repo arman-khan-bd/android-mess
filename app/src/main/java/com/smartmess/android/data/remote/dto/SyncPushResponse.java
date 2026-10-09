@@ -27,8 +27,14 @@ public class SyncPushResponse {
     @SerializedName("synced_sms_logs")
     private List<String> syncedSmsLogUuids = new ArrayList<>();
 
+    @SerializedName("plan_capabilities")
+    private com.google.gson.JsonElement planCapabilities;
+
     public boolean isSuccess() { return success; }
     public void setSuccess(boolean success) { this.success = success; }
+
+    public com.google.gson.JsonElement getPlanCapabilities() { return planCapabilities; }
+    public void setPlanCapabilities(com.google.gson.JsonElement planCapabilities) { this.planCapabilities = planCapabilities; }
 
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }

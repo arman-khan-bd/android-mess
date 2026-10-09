@@ -1,9 +1,15 @@
 package com.smartmess.android.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.google.gson.JsonElement;
+import com.smartmess.android.model.PlanCapabilities;
+
 public class SessionManager {
+
+    public static final String ACTION_CAPABILITIES_UPDATED = "com.smartmess.android.ACTION_CAPABILITIES_UPDATED";
 
     private static final String PREF_NAME = "smart_mess_session";
     private static final String KEY_IS_LOGGED_IN = "is_logged_in";
@@ -17,6 +23,7 @@ public class SessionManager {
     private static final String KEY_MESS_UUID = "mess_uuid";
     private static final String KEY_MESS_NAME = "mess_name";
     private static final String KEY_LAST_SYNC = "last_sync_timestamp";
+    private static final String KEY_PLAN_CAPABILITIES = "plan_capabilities_json";
 
     private final SharedPreferences prefs;
 
@@ -103,6 +110,49 @@ public class SessionManager {
 
     public String role() {
         return getUserRole();
+    }
+
+    // =========================================================================
+    // Dynamic Free vs Pro Capabilities Store & Auto-Unlock Engine
+    // =========================================================================
+
+    public void updatePlanCapabilities(PlanCapabilities caps) {
+        if (caps != null) {
+            prefs.edit().putString(KEY_PLAN_CAPABILITIES, caps.toJson()).apply();
+        }
+    }
+
+    public void updatePlanCapabilities(JsonElement element) {
+        if (element != null && element.isJsonObject()) {
+            PlanCapabilities caps = PlanCapabilities.fromJson(element);
+            updatePlanCapabilities(caps);
+        }
+    }
+
+    public void updatePlanCapabilities(String jsonStr) {
+        if (jsonStr != null && !jsonStr.trim().isEmpty()) {
+            prefs.edit().putString(KEY_PLAN_CAPABILITIES, jsonStr).apply();
+        }
+    }
+
+    public PlanCapabilities getPlanCapabilities() {
+        String jsonStr = prefs.getString(KEY_PLAN_CAPABILITIES, null);
+        return PlanCapabilities.fromJson(jsonStr);
+    }
+
+    public boolean isPro() {
+        return getPlanCapabilities().isPro();
+    }
+
+    public boolean hasCapability(String key) {
+        return getPlanCapabilities().hasCapability(key);
+    }
+
+    public void broadcastCapabilitiesUpdated(Context context) {
+        if (context != null) {
+            Intent intent = new Intent(ACTION_CAPABILITIES_UPDATED);
+            context.sendBroadcast(intent);
+        }
     }
 
     public void clearSession() {

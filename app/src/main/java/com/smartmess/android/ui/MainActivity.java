@@ -49,6 +49,16 @@ public class MainActivity extends AppCompatActivity {
     private AccountingEngine accountingEngine;
     private MealDao mealDao;
     private SyncManager syncManager;
+    private com.smartmess.android.engine.PlanGateManager planGateManager;
+
+    private final android.content.BroadcastReceiver capabilitiesReceiver = new android.content.BroadcastReceiver() {
+        @Override
+        public void onReceive(android.content.Context context, Intent intent) {
+            if (SessionManager.ACTION_CAPABILITIES_UPDATED.equals(intent.getAction())) {
+                loadHeaderData();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
         mealDao = new MealDao(helper);
         syncManager = SyncManager.getInstance(this);
+        planGateManager = new com.smartmess.android.engine.PlanGateManager(this);
 
         initViews();
         setupBottomNav();
@@ -97,6 +108,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        try {
+            android.content.IntentFilter filter = new android.content.IntentFilter(SessionManager.ACTION_CAPABILITIES_UPDATED);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(capabilitiesReceiver, filter, android.content.Context.RECEIVER_NOT_EXPORTED);
+            } else {
+                registerReceiver(capabilitiesReceiver, filter);
+            }
+        } catch (Throwable ignored) {}
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            unregisterReceiver(capabilitiesReceiver);
+        } catch (Throwable ignored) {}
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         loadHeaderData();
@@ -116,6 +148,13 @@ public class MainActivity extends AppCompatActivity {
         btnPayAdvance.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, AddDepositActivity.class));
         });
+
+        tvUserRoleBadge.setOnClickListener(v -> {
+            if (!planGateManager.isPro()) {
+                planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "SmartMess Pro",
+                        "Upgrade to unlock unlimited members, real-time cloud sync, and branded exports.");
+            }
+        });
     }
 
     private void loadHeaderData() {
@@ -125,7 +164,19 @@ public class MainActivity extends AppCompatActivity {
             tvMessTitle.setText(messName);
 
             String role = sessionManager.isManager() ? "Manager" : "Member";
-            tvUserRoleBadge.setText(role + " • " + (sessionManager.getUserPhone() != null ? sessionManager.getUserPhone() : ""));
+            boolean isPro = planGateManager.isPro();
+
+            if (isPro) {
+                tvUserRoleBadge.setText("PRO • " + role + " • " + (sessionManager.getUserPhone() != null ? sessionManager.getUserPhone() : ""));
+                tvUserRoleBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.primary_light));
+            } else {
+                tvUserRoleBadge.setText("FREE • " + role + " • Tap to Upgrade Pro ★");
+                tvUserRoleBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.warning_amber));
+            }
+
+            // Gating Cloud Sync Button in Header: Hidden on Free (Background only), Visible on Pro for Manager
+            boolean showSyncButton = planGateManager.canUseCloudSync();
+            chipSyncIndicator.setVisibility(showSyncButton ? View.VISIBLE : View.GONE);
 
             // Calculate Personal Ledger Balance
             long messId = sessionManager.getMessId();
@@ -204,6 +255,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupSyncIndicator() {
         chipSyncIndicator.setOnClickListener(v -> {
+            if (!planGateManager.canUseCloudSync()) {
+                planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "Cloud Sync",
+                        "Multi-device instant cloud sync is a Pro tier capability. Upgrade your mess to enable.");
+                return;
+            }
+
             chipSyncIndicator.setText("Syncing...");
             syncManager.triggerTwoWaySync(new SyncManager.SyncCallback() {
                 @Override

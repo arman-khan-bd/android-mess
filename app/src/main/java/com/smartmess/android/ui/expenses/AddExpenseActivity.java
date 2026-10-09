@@ -26,6 +26,8 @@ import com.smartmess.android.utils.DateTimeUtils;
 import com.smartmess.android.utils.PermissionHelper;
 import com.smartmess.android.utils.SessionManager;
 
+import com.smartmess.android.engine.PlanGateManager;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     private View layoutTargetMember;
     private Spinner spTargetMember;
     private EditText etExpenseDate;
+    private MaterialButton btnCaptureCamera;
     private MaterialButton btnAttachVoucher;
     private ImageView ivVoucherPreview;
     private TextView tvVoucherStatus;
@@ -51,6 +54,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     private ExpenseDao expenseDao;
     private UserDao userDao;
     private SessionManager sessionManager;
+    private PlanGateManager planGateManager;
     private List<User> members = new ArrayList<>();
     private File savedVoucherFile = null;
 
@@ -82,11 +86,21 @@ public class AddExpenseActivity extends AppCompatActivity {
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
         expenseDao = new ExpenseDao(helper);
         userDao = new UserDao(helper);
+        planGateManager = new PlanGateManager(this);
 
         initViews();
         setupSpinners();
 
         btnAttachVoucher.setOnClickListener(v -> pickVoucherImage());
+        btnCaptureCamera.setOnClickListener(v -> {
+            if (!planGateManager.canUseOcr()) {
+                planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "Smart Receipt OCR Scanner",
+                        "Automated receipt OCR extraction is a Pro feature. Upgrade to scan and auto-extract bill amounts.");
+                return;
+            }
+            pickVoucherImage();
+            Toast.makeText(this, "Receipt OCR Extractor active (Pro). Processing voucher image...", Toast.LENGTH_SHORT).show();
+        });
         btnSaveExpense.setOnClickListener(v -> saveExpense());
     }
 
@@ -99,6 +113,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         layoutTargetMember = findViewById(R.id.layoutTargetMember);
         spTargetMember = findViewById(R.id.spTargetMember);
         etExpenseDate = findViewById(R.id.etExpenseDate);
+        btnCaptureCamera = findViewById(R.id.btnCaptureCamera);
         btnAttachVoucher = findViewById(R.id.btnAttachVoucher);
         ivVoucherPreview = findViewById(R.id.ivVoucherPreview);
         tvVoucherStatus = findViewById(R.id.tvVoucherStatus);

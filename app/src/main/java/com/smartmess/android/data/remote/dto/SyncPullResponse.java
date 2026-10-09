@@ -26,6 +26,9 @@ public class SyncPullResponse {
     @SerializedName("plan")
     private SaasPlan plan;
 
+    @SerializedName("plan_capabilities")
+    private com.google.gson.JsonElement planCapabilities;
+
     @SerializedName(value = "users", alternate = {"members"})
     private List<User> users = new ArrayList<>();
 
@@ -52,6 +55,9 @@ public class SyncPullResponse {
 
     public SaasPlan getPlan() { return plan; }
     public void setPlan(SaasPlan plan) { this.plan = plan; }
+
+    public com.google.gson.JsonElement getPlanCapabilities() { return planCapabilities; }
+    public void setPlanCapabilities(com.google.gson.JsonElement planCapabilities) { this.planCapabilities = planCapabilities; }
 
     public List<User> getUsers() { return users != null ? users : new ArrayList<>(); }
     public void setUsers(List<User> users) { this.users = users; }

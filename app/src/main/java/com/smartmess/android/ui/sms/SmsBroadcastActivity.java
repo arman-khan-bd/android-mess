@@ -12,6 +12,7 @@ import com.smartmess.android.R;
 import com.smartmess.android.data.local.DatabaseHelper;
 import com.smartmess.android.data.local.dao.MessDao;
 import com.smartmess.android.data.local.dao.UserDao;
+import com.smartmess.android.engine.PlanGateManager;
 import com.smartmess.android.model.Mess;
 import com.smartmess.android.model.User;
 import com.smartmess.android.sms.SmsCostingManager;
@@ -32,6 +33,7 @@ public class SmsBroadcastActivity extends AppCompatActivity {
     private MessDao messDao;
     private SessionManager sessionManager;
     private SmsCostingManager smsCostingManager;
+    private PlanGateManager planGateManager;
     private List<User> activeMembers;
     private double perSmsCost = 0.50;
 
@@ -50,6 +52,7 @@ public class SmsBroadcastActivity extends AppCompatActivity {
         messDao = new MessDao(helper);
         sessionManager = new SessionManager(this);
         smsCostingManager = new SmsCostingManager(this);
+        planGateManager = new PlanGateManager(this);
 
         loadBroadcastInfo();
         btnDispatchBroadcast.setOnClickListener(v -> dispatchBroadcast());
@@ -71,6 +74,12 @@ public class SmsBroadcastActivity extends AppCompatActivity {
     }
 
     private void dispatchBroadcast() {
+        if (!planGateManager.canUseBulkSms()) {
+            planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "Bulk SMS Dispatcher",
+                    "Bulk due reminders and automated ledger debits are a Pro subscription feature.");
+            return;
+        }
+
         if (!PermissionHelper.hasSmsPermission(this)) {
             PermissionHelper.requestSmsPermission(this);
             return;

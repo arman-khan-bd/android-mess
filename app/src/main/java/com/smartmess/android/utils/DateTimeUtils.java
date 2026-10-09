@@ -95,4 +95,10 @@ public class DateTimeUtils {
         } catch (ParseException ignored) {}
         return false;
     }
+
+    public static String daysAgo(int days) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, -days);
+        return new SimpleDateFormat(DATE_FORMAT, Locale.US).format(cal.getTime());
+    }
 }

@@ -111,6 +111,10 @@ public class SyncManager {
                                 if (body.isSuccess()) {
                                     databaseManager.markRecordsAsSynced(body.getSyncedUuids());
                                     pushedRecords = body.getSyncedUuids().size();
+                                    if (body.getPlanCapabilities() != null) {
+                                        sessionManager.updatePlanCapabilities(com.smartmess.android.model.PlanCapabilities.fromJson(body.getPlanCapabilities()));
+                                        sessionManager.broadcastCapabilitiesUpdated(context);
+                                    }
                                     Log.i(TAG, "Successfully pushed and acknowledged " + pushedRecords + " records.");
                                 } else {
                                     Log.w(TAG, "Server reported push error: " + body.getMessage());
@@ -138,6 +142,12 @@ public class SyncManager {
                             SyncPullResponse pullData = pullResponse.body();
                             if (pullData.isSuccess()) {
                                 databaseManager.applyPulledRecords(pullData);
+
+                                if (pullData.getPlanCapabilities() != null) {
+                                    sessionManager.updatePlanCapabilities(com.smartmess.android.model.PlanCapabilities.fromJson(pullData.getPlanCapabilities()));
+                                    sessionManager.broadcastCapabilitiesUpdated(context);
+                                }
+
                                 Log.i(TAG, "Successfully applied pulled cloud updates.");
                                 notifySuccess(callback, "Sync complete. Pushed " + pushedRecords + " records.");
                             } else {

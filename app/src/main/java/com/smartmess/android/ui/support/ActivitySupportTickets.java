@@ -32,6 +32,8 @@ import com.smartmess.android.data.remote.dto.TicketListResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.widget.TextView;
+import com.smartmess.android.engine.PlanGateManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +45,8 @@ public class ActivitySupportTickets extends AppCompatActivity {
     private View layoutEmpty;
     private ProgressBar progressBar;
     private ExtendedFloatingActionButton fabNewTicket;
+    private TextView tvSupportPriorityBadge;
+    private PlanGateManager planGateManager;
 
     private TicketsAdapter adapter;
     private final List<SupportTicketDto> ticketList = new ArrayList<>();
@@ -67,6 +71,26 @@ public class ActivitySupportTickets extends AppCompatActivity {
         layoutEmpty = findViewById(R.id.layoutEmpty);
         progressBar = findViewById(R.id.progressBar);
         fabNewTicket = findViewById(R.id.fabNewTicket);
+        tvSupportPriorityBadge = findViewById(R.id.tvSupportPriorityBadge);
+        planGateManager = new PlanGateManager(this);
+        updatePriorityBadge();
+    }
+
+    private void updatePriorityBadge() {
+        if (tvSupportPriorityBadge == null) return;
+        if (planGateManager.isPrioritySupport()) {
+            tvSupportPriorityBadge.setText("★ PRO PRIORITY QUEUE ACTIVE");
+            tvSupportPriorityBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.credit_green));
+            tvSupportPriorityBadge.setBackgroundResource(R.drawable.badge_credit);
+        } else {
+            tvSupportPriorityBadge.setText("Standard Queue (Free) • Tap to upgrade Priority Support ★");
+            tvSupportPriorityBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.warning_amber));
+            tvSupportPriorityBadge.setBackgroundResource(R.drawable.badge_due);
+            tvSupportPriorityBadge.setOnClickListener(v -> {
+                planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "Priority Support Queue",
+                        "Pro subscribers receive high-priority ticket routing and dedicated support assistance.");
+            });
+        }
     }
 
     private void setupRecyclerView() {

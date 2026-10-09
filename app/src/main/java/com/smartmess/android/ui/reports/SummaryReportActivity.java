@@ -58,10 +58,9 @@ public class SummaryReportActivity extends AppCompatActivity {
         loadCycleReport();
 
         btnExportReport.setOnClickListener(v -> {
-            long messId = sessionManager.getMessId();
-            if (!planGateManager.canExportReports(messId)) {
-                planGateManager.showUpgradeDialog(this, "Branded PDF Export",
-                        "Branded PDF/Excel reports are an Enterprise tier feature. Upgrade to export.");
+            if (!planGateManager.canExportPdf()) {
+                planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "Branded PDF & Excel Export",
+                        "Watermark-free branded PDF and Excel statement exports are a Pro feature.");
             } else {
                 Toast.makeText(this, "Generating settlement report...", Toast.LENGTH_SHORT).show();
             }

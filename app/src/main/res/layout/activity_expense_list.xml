@@ -32,6 +32,21 @@
             style="@style/Widget.MaterialComponents.Button" />
     </LinearLayout>
 
+    <!-- Pro History Gate Banner -->
+    <TextView
+        android:id="@+id/tvHistoryGateBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2E1065"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:text="★ 30-Day Limit Active (Free) • Tap to unlock Lifetime Ledger"
+        android:textColor="#C084FC"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvExpenses"
         android:layout_width="match_parent"

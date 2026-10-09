@@ -124,6 +124,10 @@ public class LoginActivity extends AppCompatActivity {
                                 resp.getToken()
                         );
 
+                        if (resp.getPlanCapabilities() != null) {
+                            sessionManager.updatePlanCapabilities(resp.getPlanCapabilities());
+                        }
+
                         startActivity(new Intent(LoginActivity.this, com.smartmess.android.ui.MainActivity.class));
                         finish();
                     } else {

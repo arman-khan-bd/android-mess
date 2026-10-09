@@ -56,4 +56,11 @@ public interface ApiService {
 
     @POST("support/tickets/{id}/messages")
     Call<TicketDetailResponse> sendTicketMessage(@Path("id") long ticketId, @Body SendTicketMessageRequest request);
+
+    // SaaS Plan Status & Instant Checkout
+    @GET("plans/status")
+    Call<com.smartmess.android.data.remote.dto.PlanStatusResponse> getPlanStatus();
+
+    @POST("plans/checkout")
+    Call<com.smartmess.android.data.remote.dto.CheckoutResponse> checkoutPlan(@Body com.smartmess.android.data.remote.dto.CheckoutRequest request);
 }

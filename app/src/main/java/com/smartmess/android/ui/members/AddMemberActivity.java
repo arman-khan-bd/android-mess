@@ -58,8 +58,8 @@ public class AddMemberActivity extends AppCompatActivity {
     private void saveMember() {
         long messId = sessionManager.getMessId();
         if (!planGateManager.canAddMember(messId)) {
-            planGateManager.showUpgradeDialog(this, "Member Limit Exceeded",
-                    "Your plan limit prevents adding more members. Please upgrade your SaaS plan.");
+            planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "Unlimited Members",
+                    "Free accounts are limited to 6 members. Upgrade to Pro for unlimited member capacity.");
             return;
         }
 
