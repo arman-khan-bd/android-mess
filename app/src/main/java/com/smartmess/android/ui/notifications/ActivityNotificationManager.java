@@ -280,133 +280,171 @@ public class ActivityNotificationManager extends AppCompatActivity {
     }
 
     private void dispatchNotification() {
-        String title = etNotifTitle.getText() != null ? etNotifTitle.getText().toString().trim() : "";
-        String message = etNotifMessage.getText() != null ? etNotifMessage.getText().toString().trim() : "";
+        try {
+            String title = etNotifTitle.getText() != null ? etNotifTitle.getText().toString().trim() : "";
+            String message = etNotifMessage.getText() != null ? etNotifMessage.getText().toString().trim() : "";
 
-        if (title.isEmpty()) {
-            etNotifTitle.setError("Title is required");
-            etNotifTitle.requestFocus();
-            return;
-        }
-
-        if (message.isEmpty()) {
-            etNotifMessage.setError("Message is required");
-            etNotifMessage.requestFocus();
-            return;
-        }
-
-        boolean isSingle = (rgTargetAudience.getCheckedRadioButtonId() == R.id.rbTargetSingle);
-        User targetUser = null;
-        if (isSingle) {
-            int selectedIndex = spinnerTargetMember.getSelectedItemPosition();
-            if (selectedIndex >= 0 && selectedIndex < activeMembers.size()) {
-                targetUser = activeMembers.get(selectedIndex);
-            }
-        }
-
-        String channel = "push";
-        if (rgDeliveryChannel.getCheckedRadioButtonId() == R.id.rbChannelSms) {
-            channel = "sms";
-        } else if (rgDeliveryChannel.getCheckedRadioButtonId() == R.id.rbChannelBoth) {
-            channel = "both";
-        }
-
-        btnDispatchNotification.setEnabled(false);
-        btnDispatchNotification.setText("Dispatching...");
-
-        final User finalTargetUser = targetUser;
-        final String finalChannel = channel;
-        final String finalTitle = title;
-        final String finalMessage = message;
-
-        // 1. Dispatch SMS if channel is sms or both
-        int smsSent = 0;
-        if ("sms".equalsIgnoreCase(finalChannel) || "both".equalsIgnoreCase(finalChannel)) {
-            User sender = userDao.getById(sessionManager.getUserId());
-            if (sender == null) {
-                sender = new User();
-                sender.setId(sessionManager.getUserId());
-                sender.setMessId(sessionManager.getMessId());
-                sender.setName(sessionManager.getUserName());
-                sender.setPhone(sessionManager.getUserPhone());
+            if (title.isEmpty()) {
+                etNotifTitle.setError("Title is required");
+                etNotifTitle.requestFocus();
+                return;
             }
 
-            if (finalTargetUser != null) {
-                boolean sent = smsCostingManager.sendSingleDueReminder(sender, finalTargetUser, finalMessage);
-                if (sent) smsSent = 1;
+            if (message.isEmpty()) {
+                etNotifMessage.setError("Message is required");
+                etNotifMessage.requestFocus();
+                return;
+            }
+
+            boolean isSingle = (rgTargetAudience.getCheckedRadioButtonId() == R.id.rbTargetSingle);
+            User targetUser = null;
+            if (isSingle) {
+                if (activeMembers == null || activeMembers.isEmpty()) {
+                    Toast.makeText(this, "No active members found in mess to dispatch to.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                int selectedIndex = spinnerTargetMember.getSelectedItemPosition();
+                if (selectedIndex >= 0 && selectedIndex < activeMembers.size()) {
+                    targetUser = activeMembers.get(selectedIndex);
+                } else {
+                    Toast.makeText(this, "Please select a recipient member.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            String channel = "push";
+            if (rgDeliveryChannel.getCheckedRadioButtonId() == R.id.rbChannelSms) {
+                channel = "sms";
+            } else if (rgDeliveryChannel.getCheckedRadioButtonId() == R.id.rbChannelBoth) {
+                channel = "both";
+            }
+
+            btnDispatchNotification.setEnabled(false);
+            btnDispatchNotification.setText("Dispatching...");
+
+            final User finalTargetUser = targetUser;
+            final String finalChannel = channel;
+            final String finalTitle = title;
+            final String finalMessage = message;
+
+            // 1. Dispatch SMS if channel is sms or both
+            int smsSent = 0;
+            if ("sms".equalsIgnoreCase(finalChannel) || "both".equalsIgnoreCase(finalChannel)) {
+                try {
+                    User sender = userDao.getById(sessionManager.getUserId());
+                    if (sender == null) {
+                        sender = new User();
+                        sender.setId(sessionManager.getUserId());
+                        sender.setMessId(sessionManager.getMessId());
+                        sender.setName(sessionManager.getUserName());
+                        sender.setPhone(sessionManager.getUserPhone());
+                    }
+
+                    if (finalTargetUser != null) {
+                        boolean sent = smsCostingManager.sendSingleDueReminder(sender, finalTargetUser, finalMessage);
+                        if (sent) smsSent = 1;
+                    } else {
+                        smsSent = smsCostingManager.broadcastNoticeToAllMembers(sender, finalMessage);
+                    }
+                } catch (Throwable smsEx) {
+                    android.util.Log.e("NotifManager", "SMS dispatch error: " + smsEx.getMessage(), smsEx);
+                    Toast.makeText(this, "SMS Notice: " + smsEx.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            // 2. Dispatch Online Push Notification if channel is push or both
+            if ("push".equalsIgnoreCase(finalChannel) || "both".equalsIgnoreCase(finalChannel)) {
+                Long targetUserId = (finalTargetUser != null) ? finalTargetUser.getId() : null;
+                NotificationSendRequest request = new NotificationSendRequest(
+                        finalTitle, finalMessage, selectedType, finalChannel, targetUserId
+                );
+
+                final int finalSmsSent = smsSent;
+                if (apiService == null) {
+                    apiService = ApiClient.getApiService(this);
+                }
+
+                apiService.sendNotification(request).enqueue(new Callback<NotificationSendResponse>() {
+                    @Override
+                    public void onResponse(Call<NotificationSendResponse> call, Response<NotificationSendResponse> response) {
+                        saveLocalNotification(finalTitle, finalMessage, selectedType, finalChannel, finalTargetUser);
+                        showSuccessDialog(finalChannel, finalTargetUser != null ? 1 : (activeMembers != null ? activeMembers.size() : 1), finalSmsSent);
+                    }
+
+                    @Override
+                    public void onFailure(Call<NotificationSendResponse> call, Throwable t) {
+                        // Still save offline in SQLite
+                        saveLocalNotification(finalTitle, finalMessage, selectedType, finalChannel, finalTargetUser);
+                        showSuccessDialog(finalChannel, finalTargetUser != null ? 1 : (activeMembers != null ? activeMembers.size() : 1), finalSmsSent);
+                    }
+                });
             } else {
-                smsSent = smsCostingManager.broadcastNoticeToAllMembers(sender, finalMessage);
+                // Only SMS was requested
+                saveLocalNotification(finalTitle, finalMessage, selectedType, finalChannel, finalTargetUser);
+                showSuccessDialog(finalChannel, finalTargetUser != null ? 1 : (activeMembers != null ? activeMembers.size() : 1), smsSent);
             }
-        }
-
-        // 2. Dispatch Online Push Notification if channel is push or both
-        if ("push".equalsIgnoreCase(finalChannel) || "both".equalsIgnoreCase(finalChannel)) {
-            Long targetUserId = (finalTargetUser != null) ? finalTargetUser.getId() : null;
-            NotificationSendRequest request = new NotificationSendRequest(
-                    finalTitle, finalMessage, selectedType, finalChannel, targetUserId
-            );
-
-            final int finalSmsSent = smsSent;
-            apiService.sendNotification(request).enqueue(new Callback<NotificationSendResponse>() {
-                @Override
-                public void onResponse(Call<NotificationSendResponse> call, Response<NotificationSendResponse> response) {
-                    saveLocalNotification(finalTitle, finalMessage, selectedType, finalChannel, finalTargetUser);
-                    showSuccessDialog(finalChannel, finalTargetUser != null ? 1 : activeMembers.size(), finalSmsSent);
-                }
-
-                @Override
-                public void onFailure(Call<NotificationSendResponse> call, Throwable t) {
-                    // Still save offline in SQLite
-                    saveLocalNotification(finalTitle, finalMessage, selectedType, finalChannel, finalTargetUser);
-                    showSuccessDialog(finalChannel, finalTargetUser != null ? 1 : activeMembers.size(), finalSmsSent);
-                }
-            });
-        } else {
-            // Only SMS was requested
-            saveLocalNotification(finalTitle, finalMessage, selectedType, finalChannel, finalTargetUser);
-            showSuccessDialog(finalChannel, finalTargetUser != null ? 1 : activeMembers.size(), smsSent);
+        } catch (Throwable t) {
+            android.util.Log.e("NotifManager", "Fatal crash prevented in dispatchNotification: " + t.getMessage(), t);
+            btnDispatchNotification.setEnabled(true);
+            btnDispatchNotification.setText("🚀 Dispatch Notification");
+            Toast.makeText(this, "Notification Dispatch Failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
     private void saveLocalNotification(String title, String message, String type, String channel, User targetUser) {
-        long messId = sessionManager.getMessId();
-        long targetId = targetUser != null ? targetUser.getId() : 0;
-        AppNotification notif = new AppNotification(
-                UUID.randomUUID().toString(),
-                messId,
-                targetId,
-                title,
-                message,
-                type,
-                channel,
-                DateTimeUtils.nowIso()
-        );
-        notificationDao.insert(notif);
+        try {
+            long messId = sessionManager.getMessId();
+            long targetId = targetUser != null ? targetUser.getId() : 0;
+            AppNotification notif = new AppNotification(
+                    UUID.randomUUID().toString(),
+                    messId,
+                    targetId,
+                    title,
+                    message,
+                    type,
+                    channel,
+                    DateTimeUtils.nowIso()
+            );
+            notificationDao.insert(notif);
+        } catch (Throwable t) {
+            android.util.Log.e("NotifManager", "Error saving local notification: " + t.getMessage(), t);
+        }
     }
 
     private void showSuccessDialog(String channel, int totalTargets, int smsSent) {
-        btnDispatchNotification.setEnabled(true);
-        btnDispatchNotification.setText("🚀 Dispatch Notification");
+        runOnUiThread(() -> {
+            if (isFinishing() || (android.os.Build.VERSION.SDK_INT >= 17 && isDestroyed())) {
+                return;
+            }
 
-        String channelSummary = "both".equalsIgnoreCase(channel) ? "Online Push & SIM SMS" :
-                ("sms".equalsIgnoreCase(channel) ? "SIM SMS" : "Online Push Notification");
+            btnDispatchNotification.setEnabled(true);
+            btnDispatchNotification.setText("🚀 Dispatch Notification");
 
-        String msg = "Your notification has been dispatched successfully!\n\n" +
-                "• Channel: " + channelSummary + "\n" +
-                "• Target Recipients: " + totalTargets + " member(s)\n";
+            String channelSummary = "both".equalsIgnoreCase(channel) ? "Online Push & SIM SMS" :
+                    ("sms".equalsIgnoreCase(channel) ? "SIM SMS" : "Online Push Notification");
 
-        if ("sms".equalsIgnoreCase(channel) || "both".equalsIgnoreCase(channel)) {
-            msg += "• SMS Dispatched: " + smsSent + " delivered & ledger updated.\n";
-        }
-        if ("push".equalsIgnoreCase(channel) || "both".equalsIgnoreCase(channel)) {
-            msg += "• Push Notification: Broadcast to active member devices.\n";
-        }
+            String msg = "Your notification has been dispatched successfully!\n\n" +
+                    "• Channel: " + channelSummary + "\n" +
+                    "• Target Recipients: " + totalTargets + " member(s)\n";
 
-        new AlertDialog.Builder(this)
-                .setTitle("✅ Dispatch Complete")
-                .setMessage(msg)
-                .setPositiveButton("Done", (dialog, which) -> finish())
-                .setCancelable(false)
-                .show();
+            if ("sms".equalsIgnoreCase(channel) || "both".equalsIgnoreCase(channel)) {
+                msg += "• SMS Dispatched: " + smsSent + " delivered & ledger updated.\n";
+            }
+            if ("push".equalsIgnoreCase(channel) || "both".equalsIgnoreCase(channel)) {
+                msg += "• Push Notification: Broadcast to active member devices.\n";
+            }
+
+            try {
+                new AlertDialog.Builder(this)
+                        .setTitle("✅ Dispatch Complete")
+                        .setMessage(msg)
+                        .setPositiveButton("Done", (dialog, which) -> finish())
+                        .setCancelable(false)
+                        .show();
+            } catch (Throwable t) {
+                Toast.makeText(this, "Dispatched successfully!", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        });
     }
 }

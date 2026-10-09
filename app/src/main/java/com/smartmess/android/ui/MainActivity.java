@@ -126,6 +126,26 @@ public class MainActivity extends AppCompatActivity {
             com.smartmess.android.notification.NotificationScheduler.scheduleDailyReminder(this, null);
         } catch (Throwable ignored) {}
 
+        // Auto-sync mess data on startup if network is available
+        if (com.smartmess.android.utils.NetworkUtils.isNetworkAvailable(this) && sessionManager.isLoggedIn()) {
+            syncManager.triggerTwoWaySync(new SyncManager.SyncCallback() {
+                @Override
+                public void onSyncStarted() {}
+
+                @Override
+                public void onSyncSuccess(String message) {
+                    runOnUiThread(() -> {
+                        loadHeaderData();
+                        populateDrawerProfile();
+                        updateNotificationBadge();
+                    });
+                }
+
+                @Override
+                public void onSyncFailed(String error) {}
+            });
+        }
+
         // Check if opened from Daily Meal Status Reminder notification
         handleIncomingIntent(getIntent(), savedInstanceState);
     }
@@ -277,8 +297,8 @@ public class MainActivity extends AppCompatActivity {
                 tvTopPlanPill.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.warning_amber));
             }
 
-            // Gating Cloud Sync Button in Header: Conditionally visible ONLY if manager AND plan_features.cloud_sync == true
-            boolean showSyncButton = sessionManager.isManager() && planGateManager.canUseCloudSync();
+            // Cloud Sync Button in Header: Visible for all logged in mess members
+            boolean showSyncButton = sessionManager.isLoggedIn();
             btnCloudSync.setVisibility(showSyncButton ? View.VISIBLE : View.GONE);
 
             // Initials avatar
@@ -622,12 +642,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupSyncIndicator() {
         btnCloudSync.setOnClickListener(v -> {
-            if (!planGateManager.canUseCloudSync()) {
-                planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "Cloud Sync",
-                        "Multi-device instant cloud sync is a Pro tier capability. Upgrade your mess to enable.");
-                return;
-            }
-
             Toast.makeText(MainActivity.this, "Triggering cloud sync...", Toast.LENGTH_SHORT).show();
             syncManager.triggerTwoWaySync(new SyncManager.SyncCallback() {
                 @Override

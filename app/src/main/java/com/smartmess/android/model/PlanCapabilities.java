@@ -62,7 +62,7 @@ public class PlanCapabilities implements Serializable {
         this.planTier = "free";
         this.isActive = true;
         if (capabilities == null) capabilities = new HashMap<>();
-        capabilities.put("cloud_sync", false);
+        capabilities.put("cloud_sync", true);
         capabilities.put("unlimited_members", false);
         capabilities.put("max_members", 6);
         capabilities.put("pdf_export", false);

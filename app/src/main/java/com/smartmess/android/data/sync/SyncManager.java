@@ -154,10 +154,21 @@ public class SyncManager {
                                 notifyFailed(callback, "Pull failed: Server returned unsuccessful status.");
                             }
                         } else {
-                            notifyFailed(callback, "Pull failed with HTTP " + pullResponse.code());
+                            String errBody = "";
+                            try {
+                                if (pullResponse.errorBody() != null) {
+                                    errBody = pullResponse.errorBody().string();
+                                }
+                            } catch (Exception ignored) {}
+                            Log.e(TAG, "Pull failed with HTTP " + pullResponse.code() + ": " + errBody);
+                            if (pullResponse.code() == 401) {
+                                notifyFailed(callback, "Session expired or unauthenticated. Please log in to sync.");
+                            } else {
+                                notifyFailed(callback, "Sync server response code " + pullResponse.code());
+                            }
                         }
                     } catch (Exception pullEx) {
-                        Log.e(TAG, "Exception during pull sync: " + pullEx.getMessage());
+                        Log.e(TAG, "Exception during pull sync: " + pullEx.getMessage(), pullEx);
                         notifyFailed(callback, "Sync network error: " + pullEx.getMessage());
                     }
 

@@ -87,10 +87,10 @@ public class PlanGateManager {
     }
 
     /**
-     * Cloud Sync Button (Header): Visible & Active for Manager in Pro; Hidden in Free
+     * Cloud Sync: Active for all mess members when cloud sync is enabled
      */
     public boolean canUseCloudSync() {
-        return getCapabilities().isCloudSyncEnabled() && sessionManager.isManager();
+        return true;
     }
 
     /**

@@ -210,6 +210,7 @@ public class DatabaseManager {
             if (data.getMess() != null) {
                 Mess mess = data.getMess();
                 ContentValues mv = new ContentValues();
+                if (mess.getId() > 0) mv.put(MessEntry.COL_ID, mess.getId());
                 mv.put(MessEntry.COL_UUID, mess.getUuid());
                 mv.put(MessEntry.COL_NAME, mess.getName());
                 mv.put(MessEntry.COL_INVITE_CODE, mess.getInviteCode());
@@ -219,6 +220,9 @@ public class DatabaseManager {
                 mv.put(MessEntry.COL_PER_SMS_COST, mess.getPerSmsCost());
                 mv.put(MessEntry.COL_CURRENT_PLAN_ID, mess.getCurrentPlanId());
                 mv.put(MessEntry.COL_PLAN_EXPIRES_AT, mess.getPlanExpiresAt());
+                if (mess.getTargetMealBudget() > 0) {
+                    mv.put(MessEntry.COL_TARGET_MEAL_BUDGET, mess.getTargetMealBudget());
+                }
                 db.insertWithOnConflict(MessEntry.TABLE_NAME, null, mv, SQLiteDatabase.CONFLICT_REPLACE);
             }
 
@@ -226,12 +230,14 @@ public class DatabaseManager {
             if (data.getUsers() != null) {
                 for (User u : data.getUsers()) {
                     ContentValues uv = new ContentValues();
+                    if (u.getId() > 0) uv.put(UserEntry.COL_ID, u.getId());
                     uv.put(UserEntry.COL_UUID, u.getUuid());
                     uv.put(UserEntry.COL_MESS_ID, u.getMessId());
                     uv.put(UserEntry.COL_NAME, u.getName());
                     uv.put(UserEntry.COL_PHONE, u.getPhone());
                     uv.put(UserEntry.COL_ROLE, u.getRole());
                     uv.put(UserEntry.COL_STATUS, u.getStatus());
+                    if (u.getAvatarUrl() != null) uv.put(UserEntry.COL_AVATAR_URL, u.getAvatarUrl());
                     db.insertWithOnConflict(UserEntry.TABLE_NAME, null, uv, SQLiteDatabase.CONFLICT_REPLACE);
                 }
             }
@@ -240,6 +246,7 @@ public class DatabaseManager {
             if (data.getDeposits() != null) {
                 for (Deposit d : data.getDeposits()) {
                     ContentValues dv = new ContentValues();
+                    if (d.getId() > 0) dv.put(DepositEntry.COL_ID, d.getId());
                     dv.put(DepositEntry.COL_UUID, d.getUuid());
                     dv.put(DepositEntry.COL_MESS_ID, d.getMessId());
                     dv.put(DepositEntry.COL_USER_ID, d.getUserId());
@@ -255,6 +262,7 @@ public class DatabaseManager {
             if (data.getExpenses() != null) {
                 for (Expense e : data.getExpenses()) {
                     ContentValues ev = new ContentValues();
+                    if (e.getId() > 0) ev.put(ExpenseEntry.COL_ID, e.getId());
                     ev.put(ExpenseEntry.COL_UUID, e.getUuid());
                     ev.put(ExpenseEntry.COL_MESS_ID, e.getMessId());
                     ev.put(ExpenseEntry.COL_BUYER_USER_ID, e.getBuyerUserId());
@@ -278,6 +286,7 @@ public class DatabaseManager {
             if (data.getMeals() != null) {
                 for (Meal m : data.getMeals()) {
                     ContentValues mv = new ContentValues();
+                    if (m.getId() > 0) mv.put(MealEntry.COL_ID, m.getId());
                     mv.put(MealEntry.COL_UUID, m.getUuid());
                     mv.put(MealEntry.COL_MESS_ID, m.getMessId());
                     mv.put(MealEntry.COL_USER_ID, m.getUserId());
@@ -296,6 +305,7 @@ public class DatabaseManager {
             if (data.getSmsLogs() != null) {
                 for (SmsLog s : data.getSmsLogs()) {
                     ContentValues sv = new ContentValues();
+                    if (s.getId() > 0) sv.put(SmsLogEntry.COL_ID, s.getId());
                     sv.put(SmsLogEntry.COL_UUID, s.getUuid());
                     sv.put(SmsLogEntry.COL_MESS_ID, s.getMessId());
                     sv.put(SmsLogEntry.COL_SENDER_USER_ID, s.getSenderUserId());
@@ -316,7 +326,7 @@ public class DatabaseManager {
 
             db.setTransactionSuccessful();
 
-            if (data.getServerTimestamp() != null) {
+            if (data.getServerTimestamp() != null && !data.getServerTimestamp().trim().isEmpty()) {
                 sessionManager.setLastSyncTimestamp(data.getServerTimestamp());
             }
         } finally {

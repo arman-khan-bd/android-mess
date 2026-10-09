@@ -132,7 +132,7 @@
             android:name=".ui.members.ActivityMessInvite"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -140,6 +140,23 @@
                     android:scheme="https"
                     android:host="mess.e-bd.shop"
                     android:pathPrefix="/join" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="http"
+                    android:host="mess.e-bd.shop"
+                    android:pathPrefix="/join" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="smartmess"
+                    android:host="join" />
             </intent-filter>
         </activity>
 

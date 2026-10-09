@@ -221,18 +221,24 @@ public class RegisterActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         // Seed into encrypted SharedPreferences
                         sessionManager.createSession(uId, uUuid, name, phone, finalRole, tenantId, tenantUuid, tenantName, token);
+                        sessionManager.setInviteCode(tenantInviteCode);
+                        sessionManager.setLastSyncTimestamp("1970-01-01 00:00:00");
                         if (resp.getPlanCapabilities() != null) {
                             sessionManager.updatePlanCapabilities(resp.getPlanCapabilities());
                         }
+
+                        // Automatically trigger initial cloud sync to download all mess data (members, meals, bazar, expenses)
+                        com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
 
                         pbRegister.setVisibility(View.GONE);
                         btnRegister.setEnabled(true);
                         String successMsg = isPathCreateMess
                                 ? "Mess created successfully! Invite Code: " + tenantInviteCode
-                                : "Joined mess successfully as " + finalRole;
+                                : "Joined mess successfully! Syncing mess data...";
                         Toast.makeText(RegisterActivity.this, successMsg, Toast.LENGTH_LONG).show();
 
                         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                        intent.putExtra("EXTRA_INITIAL_SYNC", true);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();

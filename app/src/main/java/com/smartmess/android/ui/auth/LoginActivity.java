@@ -72,12 +72,94 @@ public class LoginActivity extends AppCompatActivity {
         pbLogin.setVisibility(View.VISIBLE);
         btnLogin.setEnabled(false);
 
-        // 1. Try Local SQLite Offline Login First
+        // Online-First Authentication: Attempt cloud login to obtain fresh Sanctum Bearer token
+        boolean isOnline = com.smartmess.android.utils.NetworkUtils.isNetworkAvailable(this);
+
+        if (isOnline) {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                try {
+                    LoginResponse resp = apiClient.login(phone, password);
+                    runOnUiThread(() -> {
+                        if (resp != null && resp.isSuccess() && resp.getUser() != null) {
+                            pbLogin.setVisibility(View.GONE);
+                            btnLogin.setEnabled(true);
+
+                            User u = resp.getUser();
+                            Mess m = resp.getMess();
+                            long messId = m != null ? messDao.insertOrUpdate(m) : 1;
+                            u.setMessId(messId);
+                            u.setPassword(password);
+                            long userId = userDao.insertOrUpdate(u);
+
+                            sessionManager.createSession(
+                                    userId,
+                                    u.getUuid(),
+                                    u.getName(),
+                                    u.getPhone(),
+                                    u.getRole(),
+                                    messId,
+                                    m != null ? m.getUuid() : "",
+                                    m != null ? m.getName() : "Smart Mess",
+                                    resp.getToken()
+                            );
+                            if (m != null && m.getInviteCode() != null) {
+                                sessionManager.setInviteCode(m.getInviteCode());
+                            }
+
+                            if (resp.getPlanCapabilities() != null) {
+                                sessionManager.updatePlanCapabilities(resp.getPlanCapabilities());
+                            }
+
+                            // Trigger cloud sync to pull latest mess meals, bazar & expenses
+                            com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
+
+                            Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(LoginActivity.this, com.smartmess.android.ui.MainActivity.class));
+                            finish();
+                        } else {
+                            // Check local SQLite credentials as fallback
+                            if (!attemptLocalOfflineLogin(phone, password, false)) {
+                                pbLogin.setVisibility(View.GONE);
+                                btnLogin.setEnabled(true);
+                                String errMsg = (resp != null && resp.getMessage() != null)
+                                        ? resp.getMessage()
+                                        : "Invalid phone number or password.";
+                                Toast.makeText(LoginActivity.this, errMsg, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    runOnUiThread(() -> {
+                        // Network/server failure: fallback to local SQLite offline login
+                        if (!attemptLocalOfflineLogin(phone, password, true)) {
+                            pbLogin.setVisibility(View.GONE);
+                            btnLogin.setEnabled(true);
+                            Toast.makeText(LoginActivity.this, "Authentication failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });
+        } else {
+            // Offline mode: authenticating via local SQLite database
+            if (!attemptLocalOfflineLogin(phone, password, true)) {
+                pbLogin.setVisibility(View.GONE);
+                btnLogin.setEnabled(true);
+                Toast.makeText(this, "No internet connection and no matching local account found.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private boolean attemptLocalOfflineLogin(String phone, String password, boolean isOfflineMode) {
         User localUser = userDao.getByPhone(phone);
         if (localUser != null && (localUser.getPassword() == null || localUser.getPassword().equals(password))) {
             Mess mess = messDao.getById(localUser.getMessId());
             String messName = mess != null ? mess.getName() : "My Mess";
             String messUuid = mess != null ? mess.getUuid() : "";
+
+            // Retain existing token if present
+            String existingToken = sessionManager.getAuthToken();
+            String tokenToUse = (existingToken != null && !existingToken.trim().isEmpty())
+                    ? existingToken : "offline_session_token";
 
             sessionManager.createSession(
                     localUser.getId(),
@@ -88,59 +170,20 @@ public class LoginActivity extends AppCompatActivity {
                     localUser.getMessId(),
                     messUuid,
                     messName,
-                    "offline_session_token"
+                    tokenToUse
             );
+            if (mess != null && mess.getInviteCode() != null) {
+                sessionManager.setInviteCode(mess.getInviteCode());
+            }
 
             pbLogin.setVisibility(View.GONE);
+            if (isOfflineMode) {
+                Toast.makeText(this, "Logged in in Offline Mode.", Toast.LENGTH_SHORT).show();
+            }
             startActivity(new Intent(LoginActivity.this, com.smartmess.android.ui.MainActivity.class));
             finish();
-            return;
+            return true;
         }
-
-        // 2. Fallback to Cloud Authentication
-        Executors.newSingleThreadExecutor().execute(() -> {
-            try {
-                LoginResponse resp = apiClient.login(phone, password);
-                runOnUiThread(() -> {
-                    pbLogin.setVisibility(View.GONE);
-                    btnLogin.setEnabled(true);
-
-                    if (resp != null && resp.isSuccess() && resp.getUser() != null) {
-                        User u = resp.getUser();
-                        Mess m = resp.getMess();
-                        long messId = m != null ? messDao.insertOrUpdate(m) : 1;
-                        u.setMessId(messId);
-                        long userId = userDao.insertOrUpdate(u);
-
-                        sessionManager.createSession(
-                                userId,
-                                u.getUuid(),
-                                u.getName(),
-                                u.getPhone(),
-                                u.getRole(),
-                                messId,
-                                m != null ? m.getUuid() : "",
-                                m != null ? m.getName() : "Smart Mess",
-                                resp.getToken()
-                        );
-
-                        if (resp.getPlanCapabilities() != null) {
-                            sessionManager.updatePlanCapabilities(resp.getPlanCapabilities());
-                        }
-
-                        startActivity(new Intent(LoginActivity.this, com.smartmess.android.ui.MainActivity.class));
-                        finish();
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Invalid credentials or user not found offline", Toast.LENGTH_LONG).show();
-                    }
-                });
-            } catch (Exception e) {
-                runOnUiThread(() -> {
-                    pbLogin.setVisibility(View.GONE);
-                    btnLogin.setEnabled(true);
-                    Toast.makeText(LoginActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
+        return false;
     }
 }

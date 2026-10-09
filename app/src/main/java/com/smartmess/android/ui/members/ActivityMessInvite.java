@@ -47,18 +47,52 @@ public class ActivityMessInvite extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         messDao = new MessDao(DatabaseHelper.getInstance(this));
 
-        // Deep-link check: https://mess.e-bd.shop/join?code=ABC123
+        // Deep-link check: supports both query param (?code=ABC123) and path style (/join/ABC123)
         android.net.Uri deepData = getIntent().getData();
-        if (deepData != null && deepData.getQueryParameter("code") != null) {
-            String incomingCode = deepData.getQueryParameter("code").toUpperCase();
+        String incomingCode = null;
+        if (deepData != null) {
+            if (deepData.getQueryParameter("code") != null) {
+                incomingCode = deepData.getQueryParameter("code");
+            } else if (deepData.getQueryParameter("invite_code") != null) {
+                incomingCode = deepData.getQueryParameter("invite_code");
+            } else {
+                java.util.List<String> segments = deepData.getPathSegments();
+                if (segments != null && segments.size() >= 2 && "join".equalsIgnoreCase(segments.get(0))) {
+                    incomingCode = segments.get(1);
+                } else if (segments != null && segments.size() == 1 && !"join".equalsIgnoreCase(segments.get(0))) {
+                    incomingCode = segments.get(0);
+                }
+            }
+        }
+        if (incomingCode == null && getIntent().hasExtra("EXTRA_INVITE_CODE")) {
+            incomingCode = getIntent().getStringExtra("EXTRA_INVITE_CODE");
+        }
+
+        if (incomingCode != null && !incomingCode.trim().isEmpty()) {
+            final String cleanIncomingCode = incomingCode.trim().toUpperCase();
             if (!sessionManager.isLoggedIn()) {
                 Intent regIntent = new Intent(this, com.smartmess.android.ui.auth.RegisterActivity.class);
-                regIntent.putExtra("EXTRA_INVITE_CODE", incomingCode);
+                regIntent.putExtra("EXTRA_INVITE_CODE", cleanIncomingCode);
                 startActivity(regIntent);
                 finish();
                 return;
+            } else {
+                String currentMessCode = sessionManager.getInviteCode();
+                if (currentMessCode != null && !cleanIncomingCode.equalsIgnoreCase(currentMessCode.trim())) {
+                    new androidx.appcompat.app.AlertDialog.Builder(this)
+                            .setTitle("Mess Invitation Received")
+                            .setMessage("You have been invited to join a different mess with code: " + cleanIncomingCode + ".\n\nWould you like to register or join this new mess?")
+                            .setPositiveButton("Join New Mess", (dialog, which) -> {
+                                Intent regIntent = new Intent(this, com.smartmess.android.ui.auth.RegisterActivity.class);
+                                regIntent.putExtra("EXTRA_INVITE_CODE", cleanIncomingCode);
+                                startActivity(regIntent);
+                                finish();
+                            })
+                            .setNegativeButton("Stay Here", null)
+                            .show();
+                }
             }
-            inviteCode = incomingCode;
+            inviteCode = cleanIncomingCode;
         }
 
         initViews();
