@@ -70,4 +70,17 @@ public interface ApiService {
     // Mess Automation Rules & Target Meal Budget
     @POST("mess/settings")
     Call<com.smartmess.android.data.remote.dto.MessSettingsResponse> updateMessSettings(@Body java.util.Map<String, Object> body);
+
+    // Online Push Notifications & Dispatch System
+    @POST("notifications/token")
+    Call<java.util.Map<String, Object>> registerPushToken(@Body java.util.Map<String, Object> body);
+
+    @GET("notifications")
+    Call<com.smartmess.android.data.remote.dto.NotificationListResponse> getOnlineNotifications(@Query("last_id") Long lastId);
+
+    @POST("notifications/send")
+    Call<com.smartmess.android.data.remote.dto.NotificationSendResponse> sendNotification(@Body com.smartmess.android.data.remote.dto.NotificationSendRequest request);
+
+    @POST("notifications/read")
+    Call<java.util.Map<String, Object>> markNotificationsRead(@Body java.util.Map<String, Object> body);
 }

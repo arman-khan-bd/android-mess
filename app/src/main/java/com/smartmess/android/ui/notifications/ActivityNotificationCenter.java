@@ -46,6 +46,9 @@ public class ActivityNotificationCenter extends AppCompatActivity {
     private SessionManager sessionManager;
     private NotificationAdapter adapter;
 
+    private View layoutManagerSendBanner;
+    private MaterialButton btnOpenNotifManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +62,12 @@ public class ActivityNotificationCenter extends AppCompatActivity {
         loadNotifications();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadNotifications();
+    }
+
     private void initViews() {
         btnBackNotifications = findViewById(R.id.btnBackNotifications);
         btnMarkAllRead = findViewById(R.id.btnMarkAllRead);
@@ -67,6 +76,18 @@ public class ActivityNotificationCenter extends AppCompatActivity {
         tvUnreadCountBadge = findViewById(R.id.tvUnreadCountBadge);
         layoutEmptyNotifications = findViewById(R.id.layoutEmptyNotifications);
         rvNotifications = findViewById(R.id.rvNotifications);
+
+        layoutManagerSendBanner = findViewById(R.id.layoutManagerSendBanner);
+        btnOpenNotifManager = findViewById(R.id.btnOpenNotifManager);
+
+        boolean isManager = sessionManager.isManager() || sessionManager.isAssistant();
+        if (layoutManagerSendBanner != null) {
+            layoutManagerSendBanner.setVisibility(isManager ? View.VISIBLE : View.GONE);
+        }
+        if (btnOpenNotifManager != null) {
+            btnOpenNotifManager.setOnClickListener(v ->
+                    startActivity(new Intent(ActivityNotificationCenter.this, ActivityNotificationManager.class)));
+        }
 
         btnBackNotifications.setOnClickListener(v -> finish());
 
@@ -174,9 +195,7 @@ public class ActivityNotificationCenter extends AppCompatActivity {
             }
 
             holder.itemView.setOnClickListener(v -> {
-                if (!n.isRead()) {
-                    notificationDao.markAsRead(n.getId());
-                    n.setRead(true);
+                DialogNotificationFullView.show(ActivityNotificationCenter.this, n, () -> {
                     notifyItemChanged(holder.getAdapterPosition());
                     int unread = notificationDao.getUnreadCount(sessionManager.getMessId());
                     if (unread > 0) {
@@ -187,7 +206,7 @@ public class ActivityNotificationCenter extends AppCompatActivity {
                         tvUnreadCountBadge.setVisibility(View.GONE);
                         tvUnreadSummary.setText("All caught up • Stored offline in SQLite");
                     }
-                }
+                });
             });
         }
 

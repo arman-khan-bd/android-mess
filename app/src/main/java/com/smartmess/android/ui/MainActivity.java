@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private View drawerItemBugReport;
     private View tvDrawerManagerHeader;
     private View drawerItemSettings;
+    private View drawerItemNotifManager;
     private View drawerItemHandover;
     private View drawerItemSignOut;
 
@@ -137,7 +138,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleIncomingIntent(Intent intent, Bundle savedInstanceState) {
-        if (intent != null && "meals".equals(intent.getStringExtra(EXTRA_OPEN_TAB))) {
+        if (intent != null && "notifications".equals(intent.getStringExtra(com.smartmess.android.notification.PushNotificationManager.EXTRA_NAV_TARGET))) {
+            bottomNavigation.setSelectedItemId(R.id.nav_notifications);
+            currentSelectedNavId = R.id.nav_notifications;
+            loadFragment(new com.smartmess.android.ui.notifications.FragmentNotifications());
+            long notifId = intent.getLongExtra(com.smartmess.android.notification.PushNotificationManager.EXTRA_NOTIFICATION_ID, 0);
+            if (notifId > 0) {
+                showFullNotificationById(notifId);
+            }
+        } else if (intent != null && "meals".equals(intent.getStringExtra(EXTRA_OPEN_TAB))) {
             bottomNavigation.setSelectedItemId(R.id.nav_meals);
             currentSelectedNavId = R.id.nav_meals;
             loadFragment(new FragmentMealSheet());
@@ -146,6 +155,17 @@ public class MainActivity extends AppCompatActivity {
             currentSelectedNavId = R.id.nav_dashboard;
             loadFragment(new FragmentDashboardOverview());
         }
+    }
+
+    private void showFullNotificationById(long notifId) {
+        try {
+            com.smartmess.android.data.local.dao.AppNotificationDao dao =
+                    new com.smartmess.android.data.local.dao.AppNotificationDao(com.smartmess.android.data.local.DatabaseHelper.getInstance(this));
+            com.smartmess.android.model.AppNotification notif = dao.getById(notifId);
+            if (notif != null) {
+                com.smartmess.android.ui.notifications.DialogNotificationFullView.show(this, notif, this::updateNotificationBadge);
+            }
+        } catch (Throwable ignored) {}
     }
 
     @Override
@@ -175,6 +195,10 @@ public class MainActivity extends AppCompatActivity {
         loadHeaderData();
         populateDrawerProfile();
         updateNotificationBadge();
+        try {
+            com.smartmess.android.utils.BatteryOptimizationHelper.promptOnceIfNeeded(this);
+            com.smartmess.android.notification.PushNotificationSyncWorker.runImmediateSync(this);
+        } catch (Throwable ignored) {}
     }
 
     private void initViews() {
@@ -206,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
         drawerItemBugReport = findViewById(R.id.drawerItemBugReport);
         tvDrawerManagerHeader = findViewById(R.id.tvDrawerManagerHeader);
         drawerItemSettings = findViewById(R.id.drawerItemSettings);
+        drawerItemNotifManager = findViewById(R.id.drawerItemNotifManager);
         drawerItemHandover = findViewById(R.id.drawerItemHandover);
         drawerItemSignOut = findViewById(R.id.drawerItemSignOut);
 
@@ -321,6 +346,7 @@ public class MainActivity extends AppCompatActivity {
             int managerVisibility = isManager ? View.VISIBLE : View.GONE;
             if (tvDrawerManagerHeader != null) tvDrawerManagerHeader.setVisibility(managerVisibility);
             if (drawerItemSettings != null) drawerItemSettings.setVisibility(managerVisibility);
+            if (drawerItemNotifManager != null) drawerItemNotifManager.setVisibility(managerVisibility);
             if (drawerItemHandover != null) drawerItemHandover.setVisibility(managerVisibility);
 
         } catch (Throwable t) {
@@ -395,6 +421,13 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        if (drawerItemNotifManager != null) {
+            drawerItemNotifManager.setOnClickListener(v -> {
+                closeDrawer();
+                startActivity(new Intent(MainActivity.this, com.smartmess.android.ui.notifications.ActivityNotificationManager.class));
+            });
+        }
+
         if (drawerItemHandover != null) {
             drawerItemHandover.setOnClickListener(v -> {
                 closeDrawer();
@@ -421,6 +454,16 @@ public class MainActivity extends AppCompatActivity {
                     tvNotificationBadge.setText(unread > 99 ? "99+" : String.valueOf(unread));
                 } else {
                     tvNotificationBadge.setVisibility(View.GONE);
+                }
+            }
+
+            if (bottomNavigation != null) {
+                com.google.android.material.badge.BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.nav_notifications);
+                if (unread > 0) {
+                    badge.setVisible(true);
+                    badge.setNumber(unread);
+                } else {
+                    badge.setVisible(false);
                 }
             }
         } catch (Throwable ignored) {}
@@ -623,6 +666,10 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_meals) {
                 currentSelectedNavId = R.id.nav_meals;
                 loadFragment(new FragmentMealSheet());
+                return true;
+            } else if (itemId == R.id.nav_notifications) {
+                currentSelectedNavId = R.id.nav_notifications;
+                loadFragment(new com.smartmess.android.ui.notifications.FragmentNotifications());
                 return true;
             } else if (itemId == R.id.nav_menu) {
                 if (drawerLayout != null) {

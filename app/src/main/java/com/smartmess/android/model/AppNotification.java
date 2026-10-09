@@ -8,19 +8,27 @@ public class AppNotification {
     private long userId; // 0 for broadcast / all members
     private String title;
     private String message;
-    private String type; // 'expense', 'role', 'budget_alert', 'vacation', 'deposit', 'system'
+    private String type; // 'expense', 'role', 'budget_alert', 'vacation', 'deposit', 'system', 'notice', 'reminder'
+    private String channel; // 'push', 'sms', 'both'
     private boolean isRead;
     private String createdAt;
 
-    public AppNotification() {}
+    public AppNotification() {
+        this.channel = "push";
+    }
 
     public AppNotification(String uuid, long messId, long userId, String title, String message, String type, String createdAt) {
+        this(uuid, messId, userId, title, message, type, "push", createdAt);
+    }
+
+    public AppNotification(String uuid, long messId, long userId, String title, String message, String type, String channel, String createdAt) {
         this.uuid = uuid;
         this.messId = messId;
         this.userId = userId;
         this.title = title;
         this.message = message;
         this.type = type;
+        this.channel = (channel != null && !channel.isEmpty()) ? channel : "push";
         this.isRead = false;
         this.createdAt = createdAt;
     }
@@ -45,6 +53,9 @@ public class AppNotification {
 
     public String getType() { return type != null ? type : "system"; }
     public void setType(String type) { this.type = type; }
+
+    public String getChannel() { return channel != null ? channel : "push"; }
+    public void setChannel(String channel) { this.channel = channel; }
 
     public boolean isRead() { return isRead; }
     public void setRead(boolean read) { isRead = read; }

@@ -70,6 +70,37 @@ public class AppNotificationDao {
         return count;
     }
 
+    public int markAsRead(long id) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(NotificationEntry.COL_IS_READ, 1);
+        return db.update(NotificationEntry.TABLE_NAME, values, NotificationEntry.COL_ID + " = ?", new String[]{String.valueOf(id)});
+    }
+
+    public boolean existsByUuid(String uuid) {
+        if (uuid == null || uuid.isEmpty()) return false;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(NotificationEntry.TABLE_NAME, new String[]{NotificationEntry.COL_ID},
+                NotificationEntry.COL_UUID + " = ?", new String[]{uuid}, null, null, null, "1");
+        boolean exists = (cursor != null && cursor.getCount() > 0);
+        if (cursor != null) cursor.close();
+        return exists;
+    }
+
+    public AppNotification getById(long id) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(NotificationEntry.TABLE_NAME, null,
+                NotificationEntry.COL_ID + " = ?", new String[]{String.valueOf(id)}, null, null, null, "1");
+        AppNotification n = null;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                n = cursorToNotification(cursor);
+            }
+            cursor.close();
+        }
+        return n;
+    }
+
     public int markAllAsRead(long messId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();

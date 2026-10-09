@@ -16,6 +16,9 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".SmartMessApp"
@@ -176,6 +179,12 @@
             android:exported="false" />
         <activity
             android:name=".ui.support.ActivityTicketChat"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Notification Manager (Multi-Channel Online Push & SMS Dispatcher) -->
+        <activity
+            android:name=".ui.notifications.ActivityNotificationManager"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 

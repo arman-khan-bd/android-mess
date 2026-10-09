@@ -65,6 +65,13 @@ public class SmartMessApp extends Application {
             SyncWorker.schedulePeriodicSync(this);
         } catch (Throwable ignored) {}
 
+        // Initialize Push Notification Channels & Background Sync Worker
+        try {
+            com.smartmess.android.notification.PushNotificationManager.createNotificationChannels(this);
+            com.smartmess.android.notification.PushNotificationSyncWorker.schedulePeriodicSync(this);
+            com.smartmess.android.notification.PushNotificationSyncWorker.runImmediateSync(this);
+        } catch (Throwable ignored) {}
+
         // Prepopulate demo mess & default plans if fresh database
         try {
             seedInitialDataIfEmpty();

@@ -31,6 +31,10 @@ public class BootReceiver extends BroadcastReceiver {
 
                 NotificationScheduler.scheduleDailyReminder(context, cutoff);
             }
+
+            // Reschedule push notification background sync
+            PushNotificationSyncWorker.schedulePeriodicSync(context);
+            PushNotificationSyncWorker.runImmediateSync(context);
         }
     }
 }
