@@ -13,6 +13,60 @@
         android:orientation="vertical"
         android:padding="10dp">
 
+        <!-- Real-time Meal Rate Exceeding Budget Alert Banner -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardBudgetWarning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/due_red_bg"
+            app:strokeColor="#FCA5A5"
+            app:strokeWidth="1dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:src="@drawable/ic_lucide_alert_circle"
+                    app:tint="@color/due_red" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvBudgetWarningTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Meal Budget Alert"
+                        android:textColor="#991B1B"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvBudgetWarningText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Alert: Current meal rate (৳82.50) is exceeding your budget (৳70.00)"
+                        android:textColor="#B91C1C"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Stat Cards Grid (Live Meal Rate & Mess Cash in Hand) -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,6 +117,16 @@
                         android:text="0.0 Meals Logged"
                         android:textColor="@color/text_muted"
                         android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tvTargetBudgetBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Budget: ৳70.00"
+                        android:textColor="@color/text_muted"
+                        android:textSize="10sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

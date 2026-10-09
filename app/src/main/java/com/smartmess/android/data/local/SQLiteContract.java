@@ -16,6 +16,7 @@ public final class SQLiteContract {
         public static final String COL_CYCLE_START_DAY = "cycle_start_day";
         public static final String COL_MEAL_CUTOFF_TIME = "meal_cutoff_time";
         public static final String COL_PER_SMS_COST = "per_sms_cost";
+        public static final String COL_TARGET_MEAL_BUDGET = "target_meal_budget";
         public static final String COL_CURRENT_PLAN_ID = "current_plan_id";
         public static final String COL_PLAN_EXPIRES_AT = "plan_expires_at";
         public static final String COL_CREATED_AT = "created_at";

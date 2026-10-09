@@ -25,6 +25,7 @@ public class MessDao {
         values.put(MessEntry.COL_CYCLE_START_DAY, mess.getCycleStartDay());
         values.put(MessEntry.COL_MEAL_CUTOFF_TIME, mess.getMealCutoffTime());
         values.put(MessEntry.COL_PER_SMS_COST, mess.getPerSmsCost());
+        values.put(MessEntry.COL_TARGET_MEAL_BUDGET, mess.getTargetMealBudget());
         values.put(MessEntry.COL_CURRENT_PLAN_ID, mess.getCurrentPlanId());
         values.put(MessEntry.COL_PLAN_EXPIRES_AT, mess.getPlanExpiresAt());
         values.put(MessEntry.COL_CREATED_AT, mess.getCreatedAt());
@@ -84,6 +85,13 @@ public class MessDao {
         return db.update(MessEntry.TABLE_NAME, values, MessEntry.COL_ID + " = ?", new String[]{String.valueOf(messId)});
     }
 
+    public int updateTargetBudget(long messId, double budget) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(MessEntry.COL_TARGET_MEAL_BUDGET, budget);
+        return db.update(MessEntry.TABLE_NAME, values, MessEntry.COL_ID + " = ?", new String[]{String.valueOf(messId)});
+    }
+
     private Mess cursorToMess(Cursor cursor) {
         Mess mess = new Mess();
         mess.setId(cursor.getLong(cursor.getColumnIndexOrThrow(MessEntry.COL_ID)));
@@ -94,6 +102,12 @@ public class MessDao {
         mess.setCycleStartDay(cursor.getInt(cursor.getColumnIndexOrThrow(MessEntry.COL_CYCLE_START_DAY)));
         mess.setMealCutoffTime(cursor.getString(cursor.getColumnIndexOrThrow(MessEntry.COL_MEAL_CUTOFF_TIME)));
         mess.setPerSmsCost(cursor.getDouble(cursor.getColumnIndexOrThrow(MessEntry.COL_PER_SMS_COST)));
+        int budgetCol = cursor.getColumnIndex(MessEntry.COL_TARGET_MEAL_BUDGET);
+        if (budgetCol != -1 && !cursor.isNull(budgetCol)) {
+            mess.setTargetMealBudget(cursor.getDouble(budgetCol));
+        } else {
+            mess.setTargetMealBudget(70.0);
+        }
         int planCol = cursor.getColumnIndexOrThrow(MessEntry.COL_CURRENT_PLAN_ID);
         if (!cursor.isNull(planCol)) {
             mess.setCurrentPlanId(cursor.getLong(planCol));

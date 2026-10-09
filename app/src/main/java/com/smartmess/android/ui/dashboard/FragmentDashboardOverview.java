@@ -20,10 +20,12 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.smartmess.android.R;
 import com.smartmess.android.data.local.DatabaseHelper;
 import com.smartmess.android.data.local.dao.ExpenseDao;
 import com.smartmess.android.data.local.dao.MealDao;
+import com.smartmess.android.data.local.dao.MessDao;
 import com.smartmess.android.engine.AccountingEngine;
 import com.smartmess.android.engine.CalculationModels.CycleSummary;
 import com.smartmess.android.model.Expense;
@@ -67,9 +69,15 @@ public class FragmentDashboardOverview extends Fragment {
     private LinearLayout layoutAvatarStack;
     private TextView tvDinerCountSummary;
 
+    // Point 16: Daily Meal Budget Alert Engine Views
+    private MaterialCardView cardBudgetWarning;
+    private TextView tvBudgetWarningText;
+    private TextView tvTargetBudgetBadge;
+
     private AccountingEngine accountingEngine;
     private ExpenseDao expenseDao;
     private MealDao mealDao;
+    private MessDao messDao;
     private SessionManager sessionManager;
 
     @Nullable
@@ -81,6 +89,7 @@ public class FragmentDashboardOverview extends Fragment {
         accountingEngine = new AccountingEngine(requireContext());
         expenseDao = new ExpenseDao(dbHelper);
         mealDao = new MealDao(dbHelper);
+        messDao = new MessDao(dbHelper);
         sessionManager = new SessionManager(requireContext());
 
         tvLiveMealRate = v.findViewById(R.id.tvLiveMealRate);
@@ -93,6 +102,16 @@ public class FragmentDashboardOverview extends Fragment {
         btnQuickAddExpense = v.findViewById(R.id.btnQuickAddExpense);
         btnQuickSmsDispatch = v.findViewById(R.id.btnQuickSmsDispatch);
         btnQuickAddDeposit = v.findViewById(R.id.btnQuickAddDeposit);
+
+        // Point 16: Meal Budget Warning Views
+        cardBudgetWarning = v.findViewById(R.id.cardBudgetWarning);
+        tvBudgetWarningText = v.findViewById(R.id.tvBudgetWarningText);
+        tvTargetBudgetBadge = v.findViewById(R.id.tvTargetBudgetBadge);
+
+        if (cardBudgetWarning != null) {
+            cardBudgetWarning.setOnClickListener(view ->
+                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.settings.SettingsActivity.class)));
+        }
 
         // Point 5: Recent Bazars Views
         btnViewAllBazars = v.findViewById(R.id.btnViewAllBazars);
@@ -164,6 +183,39 @@ public class FragmentDashboardOverview extends Fragment {
             tvRawMealCost.setText(CurrencyUtils.format(summary.getRawMealCost()));
             tvSharedFoodCost.setText(CurrencyUtils.format(summary.getSharedFoodCost()));
             tvUtilityCost.setText(CurrencyUtils.format(summary.getUtilityCost()));
+
+            // Point 16: Real-time Meal Budget Engine Check
+            com.smartmess.android.model.Mess mess = messDao.getById(messId);
+            double targetBudget = (mess != null) ? mess.getTargetMealBudget() : 70.00;
+            double liveMealRate = summary.getLiveMealRate();
+
+            if (tvTargetBudgetBadge != null) {
+                tvTargetBudgetBadge.setText("Budget: " + CurrencyUtils.format(targetBudget) + "/meal");
+            }
+
+            if (targetBudget > 0 && liveMealRate > targetBudget) {
+                if (cardBudgetWarning != null) {
+                    cardBudgetWarning.setVisibility(View.VISIBLE);
+                    if (tvBudgetWarningText != null) {
+                        tvBudgetWarningText.setText(String.format(Locale.US,
+                                "Alert: Current meal rate (%s) is exceeding your budget (%s)",
+                                CurrencyUtils.format(liveMealRate), CurrencyUtils.format(targetBudget)));
+                    }
+                }
+                tvLiveMealRate.setTextColor(ContextCompat.getColor(requireContext(), R.color.due_red));
+                if (tvTargetBudgetBadge != null) {
+                    tvTargetBudgetBadge.setTextColor(ContextCompat.getColor(requireContext(), R.color.due_red));
+                    tvTargetBudgetBadge.setText("Exceeding Budget (" + CurrencyUtils.format(targetBudget) + ")");
+                }
+            } else {
+                if (cardBudgetWarning != null) {
+                    cardBudgetWarning.setVisibility(View.GONE);
+                }
+                tvLiveMealRate.setTextColor(ContextCompat.getColor(requireContext(), R.color.primary_dark));
+                if (tvTargetBudgetBadge != null) {
+                    tvTargetBudgetBadge.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted));
+                }
+            }
         } catch (Throwable t) {
             android.util.Log.e("FragmentDashboard", "Error loading stats: " + t.getMessage(), t);
         }

@@ -44,6 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + MessEntry.COL_CYCLE_START_DAY + " INTEGER DEFAULT 1, "
                 + MessEntry.COL_MEAL_CUTOFF_TIME + " TEXT DEFAULT '22:00:00', "
                 + MessEntry.COL_PER_SMS_COST + " REAL DEFAULT 0.50, "
+                + MessEntry.COL_TARGET_MEAL_BUDGET + " REAL DEFAULT 70.0, "
                 + MessEntry.COL_CURRENT_PLAN_ID + " INTEGER, "
                 + MessEntry.COL_PLAN_EXPIRES_AT + " TEXT, "
                 + MessEntry.COL_CREATED_AT + " TEXT, "
@@ -130,6 +131,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE INDEX idx_expenses_mess_date ON " + ExpenseEntry.TABLE_NAME + " (" + ExpenseEntry.COL_MESS_ID + ", " + ExpenseEntry.COL_EXPENSE_DATE + ");");
         db.execSQL("CREATE INDEX idx_deposits_mess_date ON " + DepositEntry.TABLE_NAME + " (" + DepositEntry.COL_MESS_ID + ", " + DepositEntry.COL_DEPOSIT_DATE + ");");
         db.execSQL("CREATE INDEX idx_users_mess ON " + UserEntry.TABLE_NAME + " (" + UserEntry.COL_MESS_ID + ");");
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        try {
+            db.execSQL("ALTER TABLE " + MessEntry.TABLE_NAME + " ADD COLUMN " + MessEntry.COL_TARGET_MEAL_BUDGET + " REAL DEFAULT 70.0;");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("ALTER TABLE " + UserEntry.TABLE_NAME + " ADD COLUMN " + UserEntry.COL_AVATAR_URL + " TEXT;");
+        } catch (Exception ignored) {}
     }
 
     @Override

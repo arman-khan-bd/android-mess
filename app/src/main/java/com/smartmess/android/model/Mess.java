@@ -9,6 +9,7 @@ public class Mess {
     private int cycleStartDay;
     private String mealCutoffTime; // e.g. "22:00:00"
     private double perSmsCost;
+    private double targetMealBudget = 70.0;
     private Long currentPlanId;
     private String planExpiresAt;
     private String createdAt;
@@ -49,6 +50,9 @@ public class Mess {
 
     public double getPerSmsCost() { return perSmsCost; }
     public void setPerSmsCost(double perSmsCost) { this.perSmsCost = perSmsCost; }
+
+    public double getTargetMealBudget() { return targetMealBudget > 0 ? targetMealBudget : 70.0; }
+    public void setTargetMealBudget(double targetMealBudget) { this.targetMealBudget = targetMealBudget; }
 
     public Long getCurrentPlanId() { return currentPlanId; }
     public void setCurrentPlanId(Long currentPlanId) { this.currentPlanId = currentPlanId; }

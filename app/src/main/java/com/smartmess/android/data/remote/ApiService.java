@@ -58,9 +58,16 @@ public interface ApiService {
     Call<TicketDetailResponse> sendTicketMessage(@Path("id") long ticketId, @Body SendTicketMessageRequest request);
 
     // SaaS Plan Status & Instant Checkout
+    @GET("plans")
+    Call<com.smartmess.android.data.remote.dto.PlansResponse> getPlans();
+
     @GET("plans/status")
     Call<com.smartmess.android.data.remote.dto.PlanStatusResponse> getPlanStatus();
 
     @POST("plans/checkout")
     Call<com.smartmess.android.data.remote.dto.CheckoutResponse> checkoutPlan(@Body com.smartmess.android.data.remote.dto.CheckoutRequest request);
+
+    // Mess Automation Rules & Target Meal Budget
+    @POST("mess/settings")
+    Call<com.smartmess.android.data.remote.dto.MessSettingsResponse> updateMessSettings(@Body java.util.Map<String, Object> body);
 }
