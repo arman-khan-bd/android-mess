@@ -34,7 +34,7 @@
                         android:id="@+id/tvMessName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Smart Mess"
+                        android:text="স্মার্ট মেস"
                         android:textColor="@color/text_primary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -43,7 +43,7 @@
                         android:id="@+id/tvUserRole"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Manager • Tanvir Ahmed"
+                        android:text="ম্যানেজার • তানভীর আহমেদ"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -52,7 +52,7 @@
                     android:id="@+id/chipSyncStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Offline Ready"
+                    android:text="অফলাইন প্রস্তুত"
                     android:textColor="@color/primary"
                     app:chipBackgroundColor="@color/primary_light"
                     app:chipIcon="@drawable/ic_sync"
@@ -114,7 +114,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Mess Fund / Cash"
+                                android:text="মেস ফান্ড / নগদ টাকা"
                                 android:textColor="#D1FAE5"
                                 android:textSize="13sp" />
 
@@ -159,7 +159,7 @@
                                 android:id="@+id/tvTotalMessMeals"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0.0 Meals"
+                                android:text="০.০ মিল"
                                 android:textColor="@color/text_on_primary"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -175,7 +175,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Active Cycle"
+                                android:text="চলতি মাস"
                                 android:textColor="#D1FAE5"
                                 android:textSize="12sp" />
 
@@ -183,7 +183,7 @@
                                 android:id="@+id/tvCycleDates"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Oct 01 - Oct 31"
+                                android:text="০১ - ৩১ অক্টোবর"
                                 android:textColor="@color/text_on_primary"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -199,7 +199,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="8dp"
-                android:text="Dual Expense Pools"
+                android:text="খরচের হিসাব খাতসমূহ"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -226,7 +226,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Meal Pool"
+                            android:text="কাঁচা বাজার খাত"
                             android:textColor="@color/primary"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -244,7 +244,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Fish, meat, veg"
+                            android:text="মাছ, মাংস, শাকসবজি"
                             android:textColor="@color/text_muted"
                             android:textSize="10sp" />
                     </LinearLayout>
@@ -268,7 +268,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Shared Food"
+                            android:text="শেয়ার্ড খাদ্য ও মসলা"
                             android:textColor="@color/accent"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -286,7 +286,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Oil, salt, gas"
+                            android:text="তেল, লবণ, গ্যাস, চাল"
                             android:textColor="@color/text_muted"
                             android:textSize="10sp" />
                     </LinearLayout>
@@ -309,7 +309,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Utility &amp; Asset"
+                            android:text="ইউটিলিটি ও অন্যান্য"
                             android:textColor="#8B5CF6"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -327,7 +327,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rent, Wi-Fi, maid"
+                            android:text="বাড়িভাড়া, ওয়াইফাই, খালা"
                             android:textColor="@color/text_muted"
                             android:textSize="10sp" />
                     </LinearLayout>
@@ -341,7 +341,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="8dp"
-                android:text="My Financial Summary"
+                android:text="আমার আর্থিক হিসাব"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -392,7 +392,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/badge_credit"
-                            android:text="Refundable"
+                            android:text="ফেরতযোগ্য উদ্বৃত্ত"
                             android:textColor="@color/credit_green"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -427,7 +427,7 @@
                                 android:id="@+id/tvMyMeals"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0.0 Meals"
+                                android:text="০.০ মিল"
                                 android:textColor="@color/text_primary"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -466,7 +466,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Total Cost"
+                                android:text="মোট খরচ"
                                 android:textColor="@color/text_muted"
                                 android:textSize="11sp" />
 
@@ -490,7 +490,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
-                android:text="Quick Actions &amp; Modules"
+                android:text="কুইক অ্যাকশন ও মডিউল"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -528,14 +528,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="Meals"
+                            android:text="মিল সমূহ"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Log / View Counts"
+                            android:text="মিল এন্ট্রি ও গণনা"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -568,7 +568,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="Tomorrow Meal"
+                            android:text="আগামীকালের মিল"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold" />
 
@@ -576,7 +576,7 @@
                             android:id="@+id/tvCutoffNotice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cut-off at 10:00 PM"
+                            android:text="রাত ১০:০০ টায় বন্ধ"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -618,14 +618,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="Expenses / Bazar"
+                            android:text="বাজার ও খরচ"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Dual Pools &amp; Vouchers"
+                            android:text="বাজারের তালিকা ও ভাউচার"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -658,14 +658,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="Deposits"
+                            android:text="টাকা জমা"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Member Funds"
+                            android:text="সদস্যদের জমার হিসাব"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -707,7 +707,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="Members"
+                            android:text="সদস্যবৃন্দ"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold" />
 
@@ -715,7 +715,7 @@
                             android:id="@+id/tvActiveMemberCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Active Members"
+                            android:text="সক্রিয় সদস্য তালিকা"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -748,14 +748,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="SIM SMS Center"
+                            android:text="সিম এসএমএস সেন্টার"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Due Reminder / Notice"
+                            android:text="বকেয়া তাগাদা ও নোটিশ"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -798,14 +798,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="Cycle Summary"
+                            android:text="মাসের খতিয়ান"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Full Balance Sheet"
+                            android:text="পূর্ণাঙ্গ ব্যালেন্স শিট"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -838,14 +838,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="Settings &amp; Plans"
+                            android:text="সেটিংস ও প্ল্যান"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cutoff &amp; Features"
+                            android:text="কাট-অফ সময় ও নিয়ম"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>

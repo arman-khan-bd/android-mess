@@ -53,7 +53,7 @@
                         android:id="@+id/tvMemberName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Member Name"
+                        android:text="সদস্যের নাম"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -62,7 +62,7 @@
                         android:id="@+id/tvMemberSubtext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Active Member • 01700000000"
+                        android:text="সক্রিয় সদস্য • ০১৭১২৩৪৫৬৭৮"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -81,7 +81,7 @@
                     android:id="@+id/tvDailyTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Total: 0.0"
+                    android:text="মোট: 0.0"
                     android:textColor="@color/primary_dark"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -96,7 +96,7 @@
                     android:paddingTop="2dp"
                     android:paddingEnd="6dp"
                     android:paddingBottom="2dp"
-                    android:text="Locked"
+                    android:text="বন্ধ"
                     android:textColor="@color/due_red"
                     android:textSize="10sp"
                     android:textStyle="bold"
@@ -131,7 +131,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Breakfast"
+                        android:text="সকাল"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -190,7 +190,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lunch"
+                        android:text="দুপুর"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -258,7 +258,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Dinner"
+                        android:text="রাত"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -317,7 +317,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Guest"
+                        android:text="অতিথি"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -380,7 +380,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="6dp"
-                android:text="Preset:"
+                android:text="প্রিসেট:"
                 android:textColor="@color/text_muted"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -430,7 +430,7 @@
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:padding="0dp"
-                android:text="Clear (0.0)"
+                android:text="মুছুন (০.০)"
                 android:textAllCaps="false"
                 android:textColor="@color/due_red"
                 android:textSize="11sp"

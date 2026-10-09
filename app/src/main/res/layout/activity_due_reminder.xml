@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send Due Reminder SMS"
+            android:text="বকেয়া পরিশোধের এসএমএস পাঠান"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="16dp"
-            android:text="Dispatches background SMS via SIM. Automatically debits member ledger and credits sender deposit."
+            android:text="সিম কার্ড থেকে এসএমএস পাঠানো হবে এবং স্বয়ংক্রিয়ভাবে সদস্যের খতিয়ানে খরচ যোগ হবে।"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
@@ -43,7 +43,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Recipient Member"
+                    android:text="প্রাপক সদস্য"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -67,7 +67,7 @@
                         android:id="@+id/tvCurrentDueAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Calculated Due: ৳ 0.00"
+                        android:text="মোট বকেয়া: ৳ ০.০০"
                         android:textColor="@color/due_red"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -77,7 +77,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Configured SMS Cost: ৳ 0.50 (will be charged to member)"
+                        android:text="প্রতি এসএমএস খরচ: ৳ ০.৫০ (সদস্যের হিসাব থেকে কর্তন হবে)"
                         android:textColor="@color/text_muted"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -85,7 +85,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SMS Message Content"
+                    android:text="এসএমএস বার্তা"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -97,7 +97,7 @@
                     android:layout_marginBottom="24dp"
                     android:background="@drawable/rounded_edittext"
                     android:gravity="top|start"
-                    android:hint="Type message or use auto-generated template..."
+                    android:hint="বার্তা লিখুন অথবা স্বয়ংক্রিয় টেমপ্লেট ব্যবহার করুন..."
                     android:inputType="textMultiLine"
                     android:padding="12dp" />
 
@@ -105,7 +105,7 @@
                     android:id="@+id/btnSendSmsNow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Dispatch SIM SMS &amp; Auto-Cost Ledger"
+                    android:text="সিম থেকে এসএমএস পাঠান"
                     style="@style/SmartButton" />
 
             </LinearLayout>

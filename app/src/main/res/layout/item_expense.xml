@@ -28,7 +28,7 @@
                     android:id="@+id/tvExpenseTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Expense Title"
+                    android:text="খরচের বিবরণ"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -37,7 +37,7 @@
                     android:id="@+id/tvBuyerAndDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bought by Tanvir • 2026-10-09"
+                    android:text="ক্রেতার নাম ও তারিখ"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/badge_credit"
-                android:text="Variable Pool"
+                android:text="বাজার খরচ"
                 android:textColor="@color/credit_green"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="• Meal Dependent"
+                android:text="• মিল অনুপাত"
                 android:textColor="@color/text_muted"
                 android:textSize="12sp" />
 
@@ -87,7 +87,7 @@
                 android:id="@+id/tvVoucherIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📎 Voucher Attached"
+                android:text="📎 ভাউচার রসিদ"
                 android:textColor="@color/accent"
                 android:textSize="11sp"
                 android:visibility="gone" />

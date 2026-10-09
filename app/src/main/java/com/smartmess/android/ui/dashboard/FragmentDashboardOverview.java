@@ -179,9 +179,9 @@ public class FragmentDashboardOverview extends Fragment {
             if (summary == null) return;
 
             tvLiveMealRate.setText(CurrencyUtils.format(summary.getLiveMealRate()));
-            tvTotalMessMeals.setText(String.format(Locale.US, "%.1f Meals Logged", summary.getTotalMeals()));
+            tvTotalMessMeals.setText(String.format(Locale.US, "%.1f টি মিল গণনা", summary.getTotalMeals()));
             tvCashInHand.setText(CurrencyUtils.format(summary.getCashInHand()));
-            tvActiveMembers.setText(summary.getActiveMemberCount() + " Active Members");
+            tvActiveMembers.setText(summary.getActiveMemberCount() + " জন সক্রিয় সদস্য");
 
             tvRawMealCost.setText(CurrencyUtils.format(summary.getRawMealCost()));
             tvSharedFoodCost.setText(CurrencyUtils.format(summary.getSharedFoodCost()));
@@ -193,7 +193,7 @@ public class FragmentDashboardOverview extends Fragment {
             double liveMealRate = summary.getLiveMealRate();
 
             if (tvTargetBudgetBadge != null) {
-                tvTargetBudgetBadge.setText("Budget: " + CurrencyUtils.format(targetBudget) + "/meal");
+                tvTargetBudgetBadge.setText("বাজেট: " + CurrencyUtils.format(targetBudget) + "/মিল");
             }
 
             if (targetBudget > 0 && liveMealRate > targetBudget) {
@@ -201,14 +201,14 @@ public class FragmentDashboardOverview extends Fragment {
                     cardBudgetWarning.setVisibility(View.VISIBLE);
                     if (tvBudgetWarningText != null) {
                         tvBudgetWarningText.setText(String.format(Locale.US,
-                                "Alert: Current meal rate (%s) is exceeding your budget (%s)",
+                                "সতর্কতা: বর্তমান মিল রেট (%s) আপনার বাজেট (%s) অতিক্রম করেছে",
                                 CurrencyUtils.format(liveMealRate), CurrencyUtils.format(targetBudget)));
                     }
                 }
                 tvLiveMealRate.setTextColor(ContextCompat.getColor(requireContext(), R.color.due_red));
                 if (tvTargetBudgetBadge != null) {
                     tvTargetBudgetBadge.setTextColor(ContextCompat.getColor(requireContext(), R.color.due_red));
-                    tvTargetBudgetBadge.setText("Exceeding Budget (" + CurrencyUtils.format(targetBudget) + ")");
+                    tvTargetBudgetBadge.setText("বাজেটের বেশি (" + CurrencyUtils.format(targetBudget) + ")");
                 }
 
                 // Point 16 & Notification Center: Log budget alert notification once per day
@@ -220,8 +220,8 @@ public class FragmentDashboardOverview extends Fragment {
                     com.smartmess.android.utils.NotificationCenterHelper.postNotification(
                             requireContext().getApplicationContext(),
                             messId,
-                            "Budget Exceeded",
-                            String.format(Locale.US, "Current meal rate (%s) has exceeded your target budget (%s)",
+                            "বাজেট অতিক্রম",
+                            String.format(Locale.US, "বর্তমান মিল রেট (%s) আপনার নির্ধারিত বাজেট (%s) ছাড়িয়ে গেছে",
                                     CurrencyUtils.format(liveMealRate), CurrencyUtils.format(targetBudget)),
                             com.smartmess.android.utils.NotificationCenterHelper.TYPE_BUDGET
                     );
@@ -270,26 +270,26 @@ public class FragmentDashboardOverview extends Fragment {
                 TextView tvAmount = itemView.findViewById(R.id.tvBazarAmount);
 
                 String title = expense.getTitle();
-                tvTitle.setText(title != null && !title.trim().isEmpty() ? title : "Market Purchase");
+                tvTitle.setText(title != null && !title.trim().isEmpty() ? title : "বাজারের সদাই");
 
-                String buyer = expense.getBuyerName() != null ? expense.getBuyerName() : "Buyer #" + expense.getBuyerUserId();
+                String buyer = expense.getBuyerName() != null ? expense.getBuyerName() : "সদস্য #" + expense.getBuyerUserId();
                 String dateStr = DateTimeUtils.formatDisplayDate(expense.getExpenseDate());
-                tvBuyerDate.setText("By " + buyer + " • " + dateStr);
+                tvBuyerDate.setText(buyer + " কর্তৃক • " + dateStr);
 
                 tvAmount.setText(CurrencyUtils.format(expense.getAmount()));
 
                 // Category pill styling
                 if (expense.isRawMeal()) {
-                    tvCategory.setText("Raw Meal");
+                    tvCategory.setText("বাজার খরচ");
                     tvCategory.setTextColor(ContextCompat.getColor(requireContext(), R.color.credit_green));
                 } else if (expense.isSharedFood()) {
-                    tvCategory.setText("Shared Food");
+                    tvCategory.setText("মশলা ও তেল");
                     tvCategory.setTextColor(ContextCompat.getColor(requireContext(), R.color.accent));
                 } else if (expense.isUtilityAsset()) {
-                    tvCategory.setText("Asset/Utility");
+                    tvCategory.setText("ভাড়া/অন্যান্য");
                     tvCategory.setTextColor(ContextCompat.getColor(requireContext(), R.color.info_blue));
                 } else {
-                    tvCategory.setText("General");
+                    tvCategory.setText("সাধারণ");
                     tvCategory.setTextColor(ContextCompat.getColor(requireContext(), R.color.warning_amber));
                 }
 
@@ -373,12 +373,12 @@ public class FragmentDashboardOverview extends Fragment {
                 layoutAvatarStack.removeAllViews();
                 int dinerCount = activeDiners.size();
                 if (tvDinerCountSummary != null) {
-                    tvDinerCountSummary.setText(dinerCount + (dinerCount == 1 ? " diner" : " diners"));
+                    tvDinerCountSummary.setText(dinerCount + " জন খাচ্ছেন");
                 }
 
                 if (dinerCount == 0) {
                     TextView tvEmpty = new TextView(requireContext());
-                    tvEmpty.setText("No meals logged yet");
+                    tvEmpty.setText("কোনো মিল গণনা নেই");
                     tvEmpty.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_muted));
                     tvEmpty.setTextSize(11);
                     layoutAvatarStack.addView(tvEmpty);

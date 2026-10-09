@@ -17,7 +17,7 @@
         android:padding="8dp"
         android:src="@drawable/ic_lucide_cart"
         app:tint="@color/primary"
-        android:contentDescription="Type" />
+        android:contentDescription="ধরন" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Bazar: Chicken, Rice"
+            android:text="বাজার: মুরগি, চাল"
             android:textColor="@color/text_primary"
             android:textSize="13sp"
             android:textStyle="bold" />

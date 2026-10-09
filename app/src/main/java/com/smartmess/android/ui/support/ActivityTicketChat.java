@@ -120,7 +120,7 @@ public class ActivityTicketChat extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TicketDetailResponse> call, Throwable t) {
-                Toast.makeText(ActivityTicketChat.this, "Offline: Could not sync latest replies", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityTicketChat.this, "অফলাইন: নতুন উত্তর লোড করা যায়নি", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -141,14 +141,14 @@ public class ActivityTicketChat extends AppCompatActivity {
                     etMessageInput.setText("");
                     loadMessages();
                 } else {
-                    Toast.makeText(ActivityTicketChat.this, "Failed to send message", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityTicketChat.this, "বার্তা পাঠাতে সমস্যা হয়েছে", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<TicketDetailResponse> call, Throwable t) {
                 btnSendMessage.setEnabled(true);
-                Toast.makeText(ActivityTicketChat.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityTicketChat.this, "নেটওয়ার্ক সমস্যা: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

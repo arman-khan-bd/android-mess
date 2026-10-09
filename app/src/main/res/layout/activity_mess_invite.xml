@@ -21,7 +21,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
+            android:contentDescription="ফিরে যান"
             android:padding="12dp"
             app:srcCompat="@drawable/ic_lucide_logout"
             app:tint="@color/text_primary" />
@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Invite Roommates"
+                android:text="রুমমেট আমন্ত্রণ জানান"
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -45,7 +45,7 @@
                 android:id="@+id/tvMessSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Share QR code or 6-digit invite code"
+                android:text="কিউআর কোড বা ৬ সংখ্যার ইনভাইট কোড শেয়ার করুন"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -83,7 +83,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Smart Mess"
+                        android:text="স্মার্ট মেস"
                         android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -92,7 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Scan to Join Mess Instantly"
+                        android:text="মেসে সরাসরি যুক্ত হতে স্ক্যান করুন"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -121,7 +121,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="OR ENTER 6-DIGIT CODE"
+                        android:text="অথবা ৬ ডিজিটের কোড দিন"
                         android:textColor="@color/text_muted"
                         android:textSize="11sp"
                         android:letterSpacing="0.1"
@@ -145,7 +145,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="monospace"
                             android:letterSpacing="0.25"
-                            android:text="ABC123"
+                            android:text="১২৩৪৫৬"
                             android:textColor="@color/primary_dark"
                             android:textSize="24sp"
                             android:textStyle="bold" />
@@ -154,7 +154,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
-                            android:text="📋 Copy"
+                            android:text="📋 কপি করুন"
                             android:textColor="@color/accent"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -168,7 +168,7 @@
                         android:layout_marginTop="12dp"
                         android:ellipsize="middle"
                         android:singleLine="true"
-                        android:text="https://mess.e-bd.shop/join?code=ABC123"
+                        android:text="https://mess.e-bd.shop/join?code=123456"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp" />
 
@@ -182,7 +182,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="20dp"
-                android:text="Share via WhatsApp / Messenger"
+                android:text="হোয়াটসঅ্যাপ / মেসেঞ্জারে শেয়ার করুন"
                 android:textAllCaps="false"
                 android:textSize="14sp"
                 app:icon="@drawable/ic_lucide_smartphone"
@@ -195,7 +195,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
-                android:text="Copy Invite Link"
+                android:text="আমন্ত্রণ লিংক কপি করুন"
                 android:textAllCaps="false"
                 android:textColor="@color/primary"
                 android:textSize="13sp"
@@ -210,7 +210,7 @@
                 android:background="@drawable/badge_credit"
                 android:backgroundTint="@color/surface_variant"
                 android:padding="12dp"
-                android:text="ℹ️ New roommates entering this code during signup are instantly linked to your mess with live access to today's meals, bazar history, and personal balance."
+                android:text="ℹ️ সাইন আপ করার সময় নতুন রুমমেটরা এই কোডটি দিলে সাথে সাথেই মেসে যুক্ত হয়ে যাবে এবং আজকের মিল, বাজার ইতিহাস ও ব্যালেন্স দেখতে পাবে।"
                 android:textColor="@color/text_secondary"
                 android:textSize="11sp"
                 android:lineSpacingExtra="2dp" />

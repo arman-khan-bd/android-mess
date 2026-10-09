@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-medium"
-            android:text="SmartMess"
+            android:text="স্মার্ট মেস"
             android:textColor="@color/primary"
             android:textSize="26sp"
             android:textStyle="bold" />
@@ -31,7 +31,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="18dp"
             android:fontFamily="sans-serif"
-            android:text="Enterprise Multi-Tenant Mess Accounting"
+            android:text="মেস ও মিল ব্যবস্থাপনা"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
@@ -51,7 +51,7 @@
                 android:layout_weight="1"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="Create Mess"
+                android:text="নতুন মেস তৈরি"
                 android:textSize="12sp"
                 style="@style/SmartButton" />
 
@@ -62,7 +62,7 @@
                 android:layout_weight="1"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="Join Existing"
+                android:text="মেসে যোগ দিন"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 app:backgroundTint="@android:color/transparent"
@@ -86,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="Full Name *"
+                    android:text="আপনার পুরো নাম *"
                     android:textColor="@color/text_primary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -98,7 +98,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="e.g. Arman Khan"
+                    android:hint="যেমন: আরমান খান"
                     android:inputType="textPersonName"
                     android:paddingHorizontal="12dp"
                     android:textSize="14sp" />
@@ -108,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="Email Address"
+                    android:text="ইমেইল ঠিকানা (ঐচ্ছিক)"
                     android:textColor="@color/text_primary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -120,7 +120,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="user@example.com"
+                    android:hint="ইমেইল এড্রেস"
                     android:inputType="textEmailAddress"
                     android:paddingHorizontal="12dp"
                     android:textSize="14sp" />
@@ -130,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="Phone Number *"
+                    android:text="মোবাইল নম্বর *"
                     android:textColor="@color/text_primary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -142,7 +142,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="+8801700000000"
+                    android:hint="০১৭১১০০০০০১"
                     android:inputType="phone"
                     android:paddingHorizontal="12dp"
                     android:textSize="14sp" />
@@ -152,7 +152,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="Password (min 6 characters) *"
+                    android:text="পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর) *"
                     android:textColor="@color/text_primary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -180,7 +180,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:text="Mess Name *"
+                        android:text="মেসের নাম *"
                         android:textColor="@color/text_primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -192,7 +192,7 @@
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="12dp"
                         android:background="@drawable/rounded_edittext"
-                        android:hint="e.g. Sunrise Bachelor Home"
+                        android:hint="যেমন: স্বপ্নপুরী মেস"
                         android:inputType="textCapWords"
                         android:paddingHorizontal="12dp"
                         android:textSize="14sp" />
@@ -201,7 +201,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:text="Location / Address"
+                        android:text="মেসের ঠিকানা / এলাকা"
                         android:textColor="@color/text_primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -213,7 +213,7 @@
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="12dp"
                         android:background="@drawable/rounded_edittext"
-                        android:hint="e.g. Mirpur-10, Dhaka"
+                        android:hint="যেমন: মিরপুর-১০, ঢাকা"
                         android:inputType="textCapWords"
                         android:paddingHorizontal="12dp"
                         android:textSize="14sp" />
@@ -231,7 +231,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:text="6-Character Invite Code *"
+                        android:text="৬ অক্ষরের ইনভাইট কোড *"
                         android:textColor="@color/text_primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -243,7 +243,7 @@
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="12dp"
                         android:background="@drawable/rounded_edittext"
-                        android:hint="e.g. SUN123"
+                        android:hint="যেমন: ১২৩৪৫৬"
                         android:inputType="textCapCharacters"
                         android:maxLength="10"
                         android:paddingHorizontal="12dp"
@@ -258,7 +258,7 @@
                     android:layout_marginBottom="12dp"
                     android:background="#FEF2F2"
                     android:padding="8dp"
-                    android:text="No active internet. Please connect to Wi-Fi or Mobile Data to create an account."
+                    android:text="ইন্টারনেট সংযোগ নেই। অ্যাকাউন্ট তৈরি করতে ওয়াইফাই বা মোবাইল ডাটা চালু করুন।"
                     android:textColor="@color/due_red"
                     android:textSize="11sp"
                     android:visibility="gone" />
@@ -269,7 +269,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="46dp"
                     android:layout_marginTop="4dp"
-                    android:text="Create Mess &amp; Register"
+                    android:text="মেস তৈরি ও নিবন্ধন করুন"
                     style="@style/SmartButton" />
 
                 <ProgressBar
@@ -292,7 +292,7 @@
             android:layout_marginBottom="24dp"
             android:fontFamily="sans-serif-medium"
             android:padding="8dp"
-            android:text="Already have an account? Sign In"
+            android:text="ইতিমধ্যে অ্যাকাউন্ট আছে? লগইন করুন"
             android:textColor="@color/primary"
             android:textSize="13sp"
             android:textStyle="bold" />

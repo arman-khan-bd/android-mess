@@ -104,7 +104,7 @@ public class ActivityNotificationManager extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         if (!sessionManager.isManager() && !sessionManager.isAssistant()) {
-            Toast.makeText(this, "Access Denied: Only Mess Managers can dispatch notifications.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "অনুমতি নেই: শুধুমাত্র মেস ম্যানেজার নোটিফিকেশন পাঠাতে পারবেন।", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -300,14 +300,14 @@ public class ActivityNotificationManager extends AppCompatActivity {
             User targetUser = null;
             if (isSingle) {
                 if (activeMembers == null || activeMembers.isEmpty()) {
-                    Toast.makeText(this, "No active members found in mess to dispatch to.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "মেসে পাঠানোর মতো কোনো সক্রিয় সদস্য নেই।", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 int selectedIndex = spinnerTargetMember.getSelectedItemPosition();
                 if (selectedIndex >= 0 && selectedIndex < activeMembers.size()) {
                     targetUser = activeMembers.get(selectedIndex);
                 } else {
-                    Toast.makeText(this, "Please select a recipient member.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "দয়া করে একজন প্রাপক সদস্য নির্বাচন করুন।", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -348,7 +348,7 @@ public class ActivityNotificationManager extends AppCompatActivity {
                     }
                 } catch (Throwable smsEx) {
                     android.util.Log.e("NotifManager", "SMS dispatch error: " + smsEx.getMessage(), smsEx);
-                    Toast.makeText(this, "SMS Notice: " + smsEx.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "এসএমএস নোটিশ: " + smsEx.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -387,7 +387,7 @@ public class ActivityNotificationManager extends AppCompatActivity {
             android.util.Log.e("NotifManager", "Fatal crash prevented in dispatchNotification: " + t.getMessage(), t);
             btnDispatchNotification.setEnabled(true);
             btnDispatchNotification.setText("🚀 Dispatch Notification");
-            Toast.makeText(this, "Notification Dispatch Failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "নোটিফিকেশন পাঠানো ব্যর্থ হয়েছে: " + t.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -436,13 +436,13 @@ public class ActivityNotificationManager extends AppCompatActivity {
 
             try {
                 new AlertDialog.Builder(this)
-                        .setTitle("✅ Dispatch Complete")
+                        .setTitle("✅ নোটিফিকেশন পাঠানো সম্পন্ন")
                         .setMessage(msg)
-                        .setPositiveButton("Done", (dialog, which) -> finish())
+                        .setPositiveButton("সম্পন্ন", (dialog, which) -> finish())
                         .setCancelable(false)
                         .show();
             } catch (Throwable t) {
-                Toast.makeText(this, "Dispatched successfully!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "সফলভাবে পাঠানো হয়েছে!", Toast.LENGTH_LONG).show();
                 finish();
             }
         });

@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Active Members"
+            android:text="সদস্য তালিকা"
             android:textColor="@color/text_primary"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -27,7 +27,7 @@
             android:id="@+id/btnAddMember"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+ Add Member"
+            android:text="+ সদস্য যোগ"
             android:textSize="12sp"
             style="@style/Widget.MaterialComponents.Button" />
     </LinearLayout>

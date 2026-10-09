@@ -80,15 +80,15 @@ public class ActivityMessInvite extends AppCompatActivity {
                 String currentMessCode = sessionManager.getInviteCode();
                 if (currentMessCode != null && !cleanIncomingCode.equalsIgnoreCase(currentMessCode.trim())) {
                     new androidx.appcompat.app.AlertDialog.Builder(this)
-                            .setTitle("Mess Invitation Received")
+                            .setTitle("মেসে যোগদানের আমন্ত্রণ")
                             .setMessage("You have been invited to join a different mess with code: " + cleanIncomingCode + ".\n\nWould you like to register or join this new mess?")
-                            .setPositiveButton("Join New Mess", (dialog, which) -> {
+                            .setPositiveButton("নতুন মেসে যোগ দিন", (dialog, which) -> {
                                 Intent regIntent = new Intent(this, com.smartmess.android.ui.auth.RegisterActivity.class);
                                 regIntent.putExtra("EXTRA_INVITE_CODE", cleanIncomingCode);
                                 startActivity(regIntent);
                                 finish();
                             })
-                            .setNegativeButton("Stay Here", null)
+                            .setNegativeButton("এখানেই থাকুন", null)
                             .show();
                 }
             }

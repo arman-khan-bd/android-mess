@@ -128,22 +128,22 @@ public class FragmentNotifications extends Fragment {
         btnFragMarkAllRead.setOnClickListener(v -> {
             long messId = sessionManager.getMessId();
             notificationDao.markAllAsRead(messId);
-            Toast.makeText(requireContext(), "All notifications marked as read.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "সকল নোটিফিকেশন পঠিত হিসেবে চিহ্নিত করা হয়েছে।", Toast.LENGTH_SHORT).show();
             loadNotifications();
         });
 
         // Clear All
         btnFragClear.setOnClickListener(v -> {
             new AlertDialog.Builder(requireContext())
-                    .setTitle("Clear Notification History?")
-                    .setMessage("This will remove all notification records stored on your device.")
-                    .setPositiveButton("Clear All", (dialog, which) -> {
+                    .setTitle("নোটিফিকেশন ইতিহাস মুছে ফেলবেন?")
+                    .setMessage("এর ফলে আপনার ফোনে সংরক্ষিত সব নোটিফিকেশন মুছে যাবে।")
+                    .setPositiveButton("সব মুছে ফেলুন", (dialog, which) -> {
                         long messId = sessionManager.getMessId();
                         notificationDao.clearAll(messId);
-                        Toast.makeText(requireContext(), "Notification history cleared.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "নোটিফিকেশন ইতিহাস মুছে ফেলা হয়েছে।", Toast.LENGTH_SHORT).show();
                         loadNotifications();
                     })
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton("বাতিল", null)
                     .show();
         });
 

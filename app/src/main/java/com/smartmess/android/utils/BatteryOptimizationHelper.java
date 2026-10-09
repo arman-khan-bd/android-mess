@@ -77,8 +77,8 @@ public class BatteryOptimizationHelper {
 
         if (isBatteryOptimizationIgnored(activity)) {
             new MaterialAlertDialogBuilder(activity)
-                    .setTitle("✅ Battery Optimization Disabled")
-                    .setMessage("SmartMess is already configured for unrestricted background operation. You will receive real-time push notifications even when the app is closed.")
+                    .setTitle("✅ ব্যাকগ্রাউন্ড নোটিফিকেশন চালু আছে")
+                    .setMessage("স্মার্ট মেস অ্যাপে ব্যাকগ্রাউন্ড সিঙ্ক চালু আছে। অ্যাপ বন্ধ থাকলেও আপনি তাৎক্ষণিক নোটিফিকেশন পাবেন।")
                     .setPositiveButton("OK", (dialog, which) -> {
                         if (onDismiss != null) onDismiss.run();
                     })
@@ -87,14 +87,14 @@ public class BatteryOptimizationHelper {
         }
 
         new MaterialAlertDialogBuilder(activity)
-                .setTitle("⚡ Receive Notifications When Closed")
-                .setMessage("Android's battery optimizer may delay or sleep background network sync when SmartMess is closed.\n\nTo ensure you receive instant mess notices, meal lock alerts, and bazaar assignments in real-time, please allow SmartMess to run unrestricted.")
-                .setPositiveButton("Allow Background Sync", (dialog, which) -> {
+                .setTitle("⚡ অ্যাপ বন্ধ থাকলেও নোটিফিকেশন পান")
+                .setMessage("অ্যান্ড্রয়েডের ব্যাটারি সেভার অ্যাপ বন্ধ থাকলে ব্যাকগ্রাউন্ড সিঙ্ক পিছিয়ে দিতে পারে।\n\nতাত্ক্ষণিক মেস নোটিশ, মিল লক সতর্কতা ও বাজারের দায়িত্ব পেতে স্মার্ট মেসকে ব্যাকগ্রাউন্ডে চলতে অনুমতি দিন।")
+                .setPositiveButton("অনুমতি দিন", (dialog, which) -> {
                     markPromptShown(activity);
                     requestIgnoreBatteryOptimization(activity);
                     if (onDismiss != null) onDismiss.run();
                 })
-                .setNegativeButton("Maybe Later", (dialog, which) -> {
+                .setNegativeButton("পরে করব", (dialog, which) -> {
                     markPromptShown(activity);
                     if (onDismiss != null) onDismiss.run();
                 })

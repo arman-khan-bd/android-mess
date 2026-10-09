@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Broadcast Notice SMS"
+            android:text="নোটিশ এসএমএস ব্রডকাস্ট"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="16dp"
-            android:text="Sends SMS to all active members. Total cost is split equally across mess members."
+            android:text="সকল সক্রিয় সদস্যকে এসএমএস পাঠানো হবে। মোট খরচ সদস্যদের মধ্যে সমান ভাগে ভাগ হবে।"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
@@ -52,7 +52,7 @@
                         android:id="@+id/tvActiveMemberCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Target: 0 Active Members"
+                        android:text="প্রাপক: ০ জন সক্রিয় সদস্য"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -62,7 +62,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Estimated Cost: ৳ 0.00 (split equally among all members)"
+                        android:text="আনুমানিক খরচ: ৳ ০.০০ (সদস্যদের মধ্যে সমান ভাগে বণ্টিত)"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -70,7 +70,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Notice Message"
+                    android:text="নোটিশ বার্তা"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -82,7 +82,7 @@
                     android:layout_marginBottom="24dp"
                     android:background="@drawable/rounded_edittext"
                     android:gravity="top|start"
-                    android:hint="Type notice to broadcast to all members..."
+                    android:hint="সকল সদস্যকে পাঠানোর জন্য নোটিশ লিখুন..."
                     android:inputType="textMultiLine"
                     android:padding="12dp" />
 
@@ -90,7 +90,7 @@
                     android:id="@+id/btnDispatchBroadcast"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Broadcast All via SIM SMS"
+                    android:text="সিম এসএমএসের মাধ্যমে সবাইকে পাঠান"
                     style="@style/SmartButton" />
 
             </LinearLayout>

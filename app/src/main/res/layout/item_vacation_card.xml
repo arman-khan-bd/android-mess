@@ -37,7 +37,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:text="12 Oct 2026 - 18 Oct 2026"
+                android:text="১২ অক্টো ২০২৬ - ১৮ অক্টো ২০২৬"
                 android:textColor="@color/text_primary"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -51,7 +51,7 @@
                 android:paddingEnd="8dp"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
-                android:text="ACTIVE"
+                android:text="সক্রিয়"
                 android:textColor="@color/primary"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Visiting family / semester vacation"
+            android:text="বাড়ি যাওয়া / ছুটির অবকাশ"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
 
@@ -80,7 +80,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🔒 Meals automatically locked to 0.0"
+                android:text="🔒 মিল স্বয়ংক্রিয়ভাবে ০.০ বন্ধ থাকবে"
                 android:textColor="@color/credit_green"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -91,7 +91,7 @@
                 android:layout_height="36dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="Cancel"
+                android:text="বাতিল"
                 android:textColor="@color/due_red"
                 android:textSize="11sp"
                 style="@style/Widget.MaterialComponents.Button.TextButton" />

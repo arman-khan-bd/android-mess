@@ -78,7 +78,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         if (!sessionManager.canLogExpenses()) {
-            Toast.makeText(this, "Only Managers and Bazar Boys can log expenses", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "শুধুমাত্র ম্যানেজার এবং বাজার সদস্যরা খরচ এন্ট্রি করতে পারবেন", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -99,7 +99,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                 return;
             }
             pickVoucherImage();
-            Toast.makeText(this, "Receipt OCR Extractor active (Pro). Processing voucher image...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ভাউচার স্ক্যানার সক্রিয় (প্রো)। ছবি প্রসেস করা হচ্ছে...", Toast.LENGTH_SHORT).show();
         });
         btnSaveExpense.setOnClickListener(v -> saveExpense());
     }
@@ -210,7 +210,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         String date = etExpenseDate.getText().toString().trim();
 
         if (title.isEmpty() || amountStr.isEmpty()) {
-            Toast.makeText(this, "Please enter title and amount", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "খরচের বিবরণ ও টাকার পরিমাণ লিখুন", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -218,7 +218,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         try {
             amount = Double.parseDouble(amountStr);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "টাকার পরিমাণ সঠিক নয়", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -265,12 +265,12 @@ public class AddExpenseActivity extends AppCompatActivity {
         com.smartmess.android.utils.NotificationCenterHelper.postNotification(
                 getApplicationContext(),
                 sessionManager.getMessId(),
-                "New Expense Added",
-                buyer.getName() + " added ৳" + String.format(java.util.Locale.US, "%.2f", amount) + " (" + title + ")",
+                "নতুন খরচ যুক্ত হয়েছে",
+                buyer.getName() + " ৳" + String.format(java.util.Locale.US, "%.2f", amount) + " খরচ যোগ করেছেন (" + title + ")",
                 com.smartmess.android.utils.NotificationCenterHelper.TYPE_EXPENSE
         );
 
-        Toast.makeText(this, "Expense recorded successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "খরচের হিসাব সফলভাবে সংরক্ষিত হয়েছে!", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

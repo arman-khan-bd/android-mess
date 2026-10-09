@@ -69,7 +69,7 @@ public class SummaryReportActivity extends AppCompatActivity {
                 String end = DateTimeUtils.currentMonthEnd(startDay);
 
                 new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                        .setTitle("Choose Export Format")
+                        .setTitle("ডাউনলোডের ফরম্যাট নির্বাচন করুন")
                         .setItems(new CharSequence[]{"PDF Statement (.pdf)", "Excel Workbook (.xlsx)"}, (dialog, which) -> {
                             if (which == 0) {
                                 com.smartmess.android.utils.FileDownloadHelper.downloadReport(this, "pdf", start, end, null);
@@ -77,7 +77,7 @@ public class SummaryReportActivity extends AppCompatActivity {
                                 com.smartmess.android.utils.FileDownloadHelper.downloadReport(this, "excel", start, end, null);
                             }
                         })
-                        .setNegativeButton("Cancel", null)
+                        .setNegativeButton("বাতিল", null)
                         .show();
             }
         });

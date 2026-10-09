@@ -50,7 +50,7 @@
                         android:id="@+id/tvBudgetWarningTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Meal Budget Alert"
+                        android:text="মিল বাজেট সতর্কতা"
                         android:textColor="#991B1B"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -60,7 +60,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Alert: Current meal rate (৳82.50) is exceeding your budget (৳70.00)"
+                        android:text="সতর্কতা: বর্তমান মিল রেট আপনার বাজেট অতিক্রম করেছে"
                         android:textColor="#B91C1C"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -92,7 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:text="Live Meal Rate"
+                        android:text="বর্তমান মিল রেট"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -114,7 +114,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:fontFamily="sans-serif"
-                        android:text="0.0 Meals Logged"
+                        android:text="০.০ টি মিল গণনা"
                         android:textColor="@color/text_muted"
                         android:textSize="11sp" />
 
@@ -124,7 +124,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:fontFamily="sans-serif"
-                        android:text="Budget: ৳70.00"
+                        android:text="বাজেট: ৳৭০.০০"
                         android:textColor="@color/text_muted"
                         android:textSize="10sp" />
                 </LinearLayout>
@@ -148,7 +148,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:text="Mess Cash in Hand"
+                        android:text="মেসের ক্যাশ তহবিল"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -170,7 +170,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:fontFamily="sans-serif"
-                        android:text="0 Active Members"
+                        android:text="০ জন সক্রিয় সদস্য"
                         android:textColor="@color/text_muted"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -194,7 +194,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Dual Expense Engine Pools"
+                    android:text="খরচের খাতসমূহ"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -203,7 +203,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="Separates Raw Meal Bazaar from Shared Goods &amp; Utilities"
+                    android:text="বাজার খরচ এবং অন্যান্য নিয়মিত খরচের হিসাব"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
 
@@ -224,7 +224,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif"
-                            android:text="Raw Meal"
+                            android:text="বাজার খরচ"
                             android:textColor="@color/primary"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -250,7 +250,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif"
-                            android:text="Shared Food"
+                            android:text="মশলা ও গ্যাস"
                             android:textColor="@color/accent"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -276,7 +276,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif"
-                            android:text="Utilities &amp; Assets"
+                            android:text="ভাড়া ও অন্যান্য"
                             android:textColor="@color/warning_amber"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -303,7 +303,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="6dp"
             android:fontFamily="sans-serif"
-            android:text="Quick Operations"
+            android:text="দ্রুত কাজ"
             android:textColor="@color/text_secondary"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -321,7 +321,7 @@
                 android:layout_weight="1"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="Log Bazar"
+                android:text="+ বাজার যোগ"
                 android:textSize="11sp"
                 app:icon="@drawable/ic_lucide_cart"
                 app:iconSize="16dp"
@@ -335,7 +335,7 @@
                 android:layout_weight="1"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="+ Deposit"
+                android:text="+ টাকা জমা"
                 android:textSize="11sp"
                 app:icon="@drawable/ic_deposit"
                 app:iconSize="16dp"
@@ -349,7 +349,7 @@
                 android:layout_weight="1"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="Due SMS"
+                android:text="বকেয়া এসএমএস"
                 android:textSize="11sp"
                 app:icon="@drawable/ic_lucide_message_square"
                 app:iconSize="16dp"
@@ -373,7 +373,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:text="Recent Bazars"
+                android:text="সাম্প্রতিক বাজার"
                 android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -383,7 +383,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="View All →"
+                android:text="সব দেখুন →"
                 android:textColor="@color/primary"
                 android:textSize="11sp"
                 android:textStyle="bold"
@@ -410,7 +410,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="16dp"
-                    android:text="No recent bazar entries recorded yet"
+                    android:text="এখনও কোনো বাজার যুক্ত করা হয়নি"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp"
                     android:visibility="gone" />
@@ -437,7 +437,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:text="Today's Meal Snapshot"
+                android:text="আজকের মিলের হিসাব"
                 android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -447,7 +447,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="Meal Sheet →"
+                android:text="মিল শিট →"
                 android:textColor="@color/primary"
                 android:textSize="11sp"
                 android:textStyle="bold"
@@ -490,7 +490,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Breakfast"
+                            android:text="সকাল"
                             android:textColor="@color/text_secondary"
                             android:textSize="10sp"
                             android:textStyle="bold" />
@@ -519,7 +519,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Lunch"
+                            android:text="দুপুর"
                             android:textColor="@color/primary"
                             android:textSize="10sp"
                             android:textStyle="bold" />
@@ -548,7 +548,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Dinner"
+                            android:text="রাত"
                             android:textColor="@color/accent"
                             android:textSize="10sp"
                             android:textStyle="bold" />
@@ -577,7 +577,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Total"
+                            android:text="মোট"
                             android:textColor="@color/credit_green"
                             android:textSize="10sp"
                             android:textStyle="bold" />
@@ -604,7 +604,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Eating Today:"
+                        android:text="আজকের মিল:"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -630,7 +630,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
-                        android:text="0 diners"
+                        android:text="০ জন খাচ্ছেন"
                         android:textColor="@color/text_muted"
                         android:textSize="11sp" />
                 </LinearLayout>

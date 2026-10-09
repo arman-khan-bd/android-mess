@@ -87,7 +87,7 @@ public class SmsBroadcastActivity extends AppCompatActivity {
 
         String msg = etBroadcastMessage.getText().toString().trim();
         if (msg.isEmpty()) {
-            Toast.makeText(this, "Message cannot be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "বার্তা খালি রাখা যাবে না", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -99,10 +99,10 @@ public class SmsBroadcastActivity extends AppCompatActivity {
 
         int sent = smsCostingManager.broadcastNoticeToAllMembers(sender, msg);
         if (sent > 0) {
-            Toast.makeText(this, "Broadcast sent to " + sent + " members! Total cost split equally across mess members.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "ব্রডকাস্ট এসএমএস পাঠানো হয়েছে: " + sent + " members! Total cost split equally across mess members.", Toast.LENGTH_LONG).show();
             finish();
         } else {
-            Toast.makeText(this, "Could not send broadcast. Check SIM connectivity.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ব্রডকাস্ট পাঠানো যায়নি। সিম নেটওয়ার্ক চেক করুন।", Toast.LENGTH_SHORT).show();
         }
     }
 

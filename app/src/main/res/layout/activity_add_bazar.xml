@@ -24,7 +24,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="ফিরে যান"
                 android:padding="12dp"
                 app:srcCompat="@drawable/ic_lucide_logout"
                 app:tint="@color/text_primary" />
@@ -39,7 +39,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Multi-Item Bazar Entry"
+                    android:text="বাজার ও খরচের এন্ট্রি"
                     android:textColor="@color/text_primary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -47,7 +47,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Itemized market bill with multi-payer split"
+                    android:text="আইটেমভিত্তিক বাজার তালিকা ও একাধিক ক্রেতার হিসাব"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -83,7 +83,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Bazar Date"
+                            android:text="বাজারের তারিখ"
                             android:textColor="@color/text_secondary"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -96,7 +96,7 @@
                             android:background="@drawable/rounded_edittext"
                             android:clickable="true"
                             android:focusable="false"
-                            android:hint="YYYY-MM-DD"
+                            android:hint="তারিখ নির্বাচন"
                             android:paddingHorizontal="12dp"
                             android:textColor="@color/text_primary"
                             android:textSize="13sp" />
@@ -113,7 +113,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Session Title (Optional)"
+                            android:text="বাজারের শিরোনাম (ঐচ্ছিক)"
                             android:textColor="@color/text_secondary"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -124,7 +124,7 @@
                             android:layout_height="44dp"
                             android:layout_marginTop="4dp"
                             android:background="@drawable/rounded_edittext"
-                            android:hint="e.g. Weekly Market"
+                            android:hint="যেমন: শুক্রবারের বাজার"
                             android:inputType="textCapSentences"
                             android:paddingHorizontal="12dp"
                             android:textColor="@color/text_primary"
@@ -162,7 +162,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1. Purchased Items"
+                            android:text="১. ক্রয়কৃত বাজার সামগ্রী"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -170,7 +170,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Item name, pool category, quantity &amp; price"
+                            android:text="পণ্যের নাম, খরচের খাত, পরিমাণ ও মূল্য"
                             android:textColor="@color/text_secondary"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -202,7 +202,7 @@
                         android:background="@drawable/badge_credit"
                         android:paddingHorizontal="6dp"
                         android:paddingVertical="2dp"
-                        android:text="Raw: ৳0.00"
+                        android:text="মিল বাজার: ৳০.০০"
                         android:textColor="@color/credit_green"
                         android:textSize="10sp"
                         android:textStyle="bold" />
@@ -215,7 +215,7 @@
                         android:background="@drawable/badge_credit"
                         android:paddingHorizontal="6dp"
                         android:paddingVertical="2dp"
-                        android:text="Shared: ৳0.00"
+                        android:text="মশলা/তেল: ৳০.০০"
                         android:textColor="@color/accent"
                         android:textSize="10sp"
                         android:textStyle="bold" />
@@ -228,7 +228,7 @@
                         android:background="@drawable/badge_credit"
                         android:paddingHorizontal="6dp"
                         android:paddingVertical="2dp"
-                        android:text="Utility: ৳0.00"
+                        android:text="ভাড়া/বিল: ৳০.০০"
                         android:textColor="@color/warning_amber"
                         android:textSize="10sp"
                         android:textStyle="bold" />
@@ -251,7 +251,7 @@
                     android:layout_marginTop="4dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="+ Add Item"
+                    android:text="+ পণ্য যোগ করুন"
                     android:textAllCaps="false"
                     android:textColor="@color/primary"
                     android:textSize="13sp"
@@ -292,7 +292,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="2. Multi-Member Payment Split"
+                            android:text="২. সদস্যভিত্তিক পরিশোধিত জমার হিসাব"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -300,7 +300,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Assign paid amounts across contributors"
+                            android:text="কোন সদস্য কত টাকা পরিশোধ করেছেন তা নির্ধারণ করুন"
                             android:textColor="@color/text_secondary"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -311,7 +311,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:text="Paid: ৳ 0.00"
+                        android:text="পরিশোধ: ৳ ০.০০"
                         android:textColor="@color/credit_green"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -334,7 +334,7 @@
                         android:layout_weight="1"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:text="Paid 100% by Me"
+                        android:text="আমি একা দিয়েছি (১০০%)"
                         android:textAllCaps="false"
                         android:textSize="11sp"
                         app:strokeColor="@color/border_stroke" />
@@ -348,7 +348,7 @@
                         android:layout_weight="1"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:text="Split Evenly"
+                        android:text="সমান ভাগ"
                         android:textAllCaps="false"
                         android:textSize="11sp"
                         app:strokeColor="@color/border_stroke" />
@@ -371,7 +371,7 @@
                     android:layout_marginTop="4dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="+ Add Contributor"
+                    android:text="+ সদস্যের নাম যোগ করুন"
                     android:textAllCaps="false"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp"
@@ -396,7 +396,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="⚠ Difference: ৳0.00 remaining to balance"
+                        android:text="⚠ অমিল: ৳০.০০ বাকি রয়েছে"
                         android:textColor="@color/due_red"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -421,7 +421,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3. Multi-Receipt Attachments"
+                    android:text="৩. ভাউচার / ক্যাশমেমো রসিদ"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -429,7 +429,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Attach vouchers (auto-compressed into WebP on device)"
+                    android:text="বাজারের রসিদের ছবি সংযুক্ত করুন"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
 
@@ -449,7 +449,7 @@
                         android:layout_weight="1"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:text="Camera"
+                        android:text="ক্যামেরা"
                         android:textAllCaps="false"
                         android:textSize="12sp"
                         app:strokeColor="@color/border_stroke" />
@@ -463,7 +463,7 @@
                         android:layout_weight="1"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:text="Gallery"
+                        android:text="গ্যালারি"
                         android:textAllCaps="false"
                         android:textSize="12sp"
                         app:strokeColor="@color/border_stroke" />
@@ -497,7 +497,7 @@
             android:layout_marginBottom="24dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="Save &amp; Record Bazar Session"
+            android:text="বাজারের হিসাব সংরক্ষণ করুন"
             android:textSize="14sp"
             android:textStyle="bold" />
 

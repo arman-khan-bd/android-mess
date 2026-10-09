@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="AK"
+                    android:text="আখ"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -49,7 +49,7 @@
                 android:layout_height="32dp"
                 android:layout_alignParentEnd="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Edit Photo"
+                android:contentDescription="ছবি পরিবর্তন"
                 android:src="@drawable/ic_camera"
                 app:tint="@color/text_secondary" />
         </RelativeLayout>
@@ -62,7 +62,7 @@
             android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Arman Khan"
+            android:text="আরমান খান"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -94,7 +94,7 @@
                 android:background="@drawable/badge_credit"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="3dp"
-                android:text="Manager"
+                android:text="ম্যানেজার"
                 android:textColor="@color/primary"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -107,7 +107,7 @@
                 android:background="@drawable/badge_credit"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="3dp"
-                android:text="Pro Plan"
+                android:text="প্রো প্ল্যান"
                 android:textColor="@color/primary_dark"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -155,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="My Profile &amp; Account"
+                    android:text="প্রোফাইল ও অ্যাকাউন্ট"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -182,7 +182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Subscription &amp; Plans"
+                    android:text="সাবস্ক্রিপশন ও প্ল্যান"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp" />
 
@@ -193,7 +193,7 @@
                     android:background="@drawable/badge_credit"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="PRO"
+                    android:text="প্রো"
                     android:textColor="@color/primary"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -221,7 +221,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="SMS Dispatcher &amp; Rates"
+                    android:text="এসএমএস ও রেট"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -248,7 +248,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Invoice &amp; Statements"
+                    android:text="হিসাব ও স্টেটমেন্ট"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -275,7 +275,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Meal Vacation Mode"
+                    android:text="মিল বন্ধ / ভ্যাকেশন মোড"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp" />
 
@@ -285,7 +285,7 @@
                     android:background="@drawable/badge_credit"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="Auto-Off"
+                    android:text="অটো-বন্ধ"
                     android:textColor="@color/primary"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -313,7 +313,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Notification Center"
+                    android:text="নোটিফিকেশন সেন্টার"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -340,7 +340,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Support Tickets &amp; Helpdesk"
+                    android:text="সাপোর্ট টিকেট ও হেল্প"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -367,7 +367,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Report Bug / Suggestion"
+                    android:text="সমস্যা জানান / মতামত"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -386,7 +386,7 @@
                 android:paddingHorizontal="12dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
-                android:text="MANAGER CONTROLS"
+                android:text="ম্যানেজার নিয়ন্ত্রণ"
                 android:textColor="@color/text_muted"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -413,7 +413,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Mess Settings &amp; Cut-off"
+                    android:text="মেস সেটিংস ও সময়সীমা"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -440,7 +440,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Notification Dispatcher"
+                    android:text="নোটিফিকেশন পাঠান"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp" />
 
@@ -450,7 +450,7 @@
                     android:background="@drawable/badge_credit"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="Push+SMS"
+                    android:text="পুশ ও এসএমএস"
                     android:textColor="@color/primary_dark"
                     android:textSize="9sp"
                     android:textStyle="bold" />
@@ -478,7 +478,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Handover Manager Role"
+                    android:text="ম্যানেজার দায়িত্ব হস্তান্তর"
                     android:textColor="@color/due_red"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -511,7 +511,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Sign Out"
+                    android:text="লগআউট"
                     android:textColor="@color/due_red"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -527,7 +527,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="12dp"
-        android:text="SmartMess v2.4.0 • Offline Ready"
+        android:text="স্মার্টমেস • অফলাইনেও কার্যকর"
         android:textColor="@color/text_muted"
         android:textSize="11sp" />
 

@@ -38,7 +38,7 @@
                     android:id="@+id/tvMemberName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Member Name"
+                    android:text="সদস্যের নাম"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -51,7 +51,7 @@
                     android:background="@drawable/bg_payer_badge"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="Manager"
+                    android:text="ম্যানেজার"
                     android:textColor="@color/primary"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -64,7 +64,7 @@
                     android:background="@drawable/badge_credit"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="Active"
+                    android:text="সক্রিয়"
                     android:textColor="@color/credit_green"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -89,7 +89,7 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:paddingHorizontal="10dp"
-            android:text="Due SMS"
+            android:text="বকেয়া এসএমএস"
             android:textAllCaps="false"
             android:textSize="11sp" />
 

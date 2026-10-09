@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open Support Ticket"
+        android:text="নতুন সাপোর্ট টিকেট খুলুন"
         android:textColor="@color/text_primary"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -18,14 +18,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="14dp"
-        android:text="Direct inquiry to SmartMess customer support desk"
+        android:text="স্মার্টমেস হেল্পডেস্কে সরাসরি প্রশ্ন বা সমস্যা জানান"
         android:textColor="@color/text_secondary"
         android:textSize="12sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Category"
+        android:text="ক্যাটাগরি"
         android:textColor="@color/text_primary"
         android:textStyle="bold" />
 
@@ -40,7 +40,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Priority"
+        android:text="গুরুত্ব / প্রায়োরিটি"
         android:textColor="@color/text_primary"
         android:textStyle="bold" />
 
@@ -55,7 +55,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Subject *"
+        android:text="বিষয় *"
         android:textColor="@color/text_primary"
         android:textStyle="bold" />
 
@@ -66,14 +66,14 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/rounded_edittext"
-        android:hint="e.g. Plan upgrade inquiry"
+        android:hint="যেমন: সাবস্ক্রিপশন প্ল্যান আপগ্রেড সহায়তা"
         android:paddingHorizontal="12dp"
         android:textSize="14sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Message *"
+        android:text="বিস্তারিত বার্তা *"
         android:textColor="@color/text_primary"
         android:textStyle="bold" />
 
@@ -84,7 +84,7 @@
         android:layout_marginTop="4dp"
         android:background="@drawable/rounded_edittext"
         android:gravity="top|start"
-        android:hint="Provide detailed information regarding your inquiry..."
+        android:hint="আপনার সমস্যা বা প্রশ্নের বিস্তারিত বিবরণ লিখুন..."
         android:padding="12dp"
         android:textSize="14sp" />
 

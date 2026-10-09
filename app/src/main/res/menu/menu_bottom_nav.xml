@@ -3,25 +3,25 @@
     <item
         android:id="@+id/nav_dashboard"
         android:icon="@drawable/ic_lucide_dashboard"
-        android:title="Dashboard" />
+        android:title="ড্যাশবোর্ড" />
 
     <item
         android:id="@+id/nav_members"
         android:icon="@drawable/ic_lucide_users"
-        android:title="Members" />
+        android:title="সদস্য" />
 
     <item
         android:id="@+id/nav_bazar"
         android:icon="@drawable/ic_lucide_cart"
-        android:title="Bazar" />
+        android:title="বাজার" />
 
     <item
         android:id="@+id/nav_meals"
         android:icon="@drawable/ic_lucide_utensils"
-        android:title="Daily Meals" />
+        android:title="দৈনিক মিল" />
 
     <item
         android:id="@+id/nav_notifications"
         android:icon="@drawable/ic_lucide_bell"
-        android:title="Alerts" />
+        android:title="বিজ্ঞপ্তি" />
 </menu>

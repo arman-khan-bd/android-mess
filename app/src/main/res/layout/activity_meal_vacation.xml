@@ -27,7 +27,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="ফিরে যান"
                 android:src="@drawable/ic_chevron_left"
                 app:tint="@color/text_primary" />
 
@@ -37,7 +37,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:text="Meal Vacation Mode"
+                android:text="মিল বন্ধ / ভ্যাকেশন মোড"
                 android:textColor="@color/text_primary"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -83,7 +83,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Auto Meal-Off Scheduler"
+                            android:text="স্বয়ংক্রিয় মিল বন্ধের সময়সূচি"
                             android:textColor="@color/text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -92,7 +92,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Going home or away for holidays? Schedule your dates once. Meals will automatically lock to 0.0 with zero daily hassle."
+                            android:text="ছুটিতে বাড়ি যাচ্ছেন? তারিখ একবার নির্ধারণ করে দিন, প্রতিদিন হাত দিয়ে মিল বন্ধের ঝামেলা ছাড়াই নির্ধারিত দিনগুলোতে মিল স্বয়ংক্রিয়ভাবে ০.০ হয়ে যাবে।"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -115,7 +115,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Schedule Planned Absence"
+                        android:text="ছুটির তারিখ নির্ধারণ করুন"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -143,7 +143,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="From (Start Date)"
+                                android:text="শুরুর তারিখ"
                                 android:textColor="@color/text_muted"
                                 android:textSize="11sp" />
 
@@ -152,7 +152,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="Select Date"
+                                android:text="তারিখ নির্বাচন"
                                 android:textColor="@color/text_primary"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
@@ -174,7 +174,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="To (End Date)"
+                                android:text="শেষের তারিখ"
                                 android:textColor="@color/text_muted"
                                 android:textSize="11sp" />
 
@@ -183,7 +183,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="Select Date"
+                                android:text="তারিখ নির্বাচন"
                                 android:textColor="@color/text_primary"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
@@ -195,7 +195,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
-                        android:text="Reason / Note (Optional)"
+                        android:text="ছুটির কারণ / মন্তব্য (ঐচ্ছিক)"
                         android:textColor="@color/text_primary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -206,7 +206,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:background="@drawable/rounded_edittext"
-                        android:hint="e.g. Visiting home / Eid vacation / Exam leave"
+                        android:hint="যেমন: বাড়ি যাচ্ছি / ঈদের ছুটি / পরীক্ষার ছুটি"
                         android:inputType="textCapSentences"
                         android:textSize="13sp" />
 
@@ -218,7 +218,7 @@
                         android:layout_marginTop="16dp"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:text="Activate Vacation Mode"
+                        android:text="ভ্যাকেশন মোড চালু করুন"
                         android:textSize="13sp"
                         android:textStyle="bold"
                         style="@style/SmartButton" />
@@ -232,7 +232,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="Scheduled Vacations"
+                android:text="নির্ধারিত ছুটির তালিকা"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -243,7 +243,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="24dp"
-                android:text="No scheduled vacations found"
+                android:text="কোনো নির্ধারিত ছুটির রেকর্ড পাওয়া যায়নি"
                 android:textColor="@color/text_muted"
                 android:textSize="13sp"
                 android:visibility="gone" />

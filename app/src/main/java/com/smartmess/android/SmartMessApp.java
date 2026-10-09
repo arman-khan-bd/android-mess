@@ -92,7 +92,7 @@ public class SmartMessApp extends Application {
         // Seed Plans
         if (planDao.getAllActivePlans().isEmpty()) {
             SaasPlan basic = new SaasPlan();
-            basic.setName("Basic Tier");
+            basic.setName("বেসিক টিয়ার");
             basic.setPrice(0.0);
             basic.setDurationInDays(30);
             basic.setFeaturesJson("{\"max_members\": 15, \"sms_sim\": true, \"sms_cloud\": false, \"ocr_receipt\": false, \"pdf_branding\": false, \"ad_free\": false}");
@@ -100,7 +100,7 @@ public class SmartMessApp extends Application {
             planDao.insertOrUpdate(basic);
 
             SaasPlan enterprise = new SaasPlan();
-            enterprise.setName("Enterprise Mess");
+            enterprise.setName("এন্টারপ্রাইজ মেস");
             enterprise.setPrice(499.0);
             enterprise.setDurationInDays(365);
             enterprise.setFeaturesJson("{\"max_members\": 50, \"sms_sim\": true, \"sms_cloud\": true, \"ocr_receipt\": true, \"pdf_branding\": true, \"ad_free\": true}");
@@ -111,27 +111,27 @@ public class SmartMessApp extends Application {
         // Seed default mess if none
         if (messDao.getFirstMess() == null) {
             String messUuid = UUID.randomUUID().toString();
-            Mess defaultMess = new Mess(messUuid, "Green Paradise Mess", "MESS101", "monthly", 1, "22:00:00", 0.50);
+            Mess defaultMess = new Mess(messUuid, "গ্রিন প্যারাডাইস মেস", "MESS101", "monthly", 1, "22:00:00", 0.50);
             defaultMess.setCreatedAt(DateTimeUtils.nowIso());
             defaultMess.setUpdatedAt(DateTimeUtils.nowIso());
             long messId = messDao.insertOrUpdate(defaultMess);
 
             // Create Manager User
-            User manager = new User(UUID.randomUUID().toString(), messId, "Tanvir Ahmed (Manager)", "01711000001", "manager", "active");
+            User manager = new User(UUID.randomUUID().toString(), messId, "তানভীর আহমেদ (ম্যানেজার)", "01711000001", "manager", "active");
             manager.setPassword("123456");
             manager.setCreatedAt(DateTimeUtils.nowIso());
             manager.setUpdatedAt(DateTimeUtils.nowIso());
             long managerId = userDao.insertOrUpdate(manager);
 
             // Create Bazar Boy User
-            User assistant = new User(UUID.randomUUID().toString(), messId, "Rafiqul Islam (Bazar Boy)", "01711000002", "assistant", "active");
+            User assistant = new User(UUID.randomUUID().toString(), messId, "রফিকুল ইসলাম (বাজার সদস্য)", "01711000002", "assistant", "active");
             assistant.setPassword("123456");
             assistant.setCreatedAt(DateTimeUtils.nowIso());
             assistant.setUpdatedAt(DateTimeUtils.nowIso());
             long assistantId = userDao.insertOrUpdate(assistant);
 
             // Create General Member User
-            User member = new User(UUID.randomUUID().toString(), messId, "Sabbir Hossain", "01711000003", "member", "active");
+            User member = new User(UUID.randomUUID().toString(), messId, "সাব্বির হোসেন", "01711000003", "member", "active");
             member.setPassword("123456");
             member.setCreatedAt(DateTimeUtils.nowIso());
             member.setUpdatedAt(DateTimeUtils.nowIso());
@@ -139,17 +139,17 @@ public class SmartMessApp extends Application {
 
             // Seed sample deposits
             String today = DateTimeUtils.currentDate();
-            depositDao.insertOrUpdate(new Deposit(UUID.randomUUID().toString(), messId, managerId, 3000.0, today, "Initial Deposit"));
-            depositDao.insertOrUpdate(new Deposit(UUID.randomUUID().toString(), messId, assistantId, 3000.0, today, "Initial Deposit"));
-            depositDao.insertOrUpdate(new Deposit(UUID.randomUUID().toString(), messId, memberId, 2500.0, today, "Initial Deposit"));
+            depositDao.insertOrUpdate(new Deposit(UUID.randomUUID().toString(), messId, managerId, 3000.0, today, "প্রাথমিক জমা"));
+            depositDao.insertOrUpdate(new Deposit(UUID.randomUUID().toString(), messId, assistantId, 3000.0, today, "প্রাথমিক জমা"));
+            depositDao.insertOrUpdate(new Deposit(UUID.randomUUID().toString(), messId, memberId, 2500.0, today, "প্রাথমিক জমা"));
 
             // Seed sample expenses (Dual Pool Demonstration)
             // 1. Raw Meal (Fish, Meat, Veg) -> Factored strictly into meal rate
-            expenseDao.insertOrUpdate(new Expense(UUID.randomUUID().toString(), messId, assistantId, Expense.CAT_RAW_MEAL, 1250.0, today, "Fish & Fresh Vegetables", Expense.SPLIT_MEAL_DEPENDENT));
+            expenseDao.insertOrUpdate(new Expense(UUID.randomUUID().toString(), messId, assistantId, Expense.CAT_RAW_MEAL, 1250.0, today, "মাছ ও কাঁচা শাকসবজি", Expense.SPLIT_MEAL_DEPENDENT));
             // 2. Shared Food (Oil, Salt, Gas, Onion) -> Split equally among all active members
-            expenseDao.insertOrUpdate(new Expense(UUID.randomUUID().toString(), messId, managerId, Expense.CAT_SHARED_FOOD, 600.0, today, "5L Soybean Oil & Spices", Expense.SPLIT_ALL_EQUAL));
+            expenseDao.insertOrUpdate(new Expense(UUID.randomUUID().toString(), messId, managerId, Expense.CAT_SHARED_FOOD, 600.0, today, "৫ লিটার সয়াবিন তেল ও মসলা", Expense.SPLIT_ALL_EQUAL));
             // 3. Asset & Utility (Cook Salary, Wi-Fi, Bulbs) -> Split equally
-            expenseDao.insertOrUpdate(new Expense(UUID.randomUUID().toString(), messId, managerId, Expense.CAT_UTILITY_ASSET, 900.0, today, "Wi-Fi Monthly Bill", Expense.SPLIT_ALL_EQUAL));
+            expenseDao.insertOrUpdate(new Expense(UUID.randomUUID().toString(), messId, managerId, Expense.CAT_UTILITY_ASSET, 900.0, today, "ওয়াইফাই মাসিক বিল", Expense.SPLIT_ALL_EQUAL));
 
             // Seed sample meals for today
             mealDao.insertOrUpdate(new Meal(UUID.randomUUID().toString(), messId, managerId, today, 1.0, 1.0, 1.0, 0.0));

@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="sans-serif-medium"
-                    android:text="New Market Expense Added"
+                    android:text="নতুন বাজার খরচ যুক্ত হয়েছে"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -65,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="10m ago"
+                    android:text="১০ মিনিট আগে"
                     android:textColor="@color/text_muted"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Rahim added chicken &amp; spices worth ৳1,200."
+                android:text="রহিম ১,২০০ টাকার মুরগি ও মসলা কিনেছেন।"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>

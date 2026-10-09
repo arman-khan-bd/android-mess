@@ -46,7 +46,7 @@
                     android:id="@+id/tvSheetTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SaaS Subscription Plans"
+                    android:text="সাবস্ক্রিপশন ও আপগ্রেড প্ল্যান"
                     android:textColor="@color/text_primary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -55,7 +55,7 @@
                     android:id="@+id/tvSheetSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Choose a live subscription plan to upgrade your mess"
+                    android:text="মেসের সুবিধা বাড়াতে আপনার সুবিধাজনক প্ল্যান বেছে নিন"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -63,7 +63,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LIVE PLANS"
+                android:text="চলমান প্ল্যান"
                 android:textSize="10sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary"
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Fetching live active plans from database..."
+                android:text="সার্ভার থেকে সক্রিয় প্ল্যানসমূহ লোড হচ্ছে..."
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -121,7 +121,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Unable to load live plans. Check your internet connection."
+                android:text="প্ল্যান লোড করা সম্ভব হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।"
                 android:textColor="@color/due_red"
                 android:textSize="12sp" />
 
@@ -130,7 +130,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
                 android:layout_marginTop="8dp"
-                android:text="Retry Live Fetch"
+                android:text="পুনরায় চেষ্টা করুন"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
         </LinearLayout>
 
@@ -140,7 +140,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:text="Zero App Restart • Auto-Unlocks Instantly Across All Devices"
+            android:text="তাৎক্ষণিক আনলক • সকল ডিভাইসে স্বয়ংক্রিয়ভাবে কার্যকর"
             android:textColor="@color/text_muted"
             android:textSize="10sp" />
 

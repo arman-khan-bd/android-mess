@@ -32,7 +32,7 @@
                 android:background="#99000000"
                 android:gravity="center"
                 android:paddingVertical="2dp"
-                android:text="WebP"
+                android:text="রসিদ"
                 android:textColor="@android:color/white"
                 android:textSize="9sp" />
         </FrameLayout>
@@ -45,7 +45,7 @@
         android:layout_height="28dp"
         android:layout_gravity="top|end"
         android:background="@drawable/badge_due"
-        android:contentDescription="Remove Receipt"
+        android:contentDescription="রসিদ মুছুন"
         android:padding="6dp"
         app:srcCompat="@drawable/ic_lucide_x" />
 

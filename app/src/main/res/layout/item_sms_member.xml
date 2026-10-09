@@ -50,7 +50,7 @@
                 android:id="@+id/tvMemberName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mahmudul Hasan"
+                android:text="মাহমুদুল হাসান"
                 android:textColor="@color/text_primary"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -68,7 +68,7 @@
             android:id="@+id/tvDueAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Due: ৳1,450"
+            android:text="বকেয়া: ৳১,৪৫০"
             android:textColor="@color/due_red"
             android:textSize="13sp"
             android:textStyle="bold" />

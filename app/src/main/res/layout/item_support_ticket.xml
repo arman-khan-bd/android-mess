@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
-                android:text="TKT-2026-X9812"
+                android:text="টিকিট-২০২৬-৯৮১২"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -37,7 +37,7 @@
                 android:background="@drawable/rounded_edittext"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="3dp"
-                android:text="OPEN"
+                android:text="উন্মুক্ত"
                 android:textColor="@color/primary"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Need help upgrading Standard Plan via bKash"
+            android:text="বিকাশের মাধ্যমে স্ট্যান্ডার্ড প্ল্যান আপগ্রেড সহায়তা"
             android:textColor="@color/text_primary"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -64,7 +64,7 @@
                 android:id="@+id/tvTicketCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Category: Billing"
+                android:text="ক্যাটাগরি: বিলিং"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -77,7 +77,7 @@
                 android:id="@+id/tvTicketDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Today"
+                android:text="আজ"
                 android:textColor="@color/text_muted"
                 android:textSize="11sp" />
         </LinearLayout>

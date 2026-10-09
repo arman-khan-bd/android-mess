@@ -39,7 +39,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-medium"
-                        android:text="Notifications"
+                        android:text="বিজ্ঞপ্তি"
                         android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -52,7 +52,7 @@
                         android:background="@drawable/badge_due"
                         android:paddingHorizontal="6dp"
                         android:paddingVertical="2dp"
-                        android:text="0 Unread"
+                        android:text="০ অপঠিত"
                         android:textColor="@color/due_red"
                         android:textSize="10sp"
                         android:textStyle="bold"
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:fontFamily="sans-serif"
-                    android:text="Live push notifications &amp; mess announcements"
+                    android:text="মেসের নোটিশ ও আপডেট"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -78,7 +78,7 @@
                 android:background="?attr/selectableItemBackground"
                 android:fontFamily="sans-serif-medium"
                 android:padding="6dp"
-                android:text="Mark Read"
+                android:text="পড়া হয়েছে"
                 android:textColor="@color/primary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -113,7 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="All Alerts"
+                    android:text="সকল নোটিশ"
                     android:textSize="11sp" />
 
                 <com.google.android.material.chip.Chip
@@ -121,7 +121,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📢 Notices"
+                    android:text="📢 সাধারণ নোটিশ"
                     android:textSize="11sp" />
 
                 <com.google.android.material.chip.Chip
@@ -129,7 +129,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="💰 Due Reminders"
+                    android:text="💰 বকেয়া স্মরণ"
                     android:textSize="11sp" />
 
                 <com.google.android.material.chip.Chip
@@ -137,7 +137,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🍽️ Meal Alerts"
+                    android:text="🍽️ মিল সতর্কতা"
                     android:textSize="11sp" />
 
                 <com.google.android.material.chip.Chip
@@ -145,7 +145,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🛒 Bazar Duties"
+                    android:text="🛒 বাজার ডিউটি"
                     android:textSize="11sp" />
             </com.google.android.material.chip.ChipGroup>
         </HorizontalScrollView>
@@ -181,7 +181,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:text="Manager Notification Dispatcher"
+                android:text="ম্যানেজার নোটিফিকেশন সেন্টার"
                 android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -190,7 +190,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="Send online push, cellular SMS or dual dispatches"
+                android:text="পুশ বা এসএমএস নোটিফিকেশন পাঠান"
                 android:textColor="@color/text_secondary"
                 android:textSize="11sp" />
         </LinearLayout>
@@ -201,7 +201,7 @@
             android:layout_height="38dp"
             android:backgroundTint="@color/primary"
             android:fontFamily="sans-serif-medium"
-            android:text="+ Dispatch"
+            android:text="+ পাঠান"
             android:textColor="@android:color/white"
             android:textSize="11sp"
             app:cornerRadius="10dp" />
@@ -232,7 +232,7 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:fontFamily="sans-serif"
-            android:text="Disable battery optimization to receive push alerts when app is closed."
+            android:text="অ্যাপ বন্ধ থাকা অবস্থায় পুশ নোটিফিকেশন পেতে ব্যাটারি অপ্টিমাইজেশন বন্ধ করুন।"
             android:textColor="@color/text_secondary"
             android:textSize="11sp" />
 
@@ -241,7 +241,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="Enable"
+            android:text="ঠিক করুন"
             android:textColor="@color/primary"
             android:textSize="11sp" />
     </LinearLayout>
@@ -267,7 +267,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:fontFamily="sans-serif-medium"
-            android:text="No Notifications Yet"
+            android:text="কোনো নোটিফিকেশন নেই"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -277,7 +277,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:gravity="center"
-            android:text="Notices, due payment reminders, and bazaar duties will appear here in real-time."
+            android:text="জরুরি নোটিশ, বকেয়া স্মরণিকা এবং বাজার সংক্রান্ত তথ্য এখানে দেখতে পাবেন।"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
     </LinearLayout>

@@ -8,11 +8,11 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_support"
-        android:title="Help Desk &amp; Tickets"
+        android:title="হেল্পডেস্ক ও সাপোর্ট"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_report_issue"
-        android:title="Report Issue / Feedback"
+        android:title="মতামত বা সমস্যা জানান"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_settings"
@@ -21,6 +21,6 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/action_logout"
-        android:title="Sign Out"
+        android:title="লগআউট"
         app:showAsAction="never" />
 </menu>

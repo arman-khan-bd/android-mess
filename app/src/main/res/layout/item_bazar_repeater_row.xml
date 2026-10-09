@@ -30,7 +30,7 @@
                 android:background="@drawable/badge_credit"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="2dp"
-                android:text="Item #1"
+                android:text="আইটেম #১"
                 android:textColor="@color/primary"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -42,7 +42,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Remove Item"
+                android:contentDescription="আইটেম মুছুন"
                 android:padding="12dp"
                 app:srcCompat="@drawable/ic_lucide_trash" />
         </RelativeLayout>
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Item Name"
+            android:text="বাজারের পণ্যের নাম"
             android:textColor="@color/text_secondary"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -63,7 +63,7 @@
             android:layout_height="44dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/rounded_edittext"
-            android:hint="e.g. Chicken, Beef, Potato, Spices"
+            android:hint="যেমন: মুরগি, আলু, তেল, পেঁয়াজ"
             android:inputType="textCapSentences"
             android:paddingHorizontal="12dp"
             android:textColor="@color/text_primary"
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Pool Category"
+            android:text="খরচের খাত / পুল"
             android:textColor="@color/text_secondary"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -105,7 +105,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Quantity / Unit"
+                    android:text="পরিমাণ / একক"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp"
                     android:textStyle="bold" />
@@ -116,7 +116,7 @@
                     android:layout_height="44dp"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="e.g. 2 kg, 1.5 L"
+                    android:hint="যেমন: ২ কেজি, ১ লিটার"
                     android:inputType="text"
                     android:paddingHorizontal="12dp"
                     android:textColor="@color/text_primary"
@@ -134,7 +134,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Price (৳)"
+                    android:text="দাম (৳)"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp"
                     android:textStyle="bold" />
@@ -145,7 +145,7 @@
                     android:layout_height="44dp"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="0.00"
+                    android:hint="০.০০"
                     android:inputType="numberDecimal"
                     android:paddingHorizontal="12dp"
                     android:textColor="@color/text_primary"

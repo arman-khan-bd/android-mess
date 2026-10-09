@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Member Deposit"
+            android:text="সদস্যের জমা যোগ করুন"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="20dp"
-            android:text="Credit a payment or advance towards member balance"
+            android:text="সদস্যের হিসাবে নগদ বা অগ্রিম টাকা জমা লিপিবদ্ধ করুন"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
@@ -43,7 +43,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Select Member"
+                    android:text="সদস্য নির্বাচন করুন"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -58,7 +58,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Deposit Amount (৳)"
+                    android:text="জমার পরিমাণ (৳)"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -69,13 +69,13 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="14dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="0.00"
+                    android:hint="০.০০"
                     android:inputType="numberDecimal" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Deposit Date"
+                    android:text="জমার তারিখ"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -86,13 +86,13 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="14dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="2026-10-09"
+                    android:hint="তারিখ নির্বাচন"
                     android:inputType="date" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Note / Reference (Optional)"
+                    android:text="মন্তব্য / রেফারেন্স (ঐচ্ছিক)"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -103,14 +103,14 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="24dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="e.g. bKash / Cash payment"
+                    android:hint="যেমন: বিকাশ / নগদ প্রদান"
                     android:inputType="textCapSentences" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSaveDeposit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Save Deposit"
+                    android:text="জমা সংরক্ষণ করুন"
                     style="@style/SmartButton" />
 
             </LinearLayout>

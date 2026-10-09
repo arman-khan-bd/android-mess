@@ -9,7 +9,7 @@
         android:id="@+id/tvVoucherTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bazar Voucher Receipt"
+        android:text="বাজার ভাউচার / রসিদ"
         android:textColor="@color/text_primary"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="12dp"
-        android:text="Amount: ৳ 0.00 • 2026-10-09"
+        android:text="পরিমাণ: ৳ ০.০০ • ২০২৬-১০-০৯"
         android:textColor="@color/text_secondary"
         android:textSize="12sp" />
 

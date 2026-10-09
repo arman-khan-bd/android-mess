@@ -21,7 +21,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
+            android:contentDescription="ফিরে যান"
             android:padding="12dp"
             app:srcCompat="@drawable/ic_lucide_logout"
             app:tint="@color/text_primary" />
@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bazar Ledger &amp; Audit Table"
+                android:text="বাজারের পূর্ণ খতিয়ান ও নিরীক্ষা"
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -45,7 +45,7 @@
                 android:id="@+id/tvDateRangeDisplay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="This Month: 01 Oct 2026 - 31 Oct 2026"
+                android:text="এই মাস: ০১ অক্টো ২০২৬ - ৩১ অক্টো ২০২৬"
                 android:textColor="@color/text_secondary"
                 android:textSize="11sp" />
         </LinearLayout>
@@ -68,7 +68,7 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="PDF Statement"
+            android:text="পিডিএফ স্টেটমেন্ট"
             android:textAllCaps="false"
             android:textColor="@color/primary"
             android:textSize="12sp"
@@ -88,7 +88,7 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="Excel (.xlsx)"
+            android:text="এক্সেল শিট"
             android:textAllCaps="false"
             android:textColor="@color/accent"
             android:textSize="12sp"
@@ -119,7 +119,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="This Week"
+                android:text="এই সপ্তাহ"
                 android:textSize="12sp" />
 
             <com.google.android.material.chip.Chip
@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="This Month"
+                android:text="এই মাস"
                 android:textSize="12sp" />
 
             <com.google.android.material.chip.Chip
@@ -136,7 +136,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Last Month"
+                android:text="গত মাস"
                 android:textSize="12sp" />
 
             <com.google.android.material.chip.Chip
@@ -144,7 +144,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Custom Range 📅"
+                android:text="নির্দিষ্ট তারিখ 📅"
                 android:textSize="12sp" />
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
@@ -184,7 +184,7 @@
                     android:id="@+id/tvLedgerTotalCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 Entries"
+                    android:text="০টি রেকর্ড"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -203,7 +203,7 @@
                     android:background="@drawable/badge_credit"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="Raw Meal: ৳0.00"
+                    android:text="মিল বাজার: ৳০.০০"
                     android:textColor="@color/credit_green"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -216,7 +216,7 @@
                     android:background="@drawable/badge_credit"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="Shared: ৳0.00"
+                    android:text="মশলা/তেল: ৳০.০০"
                     android:textColor="@color/accent"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -229,7 +229,7 @@
                     android:background="@drawable/badge_credit"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="Utility: ৳0.00"
+                    android:text="ভাড়া/বিল: ৳০.০০"
                     android:textColor="@color/warning_amber"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -269,7 +269,7 @@
                     <TextView
                         android:layout_width="95dp"
                         android:layout_height="wrap_content"
-                        android:text="Date"
+                        android:text="তারিখ"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -277,7 +277,7 @@
                     <TextView
                         android:layout_width="180dp"
                         android:layout_height="wrap_content"
-                        android:text="Items Highlights"
+                        android:text="বাজারের বিবরণ"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -285,7 +285,7 @@
                     <TextView
                         android:layout_width="115dp"
                         android:layout_height="wrap_content"
-                        android:text="Category"
+                        android:text="খাত / পুল"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -293,7 +293,7 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="Amount"
+                        android:text="টাকা (৳)"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -301,7 +301,7 @@
                     <TextView
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
-                        android:text="Paid By"
+                        android:text="পরিশোধকারী"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -309,7 +309,7 @@
                     <TextView
                         android:layout_width="90dp"
                         android:layout_height="wrap_content"
-                        android:text="Voucher"
+                        android:text="ভাউচার"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -328,7 +328,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="32dp"
-                    android:text="No bazar records found for the selected period"
+                    android:text="নির্বাচিত সময়ে কোনো বাজার বা খরচের রেকর্ড পাওয়া যায়নি"
                     android:textColor="@color/text_muted"
                     android:textSize="13sp"
                     android:visibility="gone" />

@@ -26,7 +26,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:paddingEnd="8dp"
-        android:text="Chicken 2kg, Rice 5kg"
+        android:text="মুরগি ২ কেজি, চাল ৫ কেজি"
         android:textColor="@color/text_primary"
         android:textSize="12sp"
         android:textStyle="bold" />
@@ -44,7 +44,7 @@
             android:background="@drawable/badge_credit"
             android:paddingHorizontal="6dp"
             android:paddingVertical="2dp"
-            android:text="Raw Meal"
+            android:text="মিল খরচ"
             android:textColor="@color/credit_green"
             android:textSize="10sp"
             android:textStyle="bold" />
@@ -56,7 +56,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:paddingEnd="8dp"
-        android:text="৳ 1,500.00"
+        android:text="৳ ১,৫০০.০০"
         android:textColor="@color/primary_dark"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -74,7 +74,7 @@
             android:background="@drawable/bg_payer_badge"
             android:paddingHorizontal="6dp"
             android:paddingVertical="2dp"
-            android:text="Tanvir H."
+            android:text="তানভীর"
             android:textColor="@color/text_primary"
             android:textSize="10sp"
             android:textStyle="bold" />
@@ -86,7 +86,7 @@
         android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:text="📎 View"
+        android:text="📎 দেখুন"
         android:textColor="@color/accent"
         android:textSize="11sp"
         android:textStyle="bold" />

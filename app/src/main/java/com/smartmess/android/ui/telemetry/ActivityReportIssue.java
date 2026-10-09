@@ -134,10 +134,10 @@ public class ActivityReportIssue extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(ActivityReportIssue.this, "Feedback submitted! Reference #" + response.body().getReportId(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(ActivityReportIssue.this, "সমস্যা জমা দেওয়া হয়েছে! রেফারেন্স নং: #" + response.body().getReportId(), Toast.LENGTH_LONG).show();
                     finish();
                 } else {
-                    Toast.makeText(ActivityReportIssue.this, "Failed to submit report. Please try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityReportIssue.this, "রিপোর্ট জমা দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -145,7 +145,7 @@ public class ActivityReportIssue extends AppCompatActivity {
             public void onFailure(Call<TelemetryReportResponse> call, Throwable t) {
                 btnSubmitReport.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(ActivityReportIssue.this, "Report queued locally (offline mode).", Toast.LENGTH_LONG).show();
+                Toast.makeText(ActivityReportIssue.this, "অফলাইন মোড: রিপোর্ট স্থানীয়ভাবে জমা হয়েছে।", Toast.LENGTH_LONG).show();
                 finish();
             }
         });

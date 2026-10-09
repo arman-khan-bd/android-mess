@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
-                android:text="TKT-2026-X9812"
+                android:text="টিকিট-২০২৬-৯৮১২"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -40,7 +40,7 @@
                 android:background="@drawable/rounded_edittext"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="2dp"
-                android:text="OPEN"
+                android:text="চলমান"
                 android:textColor="@color/primary"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Need help upgrading Standard Plan via bKash"
+            android:text="বিকাশের মাধ্যমে স্ট্যান্ডার্ড প্ল্যানে আপগ্রেড করতে সহায়তা চাই"
             android:textColor="@color/text_primary"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -82,7 +82,7 @@
             android:layout_height="48dp"
             android:layout_weight="1"
             android:background="@drawable/rounded_edittext"
-            android:hint="Type your message..."
+            android:hint="আপনার বার্তা লিখুন..."
             android:paddingHorizontal="14dp"
             android:textSize="14sp" />
 
@@ -91,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:text="Send"
+            android:text="পাঠান"
             android:textAllCaps="false"
             android:textSize="14sp"
             app:cornerRadius="10dp" />

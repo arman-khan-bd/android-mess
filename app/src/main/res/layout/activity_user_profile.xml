@@ -21,7 +21,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
+            android:contentDescription="ফিরে যান"
             android:padding="12dp"
             app:srcCompat="@drawable/ic_lucide_logout"
             app:tint="@color/text_primary" />
@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Member Profile &amp; Statement"
+                android:text="সদস্য প্রোফাইল ও খতিয়ান"
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -45,7 +45,7 @@
                 android:id="@+id/tvSubtitleMess"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Financial Statement &amp; Activity Log"
+                android:text="আর্থিক হিসাব ও কার্যক্রমের ইতিহাস"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -58,7 +58,7 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:paddingHorizontal="12dp"
-            android:text="Manage"
+            android:text="পরিচালনা"
             android:textAllCaps="false"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -104,7 +104,7 @@
                             android:layout_width="84dp"
                             android:layout_height="84dp"
                             android:src="@drawable/ic_member"
-                            android:contentDescription="Profile Picture" />
+                            android:contentDescription="প্রোফাইল ছবি" />
 
                         <androidx.appcompat.widget.AppCompatImageButton
                             android:id="@+id/btnEditAvatar"
@@ -113,7 +113,7 @@
                             android:layout_gravity="bottom|end"
                             android:background="@drawable/badge_credit"
                             android:backgroundTint="@color/primary"
-                            android:contentDescription="Edit Avatar"
+                            android:contentDescription="ছবি পরিবর্তন"
                             android:padding="7dp"
                             app:srcCompat="@drawable/ic_lucide_file_text"
                             app:tint="@android:color/white" />
@@ -124,7 +124,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Member Name"
+                        android:text="সদস্যের নাম"
                         android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -144,7 +144,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Joined Oct 2026"
+                        android:text="যুক্ত হয়েছেন অক্টোবর ২০২৬"
                         android:textColor="@color/text_muted"
                         android:textSize="11sp" />
 
@@ -161,7 +161,7 @@
                             android:background="@drawable/bg_payer_badge"
                             android:paddingHorizontal="10dp"
                             android:paddingVertical="4dp"
-                            android:text="Member"
+                            android:text="সদস্য"
                             android:textColor="@color/primary"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -174,7 +174,7 @@
                             android:background="@drawable/badge_credit"
                             android:paddingHorizontal="10dp"
                             android:paddingVertical="4dp"
-                            android:text="Active"
+                            android:text="সক্রিয়"
                             android:textColor="@color/credit_green"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -198,7 +198,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Active Cycle Financial Statement"
+                        android:text="চলতি মাসের আর্থিক হিসাব বিবরণী"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -208,7 +208,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Cycle: 01 Oct 2026 - 31 Oct 2026"
+                        android:text="হিসাব কাল: ০১ - ৩১ অক্টোবর, ২০২৬"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp" />
 
@@ -230,7 +230,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Total Deposits Made"
+                            android:text="মোট জমা টাকা"
                             android:textColor="@color/text_primary"
                             android:textSize="13sp" />
 
@@ -261,7 +261,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Consumed Meal Cost"
+                                android:text="মিল বাবদ মোট খরচ"
                                 android:textColor="@color/text_primary"
                                 android:textSize="13sp" />
 
@@ -269,7 +269,7 @@
                                 android:id="@+id/tvMealDetailsFormula"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0 Meals × ৳0.00 rate"
+                                android:text="০ মিল × ৳০.০০ রেট"
                                 android:textColor="@color/text_muted"
                                 android:textSize="11sp" />
                         </LinearLayout>
@@ -296,7 +296,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Shared Food Share (Spices, Oil, Salt)"
+                            android:text="শেয়ার্ড খাদ্য খরচ (তেল, মসলা, গ্যাস)"
                             android:textColor="@color/text_primary"
                             android:textSize="13sp" />
 
@@ -322,7 +322,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Utility &amp; Asset Share"
+                            android:text="ইউটিলিটি ও আনুষঙ্গিক খরচ"
                             android:textColor="@color/text_primary"
                             android:textSize="13sp" />
 
@@ -348,7 +348,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="SMS Charges Debited"
+                            android:text="এসএমএস চার্জ কর্তন"
                             android:textColor="@color/text_primary"
                             android:textSize="13sp" />
 
@@ -386,7 +386,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Net Settlement Balance"
+                                android:text="চূড়ান্ত নিষ্পত্তি ব্যালেন্স"
                                 android:textColor="@color/text_primary"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -395,7 +395,7 @@
                                 android:id="@+id/tvBalanceStatusLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Refund Due / Debt"
+                                android:text="ফেরতযোগ্য / বকেয়া"
                                 android:textColor="@color/text_muted"
                                 android:textSize="11sp" />
                         </LinearLayout>
@@ -421,7 +421,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Activity History (Bazar Trips &amp; Deposits)"
+                android:text="কার্যক্রমের বিবরণ (বাজার ও জমা)"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -439,7 +439,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="24dp"
-                android:text="No bazar trips or deposits logged yet for this member"
+                android:text="এই সদস্যের কোনো বাজার বা জমার রেকর্ড পাওয়া যায়নি"
                 android:textColor="@color/text_muted"
                 android:textSize="12sp"
                 android:visibility="gone" />
@@ -458,7 +458,7 @@
                     style="@style/SmartButton"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:text="Manage Member Role &amp; Status"
+                    android:text="সদস্যের পদবী ও স্ট্যাটাস পরিচালনা"
                     android:textAllCaps="false"
                     android:textSize="13sp"
                     app:icon="@drawable/ic_lucide_sliders"
@@ -470,7 +470,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="8dp"
-                    android:text="Send Due Reminder SMS"
+                    android:text="বকেয়া তাগাদা এসএমএস পাঠান"
                     android:textAllCaps="false"
                     android:textColor="@color/warning_amber"
                     android:textSize="13sp"

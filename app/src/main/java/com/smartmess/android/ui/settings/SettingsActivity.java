@@ -145,16 +145,16 @@ public class SettingsActivity extends AppCompatActivity {
         int currentMode = com.smartmess.android.utils.ThemeManager.getThemeMode(this);
 
         new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                .setTitle("Select Appearance Theme")
+                .setTitle("অ্যাপের থিম নির্বাচন করুন")
                 .setSingleChoiceItems(themes, currentMode, (dialog, which) -> {
                     com.smartmess.android.utils.ThemeManager.setThemeMode(SettingsActivity.this, which);
                     if (tvCurrentThemeBadge != null) {
                         tvCurrentThemeBadge.setText(themes[which]);
                     }
                     dialog.dismiss();
-                    Toast.makeText(SettingsActivity.this, "Theme updated to " + themes[which], Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, "থিম পরিবর্তিত হয়েছে: " + themes[which], Toast.LENGTH_SHORT).show();
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("বাতিল", null)
                 .show();
     }
 
@@ -202,14 +202,14 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        Toast.makeText(this, "Target meal budget (৳" + budget + ") and mess rules saved!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "কাঙ্ক্ষিত মিল বাজেট (৳" + budget + ") এবং মেসের নিয়মাবলী সংরক্ষিত হয়েছে!", Toast.LENGTH_SHORT).show();
         finish();
     }
 
     private void showDynamicPlansSheet() {
         UpgradeProBottomSheet sheet = UpgradeProBottomSheet.newInstance(
-                "Subscription Plans",
-                "Choose a live subscription plan to upgrade your mess with zero downtime"
+                "সাবস্ক্রিপশন প্ল্যানসমূহ",
+                "আপনার মেসের জন্য উপযুক্ত প্ল্যান নির্বাচন করে আপগ্রেড করুন"
         );
         sheet.show(getSupportFragmentManager(), UpgradeProBottomSheet.TAG);
     }

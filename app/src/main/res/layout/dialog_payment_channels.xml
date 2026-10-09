@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
-        android:text="Choose Payment Channel"
+        android:text="পেমেন্ট মাধ্যম বেছে নিন"
         android:textColor="@color/text_primary"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -34,7 +34,7 @@
         android:layout_marginTop="2dp"
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif"
-        android:text="Upgrading to Standard Pro (৳599.00)"
+        android:text="স্ট্যান্ডার্ড প্রো আপগ্রেড (৳৫৯৯.০০)"
         android:textColor="@color/text_secondary"
         android:textSize="13sp" />
 
@@ -80,7 +80,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="bKash Direct Pay"
+                        android:text="বিকাশ পেমেন্ট"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -88,7 +88,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Instant automated wallet checkout"
+                        android:text="তাৎক্ষণিক বিকাশ ওয়ালেট পেমেন্ট"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="bKash"
+                    android:text="বিকাশ"
                     android:textColor="#E2136E"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -139,7 +139,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nagad Checkout"
+                        android:text="নগদ পেমেন্ট"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -147,7 +147,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fast mobile recharge &amp; payment"
+                        android:text="সহজ ও দ্রুত নগদ ওয়ালেট পেমেন্ট"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -157,7 +157,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="Nagad"
+                    android:text="নগদ"
                     android:textColor="#F7941D"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -198,7 +198,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="DBBL Rocket"
+                        android:text="রকেট পেমেন্ট"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -206,7 +206,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Dutch-Bangla Bank mobile banking"
+                        android:text="ডাচ্-বাংলা ব্যাংক মোবাইল ব্যাংকিং"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -216,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="Rocket"
+                    android:text="রকেট"
                     android:textColor="#8C1D82"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -257,7 +257,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Visa / Mastercard / Internet Banking"
+                        android:text="ভিসা / মাস্টারকার্ড / ইন্টারনেট ব্যাংকিং"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -265,7 +265,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Secure 3D SSL payment gateway"
+                        android:text="নিরাপদ ৩ডি এসএসএল পেমেন্ট গেটওয়ে"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -275,7 +275,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="CARD"
+                    android:text="কার্ড"
                     android:textColor="@color/info_blue"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -290,7 +290,7 @@
         android:layout_height="50dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
-        android:text="Proceed to Payment"
+        android:text="পেমেন্ট সম্পন্ন করুন"
         android:textSize="14sp"
         android:textStyle="bold"
         app:cornerRadius="12dp"
@@ -301,7 +301,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
-        android:text="Instant License Activation • Encrypted Handshake"
+        android:text="তাৎক্ষণিক লাইসেন্স চালু • এনক্রিপ্টেড পেমেন্ট"
         android:textColor="@color/text_muted"
         android:textSize="11sp" />
 

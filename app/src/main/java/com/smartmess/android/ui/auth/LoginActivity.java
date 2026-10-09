@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
 
         if (phone.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter both phone and password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "মোবাইল নম্বর ও পাসওয়ার্ড লিখুন", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Trigger cloud sync to pull latest mess meals, bazar & expenses
                             com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
 
-                            Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "লগইন সফল হয়েছে!", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this, com.smartmess.android.ui.MainActivity.class));
                             finish();
                         } else {
@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                                 btnLogin.setEnabled(true);
                                 String errMsg = (resp != null && resp.getMessage() != null)
                                         ? resp.getMessage()
-                                        : "Invalid phone number or password.";
+                                        : "মোবাইল নম্বর বা পাসওয়ার্ড ভুল হয়েছে।";
                                 Toast.makeText(LoginActivity.this, errMsg, Toast.LENGTH_LONG).show();
                             }
                         }
@@ -134,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (!attemptLocalOfflineLogin(phone, password, true)) {
                             pbLogin.setVisibility(View.GONE);
                             btnLogin.setEnabled(true);
-                            Toast.makeText(LoginActivity.this, "Authentication failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "লগইন ব্যর্থ হয়েছে: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -144,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!attemptLocalOfflineLogin(phone, password, true)) {
                 pbLogin.setVisibility(View.GONE);
                 btnLogin.setEnabled(true);
-                Toast.makeText(this, "No internet connection and no matching local account found.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "ইন্টারনেট সংযোগ নেই এবং কোনো সংরক্ষিত অ্যাকাউন্ট পাওয়া যায়নি।", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -178,7 +178,7 @@ public class LoginActivity extends AppCompatActivity {
 
             pbLogin.setVisibility(View.GONE);
             if (isOfflineMode) {
-                Toast.makeText(this, "Logged in in Offline Mode.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "অফলাইন মোডে লগইন করা হয়েছে।", Toast.LENGTH_SHORT).show();
             }
             startActivity(new Intent(LoginActivity.this, com.smartmess.android.ui.MainActivity.class));
             finish();

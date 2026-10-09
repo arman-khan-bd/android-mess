@@ -123,7 +123,7 @@ public class DailyMealToggleActivity extends AppCompatActivity {
 
     private void saveMealToggle() {
         if (isLocked) {
-            Toast.makeText(this, "Cut-off time has passed. Modifications are locked.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "কাট-অফ সময় পার হয়ে গেছে। আগামীকালের মিল পরিবর্তন বন্ধ।", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -149,7 +149,7 @@ public class DailyMealToggleActivity extends AppCompatActivity {
         meal.setUpdatedAt(now);
 
         mealDao.insertOrUpdate(meal);
-        Toast.makeText(this, "Tomorrow's meal preferences updated successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "আগামীকালের মিলের পছন্দ সফলভাবে সংরক্ষিত হয়েছে!", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

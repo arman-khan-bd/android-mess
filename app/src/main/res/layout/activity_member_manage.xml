@@ -21,7 +21,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
+            android:contentDescription="ফিরে যান"
             android:padding="12dp"
             app:srcCompat="@drawable/ic_lucide_logout"
             app:tint="@color/text_primary" />
@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Member Permissions"
+                android:text="সদস্যের ভূমিকা ও অনুমোদন"
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -44,7 +44,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Configure roles and active residency status"
+                android:text="সদস্যের দায়িত্ব ও মেসে সক্রিয় থাকার অবস্থা পরিবর্তন করুন"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -82,7 +82,7 @@
                         android:layout_width="52dp"
                         android:layout_height="52dp"
                         android:src="@drawable/ic_member"
-                        android:contentDescription="Avatar" />
+                        android:contentDescription="প্রোফাইল ছবি" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -95,7 +95,7 @@
                             android:id="@+id/tvMemberName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Member Name"
+                            android:text="সদস্যের নাম"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -121,7 +121,7 @@
                                 android:background="@drawable/bg_payer_badge"
                                 android:paddingHorizontal="6dp"
                                 android:paddingVertical="2dp"
-                                android:text="Member"
+                                android:text="সদস্য"
                                 android:textColor="@color/primary"
                                 android:textSize="10sp"
                                 android:textStyle="bold" />
@@ -134,7 +134,7 @@
                                 android:background="@drawable/badge_credit"
                                 android:paddingHorizontal="6dp"
                                 android:paddingVertical="2dp"
-                                android:text="Active"
+                                android:text="সক্রিয়"
                                 android:textColor="@color/credit_green"
                                 android:textSize="10sp"
                                 android:textStyle="bold" />
@@ -159,7 +159,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Assign Role (Manager Only)"
+                        android:text="ভূমিকা নির্ধারণ (কেবল ম্যানেজার)"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -168,7 +168,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Controls editing permissions in meal sheet and bazar logging"
+                        android:text="মিল ও বাজার এন্ট্রি করার অনুমতি নিয়ন্ত্রণ করে"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp" />
 
@@ -182,7 +182,7 @@
                             android:id="@+id/rbRoleMember"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Regular Member (Read ledgers, view meals)"
+                            android:text="সাধারণ সদস্য (হিসাব ও মিল দেখতে পারবেন)"
                             android:textColor="@color/text_primary"
                             android:textSize="13sp" />
 
@@ -191,7 +191,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:text="Assistant Manager / Bazar Boy (Can log bazar &amp; expenses)"
+                            android:text="সহকারী ম্যানেজার / বাজার বয় (বাজার ও খরচ এন্ট্রি করতে পারবেন)"
                             android:textColor="@color/text_primary"
                             android:textSize="13sp" />
 
@@ -200,7 +200,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:text="Mess Manager (Full administrative authority)"
+                            android:text="মেস ম্যানেজার (সম্পূর্ণ পরিচালনা ও নিয়ন্ত্রণ ক্ষমতা)"
                             android:textColor="@color/text_primary"
                             android:textSize="13sp" />
                     </RadioGroup>
@@ -223,7 +223,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Residency &amp; Meal Status"
+                        android:text="মেসের অবস্থা ও মিল স্ট্যাটাস"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -232,7 +232,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Controls whether this member participates in daily meals"
+                        android:text="সদস্যের দৈনিক মিল চালু থাকবে কি না তা নিয়ন্ত্রণ করে"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp" />
 
@@ -246,7 +246,7 @@
                             android:id="@+id/rbStatusActive"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Active (Dines regularly, daily meals counted)"
+                            android:text="সক্রিয় (নিয়মিত খান, মিল গণনা চালু থাকবে)"
                             android:textColor="@color/text_primary"
                             android:textSize="13sp" />
 
@@ -255,7 +255,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:text="On Leave / Vacation (Auto-mutes daily meals)"
+                            android:text="ছুটিতে আছেন (মিল স্বয়ংক্রিয়ভাবে বন্ধ থাকবে)"
                             android:textColor="@color/text_primary"
                             android:textSize="13sp" />
 
@@ -264,7 +264,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:text="Left Mess (Archived, preserves past transactions)"
+                            android:text="মেস ছেড়েছেন (সংরক্ষিত, পূর্বের হিসাব অপরিবর্তিত থাকবে)"
                             android:textColor="@color/text_primary"
                             android:textSize="13sp" />
                     </RadioGroup>
@@ -277,7 +277,7 @@
                 style="@style/SmartButton"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:text="Save Role &amp; Status Changes"
+                android:text="পরিবর্তন সংরক্ষণ করুন"
                 android:textAllCaps="false"
                 android:textSize="14sp" />
 

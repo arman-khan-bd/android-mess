@@ -193,12 +193,12 @@ public class ActivityBazarLedger extends AppCompatActivity {
                 loadLedgerData();
             }, year, month, dayOfMonth);
 
-            endDialog.setTitle("Select End Date");
+            endDialog.setTitle("শেষ তারিখ নির্বাচন করুন");
             endDialog.show();
 
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
-        startDialog.setTitle("Select Start Date");
+        startDialog.setTitle("শুরুর তারিখ নির্বাচন করুন");
         startDialog.show();
     }
 
@@ -330,7 +330,7 @@ public class ActivityBazarLedger extends AppCompatActivity {
             new MaterialAlertDialogBuilder(this)
                     .setTitle(expense.getTitle() + " (৳" + expense.getAmount() + ")")
                     .setView(iv)
-                    .setPositiveButton("Close", null)
+                    .setPositiveButton("বন্ধ করুন", null)
                     .show();
             return;
         }
@@ -349,7 +349,7 @@ public class ActivityBazarLedger extends AppCompatActivity {
 
         new MaterialAlertDialogBuilder(this)
                 .setView(dialogView)
-                .setPositiveButton("Close", null)
+                .setPositiveButton("বন্ধ করুন", null)
                 .show();
     }
 }

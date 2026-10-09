@@ -127,7 +127,7 @@ public class ActivityMealVacation extends AppCompatActivity {
 
     private void scheduleVacation() {
         if (selectedStartDate == null || selectedEndDate == null) {
-            Toast.makeText(this, "Please select start and end dates.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "শুরু ও শেষ তারিখ নির্বাচন করুন।", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -135,7 +135,7 @@ public class ActivityMealVacation extends AppCompatActivity {
             Date start = apiFormat.parse(selectedStartDate);
             Date end = apiFormat.parse(selectedEndDate);
             if (start != null && end != null && start.after(end)) {
-                Toast.makeText(this, "End date cannot be earlier than start date.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "শেষ তারিখ শুরুর তারিখের আগের হতে পারে না।", Toast.LENGTH_SHORT).show();
                 return;
             }
         } catch (Exception ignored) {}
@@ -160,12 +160,11 @@ public class ActivityMealVacation extends AppCompatActivity {
         int lockedDays = vacationDao.autoLockMealsForVacation(messId, userId, selectedStartDate, selectedEndDate, mealDao);
 
         // Post notification into local In-App Notification Center
-        String msg = sessionManager.getUserName() + " activated Vacation Mode from "
-                + DateTimeUtils.formatDisplayDate(selectedStartDate) + " to "
-                + DateTimeUtils.formatDisplayDate(selectedEndDate) + " (" + lockedDays + " meal days auto-locked to 0).";
-        NotificationCenterHelper.postNotification(this, messId, "🏖️ Vacation Mode Scheduled", msg, NotificationCenterHelper.TYPE_VACATION);
+        String msg = sessionManager.getUserName() + " মিলের ছুটি চালু করেছেন: "
+                + DateTimeUtils.formatDisplayDate(selectedStartDate) + " থেকে " + DateTimeUtils.formatDisplayDate(selectedEndDate) + " (" + lockedDays + " দিনের মিল ০ করা হয়েছে)।";
+        NotificationCenterHelper.postNotification(this, messId, "🏖️ মিলের ছুটি নির্ধারিত", msg, NotificationCenterHelper.TYPE_VACATION);
 
-        Toast.makeText(this, "Vacation mode activated! " + lockedDays + " days auto-locked to 0.0.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "মিলের ছুটি সফলভাবে চালু হয়েছে! (" + lockedDays + " দিনের মিল ০ করা হয়েছে)", Toast.LENGTH_LONG).show();
         etVacationReason.setText("");
         loadVacations();
     }
@@ -219,18 +218,18 @@ public class ActivityMealVacation extends AppCompatActivity {
 
             holder.btnCancelVacation.setOnClickListener(view -> {
                 new AlertDialog.Builder(ActivityMealVacation.this)
-                        .setTitle("Cancel Vacation Mode?")
-                        .setMessage("Do you want to cancel this vacation? You will be able to log meals normally again.")
-                        .setPositiveButton("Yes, Cancel", (dialog, which) -> {
+                        .setTitle("মিলের ছুটি বাতিল করবেন?")
+                        .setMessage("আপনি কি ছুটির সূচি বাতিল করতে চান? এরপর আপনি যথারীতি মিল খেতে পারবেন।")
+                        .setPositiveButton("হ্যাঁ, বাতিল করুন", (dialog, which) -> {
                             vacationDao.cancelVacation(v.getId());
                             long currentMessId = sessionManager.getMessId();
-                            NotificationCenterHelper.postNotification(ActivityMealVacation.this, currentMessId, "Vacation Mode Cancelled",
-                                    sessionManager.getUserName() + " cancelled vacation (" + DateTimeUtils.formatDisplayDate(v.getStartDate()) + " to " + DateTimeUtils.formatDisplayDate(v.getEndDate()) + ")",
+                            NotificationCenterHelper.postNotification(ActivityMealVacation.this, currentMessId, "মিলের ছুটি বাতিল করা হয়েছে",
+                                    sessionManager.getUserName() + " মিলের ছুটি বাতিল করেছেন (" + DateTimeUtils.formatDisplayDate(v.getStartDate()) + " থেকে " + DateTimeUtils.formatDisplayDate(v.getEndDate()) + ")",
                                     NotificationCenterHelper.TYPE_VACATION);
-                            Toast.makeText(ActivityMealVacation.this, "Vacation schedule cancelled.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityMealVacation.this, "ছুটির সূচি বাতিল করা হয়েছে।", Toast.LENGTH_SHORT).show();
                             loadVacations();
                         })
-                        .setNegativeButton("Keep Active", null)
+                        .setNegativeButton("চালু রাখুন", null)
                         .show();
             });
         }

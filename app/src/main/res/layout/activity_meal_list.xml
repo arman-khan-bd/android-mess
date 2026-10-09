@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Meal Management"
+            android:text="মিল ব্যবস্থাপনা"
             android:textColor="@color/text_primary"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -27,7 +27,7 @@
             android:id="@+id/btnAddMeal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+ Log Meal"
+            android:text="+ মিল যোগ"
             android:textSize="12sp"
             style="@style/Widget.MaterialComponents.Button" />
     </LinearLayout>

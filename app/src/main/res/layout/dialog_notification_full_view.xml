@@ -23,7 +23,7 @@
             android:fontFamily="sans-serif-medium"
             android:paddingHorizontal="10dp"
             android:paddingVertical="4dp"
-            android:text="📢 NOTICE"
+            android:text="📢 নোটিশ"
             android:textColor="@color/primary_dark"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -38,7 +38,7 @@
             android:fontFamily="sans-serif-medium"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"
-            android:text="🔔 PUSH"
+            android:text="🔔 পুশ"
             android:textColor="@color/due_red"
             android:textSize="10sp"
             android:textStyle="bold" />
@@ -53,7 +53,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Close"
+            android:contentDescription="বন্ধ করুন"
             android:src="@drawable/ic_close"
             app:tint="@color/text_secondary" />
     </LinearLayout>
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
         android:fontFamily="sans-serif-medium"
-        android:text="Urgent Mess Announcement"
+        android:text="মেসের জরুরি বিজ্ঞপ্তি"
         android:textColor="@color/text_primary"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:fontFamily="sans-serif"
-            android:text="Today at 08:30 PM • Stored in SQLite"
+            android:text="আজ রাত ০৮:৩০ • সংরক্ষিত"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
     </LinearLayout>
@@ -113,7 +113,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="4dp"
-            android:text="Full notification message text goes here. Users can read the entire announcement without truncation."
+            android:text="এখানে বিজ্ঞপ্তির সম্পূর্ণ বার্তা প্রদর্শিত হবে।"
             android:textColor="@color/text_primary"
             android:textIsSelectable="true"
             android:textSize="14sp" />
@@ -134,7 +134,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:text="Dispatched by Mess Management"
+            android:text="মেস পরিচালনা থেকে প্রেরিত"
             android:textColor="@color/primary_dark"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -145,7 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:fontFamily="sans-serif"
-            android:text="Delivered via Online Push Notification &amp; Device System Tray"
+            android:text="অনলাইন পুশ নোটিফিকেশন ও ডিভাইসের মাধ্যমে প্রেরিত"
             android:textColor="@color/text_secondary"
             android:textSize="11sp" />
     </LinearLayout>
@@ -166,7 +166,7 @@
             android:layout_height="40dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="sans-serif-medium"
-            android:text="Copy"
+            android:text="কপি"
             android:textSize="12sp"
             app:cornerRadius="10dp"
             app:icon="@drawable/ic_copy"
@@ -180,7 +180,7 @@
             android:layout_marginEnd="8dp"
             android:backgroundTint="@color/credit_green"
             android:fontFamily="sans-serif-medium"
-            android:text="Deposit"
+            android:text="জমা দিন"
             android:textColor="@android:color/white"
             android:textSize="12sp"
             android:visibility="gone"
@@ -195,7 +195,7 @@
             android:layout_height="40dp"
             android:backgroundTint="@color/primary"
             android:fontFamily="sans-serif-medium"
-            android:text="Done"
+            android:text="ঠিক আছে"
             android:textColor="@android:color/white"
             android:textSize="12sp"
             app:cornerRadius="10dp" />

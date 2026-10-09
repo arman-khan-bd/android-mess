@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Expenses &amp; Bazar"
+            android:text="বাজার ও অন্যান্য খরচ"
             android:textColor="@color/text_primary"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -27,7 +27,7 @@
             android:id="@+id/btnAddExpense"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+ Log Cost"
+            android:text="+ খরচ যোগ"
             android:textSize="12sp"
             style="@style/Widget.MaterialComponents.Button" />
     </LinearLayout>
@@ -40,7 +40,7 @@
         android:background="#2E1065"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
-        android:text="★ 30-Day Limit Active (Free) • Tap to unlock Lifetime Ledger"
+        android:text="★ ৩০ দিনের ইতিহাস সীমাবদ্ধতা • আজীবন খতিয়ান আনলক করতে ট্যাপ করুন"
         android:textColor="#C084FC"
         android:textSize="12sp"
         android:textStyle="bold"

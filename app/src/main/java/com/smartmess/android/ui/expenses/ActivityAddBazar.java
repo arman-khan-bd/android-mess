@@ -119,7 +119,7 @@ public class ActivityAddBazar extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         if (!sessionManager.canLogExpenses()) {
-            Toast.makeText(this, "Only Managers and designated Bazar members can record market sessions", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "শুধুমাত্র ম্যানেজার এবং দায়িত্বপ্রাপ্ত বাজার সদস্য বাজার এন্ট্রি করতে পারবেন", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -259,7 +259,7 @@ public class ActivityAddBazar extends AppCompatActivity {
                     refreshItemRowIndices();
                     recalculateTotals();
                 } else {
-                    Toast.makeText(ActivityAddBazar.this, "At least 1 item is required", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityAddBazar.this, "অন্তত ১টি পণ্যের নাম প্রয়োজন", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -356,7 +356,7 @@ public class ActivityAddBazar extends AppCompatActivity {
                     payerRows.remove(PayerRowHolder.this);
                     recalculateTotals();
                 } else {
-                    Toast.makeText(ActivityAddBazar.this, "At least 1 payer is required", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityAddBazar.this, "টাকা প্রদানকারী অন্তত ১ জন সদস্য প্রয়োজন", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -429,7 +429,7 @@ public class ActivityAddBazar extends AppCompatActivity {
     private void splitBillEquallyAmongPayers() {
         double totalBill = calculateTotalItemCost();
         if (payerRows.isEmpty()) {
-            Toast.makeText(this, "Add at least 1 contributor first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "প্রথমে অন্তত ১ জন টাকা প্রদানকারী যোগ করুন", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -517,7 +517,7 @@ public class ActivityAddBazar extends AppCompatActivity {
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQ_CAPTURE_CAMERA);
         } else {
-            Toast.makeText(this, "Camera application not available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ক্যামেরা অ্যাপ পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -607,7 +607,7 @@ public class ActivityAddBazar extends AppCompatActivity {
         });
 
         layoutReceiptsContainer.addView(thumbView);
-        Toast.makeText(this, "Receipt attached & WebP compressed (" + kb + " KB)", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "রসিদের ছবি যুক্ত ও অপ্টিমাইজ করা হয়েছে (" + kb + " KB)", Toast.LENGTH_SHORT).show();
     }
 
     // ==========================================
@@ -616,14 +616,14 @@ public class ActivityAddBazar extends AppCompatActivity {
     private void saveBazarSession() {
         double totalBill = calculateTotalItemCost();
         if (totalBill <= 0) {
-            Toast.makeText(this, "Please enter at least 1 item with a valid price", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "দয়া করে অন্তত ১টি পণ্য ও তার সঠিক মূল্য লিখুন", Toast.LENGTH_LONG).show();
             return;
         }
 
         // Verify all items have names
         for (int i = 0; i < itemRows.size(); i++) {
             if (itemRows.get(i).getItemName().isEmpty()) {
-                Toast.makeText(this, "Please enter a name for Item #" + (i + 1), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "দয়া করে পণ্য নং এর নাম লিখুন: " + (i + 1), Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -636,7 +636,7 @@ public class ActivityAddBazar extends AppCompatActivity {
         totalPaid = round(totalPaid);
 
         if (Math.abs(totalBill - totalPaid) >= 0.01) {
-            Toast.makeText(this, "Cannot save: Payments must exactly match total bill ("
+            Toast.makeText(this, "সংরক্ষণ করা যায়নি: মোট খরচের সাথে প্রদানকৃত টাকা মিলতে হবে ("
                     + CurrencyUtils.format(totalBill) + " vs " + CurrencyUtils.format(totalPaid) + ")", Toast.LENGTH_LONG).show();
             return;
         }
@@ -758,15 +758,15 @@ public class ActivityAddBazar extends AppCompatActivity {
         com.smartmess.android.utils.NotificationCenterHelper.postNotification(
                 getApplicationContext(),
                 messId,
-                "New Market Expense Added",
-                "৳" + String.format(java.util.Locale.US, "%.2f", totalBill) + " bazar recorded (" + date + ") with " + payerRows.size() + " payers",
+                "নতুন বাজার খরচ যুক্ত হয়েছে",
+                "৳" + String.format(java.util.Locale.US, "%.2f", totalBill) + " বাজার খরচ এন্ট্রি (" + date + "), প্রদানকারী: " + payerRows.size() + " জন",
                 com.smartmess.android.utils.NotificationCenterHelper.TYPE_EXPENSE
         );
 
         // Trigger background sync
         SyncManager.triggerSync(getApplicationContext());
 
-        Toast.makeText(this, "Market session saved successfully with multi-member split!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "বাজারের হিসাব ও সদস্যদের খরচ সফলভাবে সংরক্ষিত হয়েছে!", Toast.LENGTH_LONG).show();
         finish();
     }
 

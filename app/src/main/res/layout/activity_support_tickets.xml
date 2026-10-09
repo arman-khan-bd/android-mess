@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Support Desk"
+                android:text="সাপোর্ট ডেস্ক"
                 android:textColor="@color/text_primary"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Direct assistance, billing tickets, and inquiry tracker"
+                android:text="সহায়তা, বিলিং সংক্রান্ত টিকিট ও অনুসন্ধানের তালিকা"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
@@ -45,7 +45,7 @@
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp"
                 android:background="@drawable/badge_credit"
-                android:text="★ PRO PRIORITY QUEUE ACTIVE"
+                android:text="★ প্রো প্রায়োরিটি সহায়তা সক্রিয়"
                 android:textColor="@color/credit_green"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -82,7 +82,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="No Support Tickets"
+                        android:text="কোনো সাপোর্ট টিকিট নেই"
                         android:textColor="@color/text_primary"
                         android:textSize="17sp"
                         android:textStyle="bold" />
@@ -92,7 +92,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:gravity="center"
-                        android:text="Have a question, billing inquiry, or need assistance? Open a new ticket."
+                        android:text="কোনো জিজ্ঞাসা বা সাহায্য প্রয়োজন হলে একটি নতুন টিকিট খুলুন।"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
                 </LinearLayout>
@@ -113,7 +113,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
         android:backgroundTint="@color/primary"
-        android:text="New Ticket"
+        android:text="নতুন টিকিট"
         android:textColor="@color/text_on_primary"
         app:iconTint="@color/text_on_primary" />
 

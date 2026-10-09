@@ -166,7 +166,7 @@ public class ActivityUserProfile extends AppCompatActivity {
             if (canEdit) {
                 showAvatarChoiceDialog();
             } else {
-                Toast.makeText(this, "Only mess managers can update other members' avatars", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "শুধুমাত্র মেস ম্যানেজার অন্য সদস্যদের ছবি পরিবর্তন করতে পারবেন", Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -195,7 +195,7 @@ public class ActivityUserProfile extends AppCompatActivity {
     private void loadUserProfile() {
         targetUser = userDao.getById(targetUserId);
         if (targetUser == null) {
-            Toast.makeText(this, "Member not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "সদস্য পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -406,7 +406,7 @@ public class ActivityUserProfile extends AppCompatActivity {
     // ==========================================
     private void showAvatarChoiceDialog() {
         new MaterialAlertDialogBuilder(this)
-                .setTitle("Update Profile Photo")
+                .setTitle("প্রোফাইল ছবি পরিবর্তন")
                 .setItems(new CharSequence[]{"Take Photo with Camera", "Choose from Gallery"}, (dialog, which) -> {
                     if (which == 0) {
                         launchCamera();
@@ -414,7 +414,7 @@ public class ActivityUserProfile extends AppCompatActivity {
                         launchGallery();
                     }
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("বাতিল", null)
                 .show();
     }
 
@@ -427,7 +427,7 @@ public class ActivityUserProfile extends AppCompatActivity {
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(cameraIntent, REQ_CAMERA);
         } else {
-            Toast.makeText(this, "Camera not available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ক্যামেরা পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -475,7 +475,7 @@ public class ActivityUserProfile extends AppCompatActivity {
                     try (InputStream is = getContentResolver().openInputStream(imageUri)) {
                         avatarBitmap = BitmapFactory.decodeStream(is);
                     } catch (Exception e) {
-                        Toast.makeText(this, "Failed to load selected image", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "ছবি লোড করা যায়নি", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -487,7 +487,7 @@ public class ActivityUserProfile extends AppCompatActivity {
     }
 
     private void processAndUploadAvatar(Bitmap originalBitmap) {
-        Toast.makeText(this, "Optimizing avatar (WebP 300x300)...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "ছবি অপ্টিমাইজ করা হচ্ছে...", Toast.LENGTH_SHORT).show();
 
         // 1. Center Crop square 300x300
         int size = Math.min(originalBitmap.getWidth(), originalBitmap.getHeight());
@@ -508,7 +508,7 @@ public class ActivityUserProfile extends AppCompatActivity {
             }
             fos.flush();
         } catch (Exception e) {
-            Toast.makeText(this, "Image compression error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ছবি প্রসেস করতে ত্রুটি: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -544,7 +544,7 @@ public class ActivityUserProfile extends AppCompatActivity {
                 mainHandler.post(() -> {
                     // Save local cached file path as fallback
                     userDao.updateAvatar(targetUserId, webpFile.getAbsolutePath());
-                    Toast.makeText(ActivityUserProfile.this, "Avatar saved offline. Will sync when connected.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityUserProfile.this, "ছবি অফলাইনে সংরক্ষিত। ইন্টারনেট পেলে সিঙ্ক হবে।", Toast.LENGTH_SHORT).show();
                 });
             }
 
@@ -562,12 +562,12 @@ public class ActivityUserProfile extends AppCompatActivity {
                                 sessionManager.setAvatarUrl(avatarUrl);
                             }
                             Glide.with(ActivityUserProfile.this).load(avatarUrl).circleCrop().into(ivProfileAvatar);
-                            Toast.makeText(ActivityUserProfile.this, "Avatar uploaded & updated successfully!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityUserProfile.this, "প্রোফাইল ছবি সফলভাবে আপডেট হয়েছে!", Toast.LENGTH_SHORT).show();
                         });
                     } else {
                         mainHandler.post(() -> {
                             userDao.updateAvatar(targetUserId, webpFile.getAbsolutePath());
-                            Toast.makeText(ActivityUserProfile.this, "Saved locally. Server error: " + response.code(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityUserProfile.this, "অফলাইনে সংরক্ষিত। সার্ভার সমস্যা: " + response.code(), Toast.LENGTH_SHORT).show();
                         });
                     }
                 } catch (Exception ex) {

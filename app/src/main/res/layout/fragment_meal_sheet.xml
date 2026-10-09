@@ -39,7 +39,7 @@
                 android:id="@+id/tvSelectedDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Today, 09 Oct 2026"
+                android:text="আজ, ০৯ অক্টোবর ২০২৬"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -48,7 +48,7 @@
                 android:id="@+id/tvCutoffStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Open for modification (Lock at 22:00)"
+                android:text="পরিবর্তনযোগ্য (রাত ১০:০০ টায় বন্ধ)"
                 android:textColor="@color/primary"
                 android:textSize="11sp" />
         </LinearLayout>
@@ -78,7 +78,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="BF: 7.0"
+            android:text="সকাল: ৭.০"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -88,7 +88,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Lunch: 14.0"
+            android:text="দুপুর: ১৪.০"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -98,7 +98,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Dinner: 13.0"
+            android:text="রাত: ১৩.০"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -107,7 +107,7 @@
             android:id="@+id/tvAggTotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total: 34.0"
+            android:text="মোট: ৩৪.০"
             android:textColor="@color/primary_dark"
             android:textSize="12sp"
             android:textStyle="bold" />

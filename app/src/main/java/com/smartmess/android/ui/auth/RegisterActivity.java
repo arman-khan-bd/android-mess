@@ -132,12 +132,12 @@ public class RegisterActivity extends AppCompatActivity {
         String password = etRegisterPassword.getText().toString().trim();
 
         if (name.isEmpty() || phone.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill in all required fields marked with *", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "দয়া করে * চিহ্নিত সকল তথ্য পূরণ করুন", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (password.length() < 6) {
-            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -151,7 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         } else {
             if (inviteCode.isEmpty()) {
-                Toast.makeText(this, "Please enter a valid 6-character mess invite code", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "দয়া করে ৬ অক্ষরের মেস ইনভাইট কোড লিখুন", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -160,8 +160,8 @@ public class RegisterActivity extends AppCompatActivity {
         boolean hasNetwork = NetworkUtils.isNetworkAvailable(this);
         if (!hasNetwork) {
             tvNetworkStatusNotice.setVisibility(View.VISIBLE);
-            tvNetworkStatusNotice.setText("Active internet connection required to register mess/account. Please enable Mobile Data or Wi-Fi.");
-            Toast.makeText(this, "Internet connection required for account registration", Toast.LENGTH_LONG).show();
+            tvNetworkStatusNotice.setText("মেস তৈরি বা যোগ দিতে ইন্টারনেট সংযোগ প্রয়োজন। মোবাইল ডাটা বা ওয়াইফাই চালু করুন।");
+            Toast.makeText(this, "অ্যাকাউন্ট খুলতে ইন্টারনেট সংযোগ প্রয়োজন", Toast.LENGTH_LONG).show();
             return;
         } else {
             tvNetworkStatusNotice.setVisibility(View.GONE);
@@ -233,8 +233,8 @@ public class RegisterActivity extends AppCompatActivity {
                         pbRegister.setVisibility(View.GONE);
                         btnRegister.setEnabled(true);
                         String successMsg = isPathCreateMess
-                                ? "Mess created successfully! Invite Code: " + tenantInviteCode
-                                : "Joined mess successfully! Syncing mess data...";
+                                ? "মেস তৈরি সফল হয়েছে! ইনভাইট কোড: " + tenantInviteCode
+                                : "মেসে সফলভাবে যোগ দিয়েছেন! তথ্য সিঙ্ক হচ্ছে...";
                         Toast.makeText(RegisterActivity.this, successMsg, Toast.LENGTH_LONG).show();
 
                         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
@@ -257,7 +257,7 @@ public class RegisterActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     pbRegister.setVisibility(View.GONE);
                     btnRegister.setEnabled(true);
-                    Toast.makeText(RegisterActivity.this, "Network Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, "নেটওয়ার্ক সমস্যা: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
         });

@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:text="Standard Pro"
+                android:text="স্ট্যান্ডার্ড প্রো"
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -45,7 +45,7 @@
                 android:paddingEnd="8dp"
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
-                android:text="MOST POPULAR"
+                android:text="সবচেয়ে জনপ্রিয়"
                 android:textColor="@color/primary"
                 android:textSize="10sp"
                 android:textStyle="bold"
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-black"
-                android:text="৳599"
+                android:text="৳৫৯৯"
                 android:textColor="@color/primary_dark"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:fontFamily="sans-serif"
-                android:text="/ per month (30 days)"
+                android:text="/ প্রতি মাস (৩০ দিন)"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:letterSpacing="0.04"
-            android:text="FEATURES INCLUDED"
+            android:text="অন্তর্ভুক্ত সুবিধাসমূহ"
             android:textColor="@color/text_muted"
             android:textSize="10sp"
             android:textStyle="bold" />
@@ -116,7 +116,7 @@
             android:layout_marginTop="16dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="Upgrade with bKash / Nagad"
+            android:text="বিকাশ / নগদে আপগ্রেড করুন"
             android:textSize="13sp"
             android:textStyle="bold"
             app:cornerRadius="12dp"

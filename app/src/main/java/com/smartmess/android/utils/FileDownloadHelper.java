@@ -115,7 +115,7 @@ public class FileDownloadHelper {
                 .setTitle("Exporting " + (isPdf ? "PDF Statement" : "Excel Workbook"))
                 .setView(layout)
                 .setCancelable(false)
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("বাতিল", null)
                 .create();
 
         progressDialog.show();
@@ -168,8 +168,8 @@ public class FileDownloadHelper {
                 if (body == null) {
                     mainHandler.post(() -> {
                         progressDialog.dismiss();
-                        Toast.makeText(activity, "Empty response body", Toast.LENGTH_SHORT).show();
-                        if (callback != null) callback.onError("Empty response body");
+                        Toast.makeText(activity, "সার্ভার থেকে কোনো তথ্য পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
+                        if (callback != null) callback.onError("সার্ভার থেকে কোনো তথ্য পাওয়া যায়নি");
                     });
                     return;
                 }
@@ -190,7 +190,7 @@ public class FileDownloadHelper {
 
                     mainHandler.post(() -> {
                         progressDialog.dismiss();
-                        Toast.makeText(activity, "Saved to Downloads: " + fileName, Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity, "ডাউনলোড ফোল্ডারে সংরক্ষিত: " + fileName, Toast.LENGTH_LONG).show();
                         if (savedUri != null) {
                             openFile(activity, savedUri, mimeType);
                             if (callback != null) callback.onSuccess(savedUri, fileName, mimeType);
@@ -329,7 +329,7 @@ public class FileDownloadHelper {
         try {
             activity.startActivity(Intent.createChooser(intent, "Open Statement"));
         } catch (Exception ex) {
-            Toast.makeText(activity, "Statement downloaded. Please install a PDF/Excel reader application to view.", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "স্টেটমেন্ট ডাউনলোড সম্পন্ন হয়েছে। দেখতে পিডিএফ বা এক্সেল রিডার অ্যাপ খুলুন।", Toast.LENGTH_LONG).show();
         }
     }
 

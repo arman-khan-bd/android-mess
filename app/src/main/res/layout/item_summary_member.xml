@@ -23,7 +23,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Member Name"
+                android:text="সদস্যের নাম"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/badge_credit"
-                android:text="+ ৳ 450.00 Credit"
+                android:text="+ ৳ ৪৫০.০০ উদ্বৃত্ত"
                 android:textColor="@color/credit_green"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -56,7 +56,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Meals: 45.0 (৳ 2,180)"
+                android:text="মিল: ৪৫.০ (৳ ২,১৮০)"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -65,7 +65,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Shared Pool: ৳ 500"
+                android:text="শেয়ার খরচ: ৳ ৫০০"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -81,7 +81,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Deposits: ৳ 3,000"
+                android:text="মোট জমা: ৳ ৩,০০০"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -90,7 +90,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Total Cost: ৳ 2,680"
+                android:text="মোট খরচ: ৳ ২,৬৮০"
                 android:textColor="@color/text_primary"
                 android:textSize="12sp"
                 android:textStyle="bold" />

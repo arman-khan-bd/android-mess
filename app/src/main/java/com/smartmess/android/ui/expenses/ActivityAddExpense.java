@@ -90,7 +90,7 @@ public class ActivityAddExpense extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         if (!sessionManager.canLogExpenses()) {
-            Toast.makeText(this, "Only Managers and Bazar members can log expenses", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "শুধুমাত্র ম্যানেজার এবং বাজার সদস্য খরচ যোগ করতে পারবেন", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -196,7 +196,7 @@ public class ActivityAddExpense extends AppCompatActivity {
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQ_CAPTURE_CAMERA);
         } else {
-            Toast.makeText(this, "Camera application not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ক্যামেরা অ্যাপ পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -268,7 +268,7 @@ public class ActivityAddExpense extends AppCompatActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Failed to compress captured photo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "তোলা ছবি কম্প্রেস করতে ব্যর্থ হয়েছে", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -301,7 +301,7 @@ public class ActivityAddExpense extends AppCompatActivity {
 
         int buyerPos = spBuyer.getSelectedItemPosition();
         if (buyerPos < 0 || buyerPos >= members.size()) {
-            Toast.makeText(this, "Please select who paid", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "কে টাকা পরিশোধ করেছেন নির্বাচন করুন", Toast.LENGTH_SHORT).show();
             return;
         }
         User buyer = members.get(buyerPos);
@@ -341,12 +341,12 @@ public class ActivityAddExpense extends AppCompatActivity {
 
         long rowId = expenseDao.insert(expense);
         if (rowId > 0) {
-            Toast.makeText(this, "Expense saved to local SQLite!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "খরচ সফলভাবে সংরক্ষিত হয়েছে!", Toast.LENGTH_SHORT).show();
             // Trigger background sync to cloud
             SyncManager.triggerSync(getApplicationContext());
             finish();
         } else {
-            Toast.makeText(this, "Failed to save expense locally", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "খরচ সংরক্ষণ করতে সমস্যা হয়েছে", Toast.LENGTH_SHORT).show();
         }
     }
 }

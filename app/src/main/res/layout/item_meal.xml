@@ -23,7 +23,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Member Name"
+                android:text="সদস্যের নাম"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -54,7 +54,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="B: 1.0"
+                android:text="সকাল: ১.০"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
@@ -63,7 +63,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="L: 1.0"
+                android:text="দুপুর: ১.০"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
@@ -72,7 +72,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="D: 1.0"
+                android:text="রাত: ১.০"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
@@ -81,7 +81,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="G: 0.0"
+                android:text="অতিথি: ০.০"
                 android:textColor="@color/text_muted"
                 android:textSize="13sp" />
 
@@ -89,7 +89,7 @@
                 android:id="@+id/tvTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total: 3.0"
+                android:text="মোট: ৩.০"
                 android:textColor="@color/primary"
                 android:textSize="14sp"
                 android:textStyle="bold" />

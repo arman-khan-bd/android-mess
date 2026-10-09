@@ -70,7 +70,7 @@ public class AddDepositActivity extends AppCompatActivity {
 
     private void saveDeposit() {
         if (members.isEmpty()) {
-            Toast.makeText(this, "No active members found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "কোনো সক্রিয় সদস্য পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -79,7 +79,7 @@ public class AddDepositActivity extends AppCompatActivity {
         String note = etDepositNote.getText().toString().trim();
 
         if (amountStr.isEmpty()) {
-            Toast.makeText(this, "Please enter deposit amount", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "দয়া করে জমার পরিমাণ লিখুন", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -87,7 +87,7 @@ public class AddDepositActivity extends AppCompatActivity {
         try {
             amount = Double.parseDouble(amountStr);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "টাকার পরিমাণ সঠিক নয়", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -112,12 +112,12 @@ public class AddDepositActivity extends AppCompatActivity {
         com.smartmess.android.utils.NotificationCenterHelper.postNotification(
                 getApplicationContext(),
                 sessionManager.getMessId(),
-                "Deposit Recorded",
-                "৳" + String.format(java.util.Locale.US, "%.2f", amount) + " deposit received from " + selected.getName(),
+                "জমা রেকর্ড করা হয়েছে",
+                "৳" + String.format(java.util.Locale.US, "%.2f", amount) + " টাকা জমা নেওয়া হয়েছে: " + selected.getName(),
                 com.smartmess.android.utils.NotificationCenterHelper.TYPE_DEPOSIT
         );
 
-        Toast.makeText(this, "Deposit of " + amount + " saved for " + selected.getName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, selected.getName() + " এর জন্য ৳" + amount + " সফলভাবে জমা হয়েছে!", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

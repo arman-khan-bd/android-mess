@@ -137,7 +137,7 @@ public class DueReminderActivity extends AppCompatActivity {
         User targetMember = activeMembers.get(spReminderMember.getSelectedItemPosition());
         String msg = etMessageContent.getText().toString().trim();
         if (msg.isEmpty()) {
-            Toast.makeText(this, "Message cannot be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "বার্তা খালি রাখা যাবে না", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -149,10 +149,10 @@ public class DueReminderActivity extends AppCompatActivity {
 
         boolean sent = smsCostingManager.sendSingleDueReminder(sender, targetMember, msg);
         if (sent) {
-            Toast.makeText(this, "Due SMS dispatched via SIM! SMS cost debited to " + targetMember.getName(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "সিম দিয়ে বকেয়া এসএমএস পাঠানো হয়েছে! খরচ খতিয়ানে যুক্ত হয়েছে: " + targetMember.getName(), Toast.LENGTH_LONG).show();
             finish();
         } else {
-            Toast.makeText(this, "Failed to send SMS via SIM. Check network and SIM balance.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "সিম দিয়ে এসএমএস পাঠানো যায়নি। নেটওয়ার্ক ও ব্যালেন্স চেক করুন।", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -163,7 +163,7 @@ public class DueReminderActivity extends AppCompatActivity {
             if (PermissionHelper.hasSmsPermission(this)) {
                 dispatchDueReminder();
             } else {
-                Toast.makeText(this, "SEND_SMS permission is required to dispatch SMS through device SIM", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "সিম দিয়ে এসএমএস পাঠাতে এসএমএস পারমিশন দেওয়া প্রয়োজন", Toast.LENGTH_LONG).show();
             }
         }
     }

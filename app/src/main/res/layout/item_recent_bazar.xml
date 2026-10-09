@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Bazar Title"
+            android:text="বাজারের বিবরণ"
             android:textColor="@color/text_primary"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Tanvir • Today"
+            android:text="তানভীর • আজ"
             android:textColor="@color/text_secondary"
             android:textSize="11sp" />
 
@@ -70,7 +70,7 @@
                 android:background="@drawable/badge_credit"
                 android:paddingHorizontal="5dp"
                 android:paddingVertical="1dp"
-                android:text="Raw Meal"
+                android:text="মিল খরচ"
                 android:textColor="@color/credit_green"
                 android:textSize="9sp"
                 android:textStyle="bold" />
@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="📎 Voucher"
+                android:text="📎 ভাউচার"
                 android:textColor="@color/accent"
                 android:textSize="9sp"
                 android:visibility="gone" />

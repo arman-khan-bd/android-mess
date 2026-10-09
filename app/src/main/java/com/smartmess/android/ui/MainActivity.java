@@ -497,13 +497,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void showProfileDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("My Account")
+                .setTitle("আমার একাউন্ট")
                 .setMessage("Name: " + sessionManager.getUserName() + "\n" +
                         "Phone: " + sessionManager.getUserPhone() + "\n" +
                         "Role: " + sessionManager.getUserRole().toUpperCase() + "\n" +
                         "Mess: " + sessionManager.getMessName() + "\n" +
                         "Plan: " + (planGateManager.isPro() ? "SmartMess PRO ★" : "Free Tier"))
-                .setPositiveButton("Close", null)
+                .setPositiveButton("বন্ধ করুন", null)
                 .show();
     }
 
@@ -520,7 +520,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (candidates.isEmpty()) {
-            Toast.makeText(this, "No other active members available to receive Manager role.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "ম্যানেজার দায়িত্ব দেওয়ার মতো অন্য কোনো সক্রিয় সদস্য নেই।", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -530,20 +530,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         new AlertDialog.Builder(this)
-                .setTitle("Handover Manager Role")
+                .setTitle("ম্যানেজার দায়িত্ব হস্তান্তর")
                 .setItems(candidateNames, (dialog, which) -> {
                     User selected = candidates.get(which);
                     confirmHandoverToUser(selected);
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("বাতিল", null)
                 .show();
     }
 
     private void confirmHandoverToUser(User targetUser) {
         new AlertDialog.Builder(this)
-                .setTitle("Confirm Role Transfer")
+                .setTitle("দায়িত্ব হস্তান্তরের নিশ্চিতকরণ")
                 .setMessage("Are you sure you want to transfer full Manager privileges to " + targetUser.getName() + "? You will become a general member.")
-                .setPositiveButton("Transfer", (dialog, which) -> {
+                .setPositiveButton("হস্তান্তর করুন", (dialog, which) -> {
                     try {
                         long currentUserId = sessionManager.getUserId();
                         // Update in local DB
@@ -562,15 +562,15 @@ public class MainActivity extends AppCompatActivity {
                                 sessionManager.getAuthToken()
                         );
 
-                        Toast.makeText(MainActivity.this, "Manager role transferred successfully to " + targetUser.getName(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "ম্যানেজার দায়িত্ব সফলভাবে হস্তান্তর করা হয়েছে: " + targetUser.getName(), Toast.LENGTH_LONG).show();
                         loadHeaderData();
                         populateDrawerProfile();
 
                         com.smartmess.android.utils.NotificationCenterHelper.postNotification(
                                 getApplicationContext(),
                                 sessionManager.getMessId(),
-                                "Role Transferred",
-                                "Manager privileges transferred to " + targetUser.getName(),
+                                "ম্যানেজার দায়িত্ব হস্তান্তর",
+                                targetUser.getName() + " কে ম্যানেজার দায়িত্ব হস্তান্তর করা হয়েছে",
                                 com.smartmess.android.utils.NotificationCenterHelper.TYPE_ROLE
                         );
                         updateNotificationBadge();
@@ -578,26 +578,26 @@ public class MainActivity extends AppCompatActivity {
                         // Background sync
                         SyncManager.triggerSync(getApplicationContext());
                     } catch (Exception e) {
-                        Toast.makeText(MainActivity.this, "Error during handover: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "হস্তান্তরের সময় ত্রুটি: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("বাতিল", null)
                 .show();
     }
 
     private void confirmSignOut() {
         new AlertDialog.Builder(this)
-                .setTitle("Sign Out")
-                .setMessage("Are you sure you want to securely sign out of SmartMess? All cached offline data remains encrypted.")
-                .setPositiveButton("Sign Out", (dialog, which) -> {
+                .setTitle("লগআউট")
+                .setMessage("আপনি কি স্মার্ট মেস থেকে লগআউট করতে চান? আপনার সংরক্ষিত অফলাইন ডেটা নিরাপদে থাকবে।")
+                .setPositiveButton("লগআউট করুন", (dialog, which) -> {
                     sessionManager.clearSession();
-                    Toast.makeText(MainActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "সফলভাবে লগআউট হয়েছে", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("বাতিল", null)
                 .show();
     }
 
@@ -642,21 +642,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupSyncIndicator() {
         btnCloudSync.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Triggering cloud sync...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "ক্লাউড সিঙ্ক শুরু হচ্ছে...", Toast.LENGTH_SHORT).show();
             syncManager.triggerTwoWaySync(new SyncManager.SyncCallback() {
                 @Override
                 public void onSyncStarted() {}
 
                 @Override
                 public void onSyncSuccess(String message) {
-                    Toast.makeText(MainActivity.this, "Sync Complete: " + message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "সিঙ্ক সম্পন্ন: " + message, Toast.LENGTH_SHORT).show();
                     loadHeaderData();
                     populateDrawerProfile();
                 }
 
                 @Override
                 public void onSyncFailed(String error) {
-                    Toast.makeText(MainActivity.this, "Sync Notice: " + error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "সিঙ্ক নোটিশ: " + error, Toast.LENGTH_SHORT).show();
                 }
             });
         });

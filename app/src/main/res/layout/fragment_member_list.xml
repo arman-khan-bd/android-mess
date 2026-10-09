@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="sans-serif-medium"
-            android:text="Active Members"
+            android:text="সদস্যবৃন্দ"
             android:textColor="@color/text_primary"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -35,7 +35,7 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:paddingHorizontal="10dp"
-            android:text="Invite QR"
+            android:text="আমন্ত্রণ ও কোড"
             android:textSize="11sp"
             app:icon="@drawable/ic_lucide_smartphone"
             app:iconSize="13dp"
@@ -48,7 +48,7 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:paddingHorizontal="12dp"
-            android:text="+ Add Member"
+            android:text="+ সদস্য যোগ"
             android:textSize="11sp"
             style="@style/SmartButton" />
     </LinearLayout>
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="sans-serif"
-            android:text="Free Tier: Max 6 Members • Tap to unlock Unlimited"
+            android:text="ফ্রি প্ল্যান: সর্বোচ্চ ৬ জন সদস্য • আনলিমিটেড করতে ট্যাপ করুন"
             android:textColor="#92400E"
             android:textSize="11sp"
             android:textStyle="bold" />

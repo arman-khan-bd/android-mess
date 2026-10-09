@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tomorrow Meal Status"
+            android:text="আগামীকালের মিল স্ট্যাটাস"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="16dp"
-            android:text="Date: Tomorrow (2026-10-10)"
+            android:text="তারিখ: আগামীকাল (২০২৬-১০-১০)"
             android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
@@ -44,7 +44,7 @@
                 android:id="@+id/tvCutoffStatusText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Meals can be toggled before 10:00 PM cutoff time."
+                android:text="রাত ১০:০০ টার সময়সীমার পূর্বে মিল চালু বা বন্ধ করা যাবে।"
                 android:textColor="#B45309"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -78,7 +78,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Breakfast"
+                            android:text="সকাল"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -86,7 +86,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Count: 1.0 (or Off 0.0)"
+                            android:text="মিল সংখ্যা: ১.০ (অথবা বন্ধ ০.০)"
                             android:textColor="@color/text_muted"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -120,7 +120,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Lunch"
+                            android:text="দুপুর"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -128,7 +128,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Count: 1.0 (or Off 0.0)"
+                            android:text="মিল সংখ্যা: ১.০ (অথবা বন্ধ ০.০)"
                             android:textColor="@color/text_muted"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -162,7 +162,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Dinner"
+                            android:text="রাত"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -170,7 +170,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Count: 1.0 (or Off 0.0)"
+                            android:text="মিল সংখ্যা: ১.০ (অথবা বন্ধ ০.০)"
                             android:textColor="@color/text_muted"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -187,7 +187,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="Confirm Tomorrow Meal"
+                    android:text="আগামীকালের মিল নিশ্চিত করুন"
                     style="@style/SmartButton" />
 
             </LinearLayout>

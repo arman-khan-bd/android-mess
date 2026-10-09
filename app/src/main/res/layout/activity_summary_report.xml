@@ -23,7 +23,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Financial Cycle Settlement"
+                android:text="মাসের আর্থিক খতিয়ান ও নিষ্পত্তি"
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -32,7 +32,7 @@
                 android:id="@+id/tvReportDates"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Oct 01, 2026 - Oct 31, 2026"
+                android:text="০১ - ৩১ অক্টোবর, ২০২৬"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -41,7 +41,7 @@
             android:id="@+id/btnExportReport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Export PDF"
+            android:text="পিডিএফ ডাউনলোড"
             android:textSize="11sp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
@@ -85,7 +85,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Meal Rate"
+                                android:text="মিল রেট"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
 
@@ -108,7 +108,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Total Mess Meals"
+                                android:text="মোট মেস মিল"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
 
@@ -132,7 +132,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Mess Fund Left"
+                                android:text="অবশিষ্ট মেস ফান্ড"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
 
@@ -160,7 +160,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="4dp"
-                        android:text="• Raw Meal Pool: ৳ 0.00\n• Shared Food Pool: ৳ 0.00\n• Asset &amp; Utility Pool: ৳ 0.00\n• Total Deposits: ৳ 0.00"
+                        android:text="• কাঁচা বাজার খাত: ৳ ০.০০\n• শেয়ার্ড খাদ্য খাত: ৳ ০.০০\n• ইউটিলিটি ও অন্যান্য: ৳ ০.০০\n• মোট জমা: ৳ ০.০০"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
@@ -172,7 +172,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Member Balance Sheet"
+                android:text="সদস্যদের ব্যালেন্স শিট"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />

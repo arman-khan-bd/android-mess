@@ -79,7 +79,7 @@ public class ActivityMemberManage extends AppCompatActivity {
 
         targetUserId = getIntent().getLongExtra(EXTRA_USER_ID, -1);
         if (targetUserId == -1) {
-            Toast.makeText(this, "Invalid member selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "সদস্য নির্বাচন সঠিক নয়", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -118,7 +118,7 @@ public class ActivityMemberManage extends AppCompatActivity {
     private void loadMemberDetails() {
         targetUser = userDao.getById(targetUserId);
         if (targetUser == null) {
-            Toast.makeText(this, "Member not found in database", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ডাটাবেজে সদস্যকে পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -168,7 +168,7 @@ public class ActivityMemberManage extends AppCompatActivity {
 
     private void handleSavePermissions() {
         if (!sessionManager.isManager()) {
-            Toast.makeText(this, "Only mess managers can modify member permissions", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "শুধুমাত্র মেস ম্যানেজার সদস্যদের পারমিশন পরিবর্তন করতে পারবেন", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -197,10 +197,10 @@ public class ActivityMemberManage extends AppCompatActivity {
 
         if (isTransferringManager) {
             new MaterialAlertDialogBuilder(this)
-                    .setTitle("Handover Mess Ownership?")
+                    .setTitle("মেস পরিচালনার দায়িত্ব হস্তান্তর করবেন?")
                     .setMessage("Promoting " + targetUser.getName() + " to Manager will transfer overall administrative control of this mess. You will revert to a regular member.\n\nDo you want to proceed?")
-                    .setPositiveButton("Confirm Handover", (dialog, which) -> executeSave(newRole, newStatus))
-                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("হস্তান্তর নিশ্চিত করুন", (dialog, which) -> executeSave(newRole, newStatus))
+                    .setNegativeButton("বাতিল", null)
                     .show();
         } else {
             executeSave(newRole, newStatus);
@@ -229,12 +229,12 @@ public class ActivityMemberManage extends AppCompatActivity {
         com.smartmess.android.utils.NotificationCenterHelper.postNotification(
                 getApplicationContext(),
                 sessionManager.getMessId(),
-                "Member Permissions Updated",
-                (targetUser != null ? targetUser.getName() : "Member") + " updated to " + role + " (" + status + ")",
+                "সদস্যের পদবী আপডেট",
+                (targetUser != null ? targetUser.getName() : "সদস্য") + " এর পদবী: " + role + " (" + status + ") করা হয়েছে",
                 com.smartmess.android.utils.NotificationCenterHelper.TYPE_ROLE
         );
 
-        Toast.makeText(this, "Member role & status updated successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "সদস্যের পদবী ও স্ট্যাটাস সফলভাবে আপডেট করা হয়েছে!", Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
         finish();
     }

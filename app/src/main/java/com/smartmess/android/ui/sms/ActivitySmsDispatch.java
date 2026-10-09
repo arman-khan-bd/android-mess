@@ -143,13 +143,13 @@ public class ActivitySmsDispatch extends AppCompatActivity {
     private void showSimSelectorDialog() {
         String[] simOptions = {"SIM 1 (Primary Carrier)", "SIM 2 (Secondary Carrier)"};
         new AlertDialog.Builder(this)
-                .setTitle("Select Dispatch SIM Card")
+                .setTitle("এসএমএস পাঠানোর সিম নির্বাচন করুন")
                 .setSingleChoiceItems(simOptions, selectedSimSlot, (dialog, which) -> {
                     selectedSimSlot = which;
                     btnSelectSim.setText(selectedSimSlot == 0 ? "SIM 1 (Active)" : "SIM 2 (Active)");
                     dialog.dismiss();
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("বাতিল", null)
                 .show();
     }
 
@@ -160,7 +160,7 @@ public class ActivitySmsDispatch extends AppCompatActivity {
         }
 
         if (selectedMemberIds.isEmpty()) {
-            Toast.makeText(this, "Please select at least one member", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "দয়া করে অন্তত একজন সদস্য নির্বাচন করুন", Toast.LENGTH_SHORT).show();
             return;
         }
 

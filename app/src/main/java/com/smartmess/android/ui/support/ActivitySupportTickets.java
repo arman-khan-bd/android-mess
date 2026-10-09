@@ -156,7 +156,7 @@ public class ActivitySupportTickets extends AppCompatActivity {
                 swipeRefresh.setRefreshing(false);
                 progressBar.setVisibility(View.GONE);
                 layoutEmpty.setVisibility(ticketList.isEmpty() ? View.VISIBLE : View.GONE);
-                Toast.makeText(ActivitySupportTickets.this, "Offline: Check internet connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivitySupportTickets.this, "অফলাইন: ইন্টারনেট সংযোগ চেক করুন", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -178,14 +178,14 @@ public class ActivitySupportTickets extends AppCompatActivity {
 
         new AlertDialog.Builder(this)
                 .setView(dialogView)
-                .setPositiveButton("Open Ticket", new DialogInterface.OnClickListener() {
+                .setPositiveButton("টিকিট তৈরি করুন", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String subject = etSubject.getText().toString().trim();
                         String message = etMessage.getText().toString().trim();
 
                         if (subject.isEmpty() || message.isEmpty()) {
-                            Toast.makeText(ActivitySupportTickets.this, "Subject and message are required", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivitySupportTickets.this, "বিষয় ও বার্তার বিবরণ আবশ্যক", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -199,7 +199,7 @@ public class ActivitySupportTickets extends AppCompatActivity {
                         createTicketOnServer(req);
                     }
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("বাতিল", null)
                 .show();
     }
 
@@ -211,7 +211,7 @@ public class ActivitySupportTickets extends AppCompatActivity {
             public void onResponse(Call<TicketDetailResponse> call, Response<TicketDetailResponse> response) {
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null && response.body().getTicket() != null) {
-                    Toast.makeText(ActivitySupportTickets.this, "Ticket opened successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivitySupportTickets.this, "সাপোর্ট টিকিট সফলভাবে তৈরি হয়েছে!", Toast.LENGTH_SHORT).show();
                     loadTickets();
 
                     SupportTicketDto newTicket = response.body().getTicket();
@@ -222,14 +222,14 @@ public class ActivitySupportTickets extends AppCompatActivity {
                     intent.putExtra("ticket_status", newTicket.getStatus());
                     startActivity(intent);
                 } else {
-                    Toast.makeText(ActivitySupportTickets.this, "Failed to create ticket", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivitySupportTickets.this, "টিকিট তৈরি করতে সমস্যা হয়েছে", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<TicketDetailResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(ActivitySupportTickets.this, "Error connecting to support server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivitySupportTickets.this, "সার্ভারের সাথে সংযোগ স্থাপন করা যায়নি", Toast.LENGTH_SHORT).show();
             }
         });
     }

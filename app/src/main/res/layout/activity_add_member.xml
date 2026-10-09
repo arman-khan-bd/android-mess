@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Mess Member"
+            android:text="মেসের নতুন সদস্য যোগ করুন"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="20dp"
-            android:text="Assign access role and register member to mess"
+            android:text="সদস্যের নাম, ভূমিকা নির্ধারণ ও নিবন্ধন সম্পন্ন করুন"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
@@ -43,7 +43,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Full Name"
+                    android:text="পূর্ণ নাম"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -54,13 +54,13 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="14dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="e.g. Shakil Mahmud"
+                    android:hint="যেমন: শাকিল মাহমুদ"
                     android:inputType="textPersonName" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phone Number"
+                    android:text="মোবাইল নম্বর"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -71,13 +71,13 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="14dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="017XXXXXXXX"
+                    android:hint="০১৭১২৩৪৫৬৭৮"
                     android:inputType="phone" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Member Role"
+                    android:text="সদস্যের ভূমিকা / রোল"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -92,7 +92,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Temporary Password"
+                    android:text="পাসওয়ার্ড"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -103,7 +103,7 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="24dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="Default: 123456"
+                    android:hint="ডিফল্ট: 123456"
                     android:text="123456"
                     android:inputType="textPassword" />
 
@@ -111,7 +111,7 @@
                     android:id="@+id/btnSaveMember"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Register Member"
+                    android:text="সদস্য যুক্ত করুন"
                     style="@style/SmartButton" />
 
             </LinearLayout>

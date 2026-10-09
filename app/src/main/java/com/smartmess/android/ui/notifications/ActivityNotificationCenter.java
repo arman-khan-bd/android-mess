@@ -100,21 +100,21 @@ public class ActivityNotificationCenter extends AppCompatActivity {
         btnMarkAllRead.setOnClickListener(v -> {
             long messId = sessionManager.getMessId();
             notificationDao.markAllAsRead(messId);
-            Toast.makeText(this, "All notifications marked as read.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "সকল নোটিফিকেশন পঠিত হিসেবে চিহ্নিত করা হয়েছে।", Toast.LENGTH_SHORT).show();
             loadNotifications();
         });
 
         btnClearNotifications.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
-                    .setTitle("Clear All Notifications?")
-                    .setMessage("This will remove all stored notification records from your device.")
-                    .setPositiveButton("Clear All", (dialog, which) -> {
+                    .setTitle("সব নোটিফিকেশন মুছে ফেলবেন?")
+                    .setMessage("এর ফলে আপনার ফোনের সকল নোটিফিকেশন মুছে যাবে।")
+                    .setPositiveButton("সব মুছে ফেলুন", (dialog, which) -> {
                         long messId = sessionManager.getMessId();
                         notificationDao.clearAll(messId);
-                        Toast.makeText(this, "Notification history cleared.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "নোটিফিকেশন ইতিহাস মুছে ফেলা হয়েছে।", Toast.LENGTH_SHORT).show();
                         loadNotifications();
                     })
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton("বাতিল", null)
                     .show();
         });
     }

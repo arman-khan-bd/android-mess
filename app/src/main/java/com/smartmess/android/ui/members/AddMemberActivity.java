@@ -68,7 +68,7 @@ public class AddMemberActivity extends AppCompatActivity {
         String password = etMemberPassword.getText().toString().trim();
 
         if (name.isEmpty() || phone.isEmpty()) {
-            Toast.makeText(this, "Please enter member name and phone", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "দয়া করে সদস্যের নাম ও মোবাইল নম্বর লিখুন", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -91,7 +91,7 @@ public class AddMemberActivity extends AppCompatActivity {
         user.setUpdatedAt(now);
 
         userDao.insertOrUpdate(user);
-        Toast.makeText(this, "Member " + name + " added successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "সদস্য " + name + " সফলভাবে যুক্ত হয়েছে!", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

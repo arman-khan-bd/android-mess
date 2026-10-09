@@ -74,7 +74,7 @@ public class AddMealActivity extends AppCompatActivity {
 
     private void saveMeal() {
         if (activeMembers.isEmpty()) {
-            Toast.makeText(this, "No active members found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "কোনো সক্রিয় সদস্য পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -104,7 +104,7 @@ public class AddMealActivity extends AppCompatActivity {
         meal.setUpdatedAt(now);
 
         mealDao.insertOrUpdate(meal);
-        Toast.makeText(this, "Meal logged successfully for " + selectedMember.getName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "সদস্যের মিল সফলভাবে সংরক্ষিত হয়েছে: " + selectedMember.getName(), Toast.LENGTH_SHORT).show();
         finish();
     }
 

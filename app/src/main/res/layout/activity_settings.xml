@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mess Settings &amp; Subscription"
+            android:text="মেস সেটিংস ও সাবস্ক্রিপশন"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="20dp"
-            android:text="Configure automation rules and active SaaS plan tier"
+            android:text="অটোমেশন নিয়মাবলী ও সক্রিয় প্ল্যান পরিচালনা করুন"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
@@ -45,7 +45,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Daily Meal Cut-off Time"
+                    android:text="দৈনিক মিল কাট-অফ সময়"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -53,7 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Members cannot toggle tomorrow's meals after this hour"
+                    android:text="এই সময়ের পর সদস্যরা আগামীকালের মিল পরিবর্তন করতে পারবেন না"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp" />
 
@@ -70,7 +70,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Per SMS Cost (৳)"
+                    android:text="প্রতি এসএমএস খরচ (৳)"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -78,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Debited automatically from member ledger on due reminders"
+                    android:text="বকেয়া তাগাদার সময় সদস্যের খতিয়ান থেকে স্বয়ংক্রিয়ভাবে কাটা হবে"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp" />
 
@@ -95,7 +95,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Target Meal Budget (৳ / meal)"
+                    android:text="কাঙ্ক্ষিত মিল বাজেট (৳ / মিল)"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -103,7 +103,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Dashboard alerts when live meal rate exceeds this budget (e.g., ৳70.00)"
+                    android:text="লাইভ মিল রেট এই বাজেট ছাড়ালে ড্যাশবোর্ডে সতর্কতা দেখাবে (যেমন: ৳৭০.০০)"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp" />
 
@@ -121,7 +121,7 @@
                     android:id="@+id/btnSaveMessSettings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Save Mess Rules"
+                    android:text="মেসের নিয়ম সংরক্ষণ করুন"
                     style="@style/SmartButton" />
 
             </LinearLayout>
@@ -151,7 +151,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Plan: Basic Tier"
+                        android:text="প্ল্যান: বেসিক টিয়ার"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -161,7 +161,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/badge_credit"
-                        android:text="Active"
+                        android:text="সক্রিয়"
                         android:textColor="@color/primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -174,7 +174,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="14dp"
                     android:lineSpacingExtra="4dp"
-                    android:text="• Max Members: 15\n• Device SIM SMS: Enabled\n• Cloud SMS Gateway: Enterprise only\n• Receipt OCR Scanner: Enterprise only\n• Branded PDF Export: Enterprise only"
+                    android:text="• সর্বোচ্চ সদস্য: ১৫ জন\n• ডিভাইস সিম এসএমএস: চালু\n• ক্লাউড এসএমএস গেটওয়ে: শুধুমাত্র এন্টারপ্রাইজ\n• রসিদ ওসিআর স্ক্যানার: শুধুমাত্র এন্টারপ্রাইজ\n• ব্র্যান্ডেড পিডিএফ রিপোর্ট: শুধুমাত্র এন্টারপ্রাইজ"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
@@ -182,7 +182,7 @@
                     android:id="@+id/btnUpgradePlan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Upgrade to Enterprise"
+                    android:text="এন্টারপ্রাইজে আপগ্রেড করুন"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
             </LinearLayout>
@@ -204,7 +204,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Help Desk &amp; Diagnostics"
+                    android:text="হেল্প ডেস্ক ও ডায়াগনস্টিক"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -214,7 +214,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="12dp"
-                    android:text="24/7 in-app ticket desk, error reporter, and diagnostics"
+                    android:text="২৪/৭ ইন-অ্যাপ টিকিট ডেস্ক, সমস্যা রিপোর্ট ও ডায়াগনস্টিক"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp" />
 
@@ -223,14 +223,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Support Tickets &amp; Help Desk"
+                    android:text="সাপোর্ট টিকিট ও হেল্প ডেস্ক"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnReportIssue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Report Bug / Submit Diagnostics"
+                    android:text="সমস্যা রিপোর্ট / ডায়াগনস্টিক পাঠান"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
             </LinearLayout>
@@ -259,7 +259,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Appearance &amp; Theme"
+                        android:text="অ্যাপের থিম ও রূপরেখা"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -271,7 +271,7 @@
                         android:background="@drawable/badge_credit"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="3dp"
-                        android:text="System Default"
+                        android:text="সিস্টেম ডিফল্ট"
                         android:textColor="@color/primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -282,7 +282,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="12dp"
-                    android:text="Full Material theme switching: Light, Dark, or System default"
+                    android:text="লাইট, ডার্ক বা সিস্টেম ডিফল্ট থিম নির্বাচন"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp" />
 
@@ -290,7 +290,7 @@
                     android:id="@+id/btnChangeTheme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Switch Theme (Light / Dark)"
+                    android:text="থিম পরিবর্তন করুন (লাইট / ডার্ক)"
                     app:icon="@drawable/ic_moon"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
@@ -313,7 +313,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Added Value Services"
+                    android:text="অতিরিক্ত সেবা ও ফিচার"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -323,7 +323,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="12dp"
-                    android:text="Automated vacation mode and offline in-app notification center"
+                    android:text="স্বয়ংক্রিয় মিল ছুটি এবং অফলাইন নোটিফিকেশন সেন্টার"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp" />
 
@@ -332,7 +332,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Meal Vacation Mode 🏖️"
+                    android:text="মিলের ছুটি মোড 🏖️"
                     app:icon="@drawable/ic_vacation"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
@@ -340,7 +340,7 @@
                     android:id="@+id/btnNotificationCenterSettings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="In-App Notification Center 🔔"
+                    android:text="ইন-অ্যাপ নোটিফিকেশন সেন্টার 🔔"
                     app:icon="@drawable/ic_lucide_bell"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
@@ -351,7 +351,7 @@
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign Out of Session"
+            android:text="লগআউট করুন"
             android:textColor="@color/due_red"
             style="@style/Widget.MaterialComponents.Button.TextButton" />
 

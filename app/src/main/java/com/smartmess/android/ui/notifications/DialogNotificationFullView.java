@@ -133,7 +133,7 @@ public class DialogNotificationFullView {
                 ClipData clip = ClipData.newPlainText("SmartMess Notification",
                         notification.getTitle() + "\n" + notification.getMessage());
                 cm.setPrimaryClip(clip);
-                Toast.makeText(context, "Notification copied to clipboard", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "নোটিফিকেশন ক্লিপবোর্ডে কপি করা হয়েছে", Toast.LENGTH_SHORT).show();
             }
         });
 

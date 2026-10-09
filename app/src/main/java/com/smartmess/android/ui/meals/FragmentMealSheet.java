@@ -139,10 +139,10 @@ public class FragmentMealSheet extends Fragment {
 
         boolean isPastCutoff = isDateLocked(dateStr);
         if (isPastCutoff) {
-            tvCutoffStatus.setText("Locked for today (Cutoff 22:00 passed)");
+            tvCutoffStatus.setText("আজকের মিল বন্ধ (রাত ১০:০০ টার সময়সীমা পার হয়েছে)");
             tvCutoffStatus.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.due_red));
         } else {
-            tvCutoffStatus.setText("Open for entry (Locks daily at 22:00)");
+            tvCutoffStatus.setText("মিল পরিবর্তনের সুযোগ রয়েছে (রাত ১০:০০ টায় বন্ধ হবে)");
             tvCutoffStatus.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary));
         }
 
@@ -187,10 +187,10 @@ public class FragmentMealSheet extends Fragment {
         }
 
         // Update aggregate header text
-        tvAggBreakfast.setText(String.format(Locale.US, "BF: %.1f", totalBf));
-        tvAggLunch.setText(String.format(Locale.US, "Lunch: %.1f", totalLn));
-        tvAggDinner.setText(String.format(Locale.US, "Dinner: %.1f", totalDn));
-        tvAggTotal.setText(String.format(Locale.US, "Total: %.1f", (totalBf + totalLn + totalDn + totalGuest)));
+        tvAggBreakfast.setText(String.format(Locale.US, "সকাল: %.1f", totalBf));
+        tvAggLunch.setText(String.format(Locale.US, "দুপুর: %.1f", totalLn));
+        tvAggDinner.setText(String.format(Locale.US, "রাত: %.1f", totalDn));
+        tvAggTotal.setText(String.format(Locale.US, "মোট: %.1f", (totalBf + totalLn + totalDn + totalGuest)));
 
         adapter.setItems(rowList);
     }

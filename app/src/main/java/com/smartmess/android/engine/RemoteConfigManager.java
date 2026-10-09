@@ -59,10 +59,10 @@ public class RemoteConfigManager {
         // 1. Maintenance Mode
         if (config.isMaintenanceMode()) {
             new AlertDialog.Builder(activity)
-                    .setTitle("Scheduled Maintenance")
+                    .setTitle("নির্ধারিত রক্ষণাবেক্ষণ")
                     .setMessage(config.getMaintenanceMessage() != null ? config.getMaintenanceMessage() : "SmartMess servers are currently undergoing maintenance.")
                     .setCancelable(false)
-                    .setPositiveButton("Close App", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("অ্যাপ বন্ধ করুন", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             activity.finishAffinity();
@@ -81,10 +81,10 @@ public class RemoteConfigManager {
 
         if (config.isForceUpdate() && currentVersionCode < config.getMinVersionCode()) {
             new AlertDialog.Builder(activity)
-                    .setTitle("Update Required")
-                    .setMessage("A critical update is required to continue using SmartMess. Please download the latest version.")
+                    .setTitle("নতুন আপডেট প্রয়োজন")
+                    .setMessage("স্মার্ট মেস অ্যাপ ব্যবহার চালিয়ে যেতে নতুন আপডেট প্রয়োজন। দয়া করে সর্বশেষ সংস্করণটি ডাউনলোড করুন।")
                     .setCancelable(false)
-                    .setPositiveButton("Download Update", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("আপডেট ডাউনলোড করুন", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             String url = config.getUpdateUrl() != null ? config.getUpdateUrl() : "https://mess.e-bd.shop/download";

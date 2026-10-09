@@ -23,7 +23,7 @@
                 android:id="@+id/tvDepositMember"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Member Name"
+                android:text="সদস্যের নাম"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -32,7 +32,7 @@
                 android:id="@+id/tvDepositNote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Monthly Mess Advance"
+                android:text="মাসিক মেস জমা / অগ্রিম"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 

@@ -417,7 +417,7 @@ public class UpgradeProBottomSheet extends BottomSheetDialogFragment {
         }
         sessionManager.updatePlanCapabilities(PlanCapabilities.createFree());
         sessionManager.broadcastCapabilitiesUpdated(requireContext());
-        Toast.makeText(requireContext(), "Mess switched to Basic Plan.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "মেস সফলভাবে বেসিক প্ল্যানে পরিবর্তিত হয়েছে।", Toast.LENGTH_SHORT).show();
         dismissAllowingStateLoss();
     }
 
@@ -436,7 +436,7 @@ public class UpgradeProBottomSheet extends BottomSheetDialogFragment {
         }
 
         sessionManager.broadcastCapabilitiesUpdated(requireContext());
-        Toast.makeText(requireContext(), "🎉 Successfully upgraded to " + plan.getName() + "!", Toast.LENGTH_LONG).show();
+        Toast.makeText(requireContext(), "🎉 সফলভাবে আপগ্রেড করা হয়েছে: " + plan.getName() + "!", Toast.LENGTH_LONG).show();
     }
 
     private void applyLocalFallbackUpgrade(SaasPlan plan) {

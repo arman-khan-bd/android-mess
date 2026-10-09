@@ -25,7 +25,7 @@
                 android:layout_width="38dp"
                 android:layout_height="38dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="ফিরে যান"
                 android:src="@drawable/ic_back"
                 app:tint="@color/text_primary" />
 
@@ -40,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Notification Dispatcher"
+                    android:text="নোটিফিকেশন প্রেরণ কেন্দ্র"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -49,7 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="Online Push &amp; SIM SMS Multi-Channel Engine"
+                    android:text="অনলাইন পুশ ও সিম এসএমএস ইঞ্জিন"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -63,7 +63,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="3dp"
-                android:text="MANAGER"
+                android:text="ম্যানেজার"
                 android:textColor="@color/primary_dark"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -112,7 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-medium"
-                        android:text="Background Delivery Active"
+                        android:text="ব্যাকগ্রাউন্ড ডেলিভারি সক্রিয়"
                         android:textColor="@color/text_primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -122,7 +122,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:text="Push notifications delivered even when app is closed."
+                        android:text="অ্যাপ বন্ধ থাকলেও পুশ নোটিফিকেশন পৌঁছাবে।"
                         android:textColor="@color/text_secondary"
                         android:textSize="10sp" />
                 </LinearLayout>
@@ -132,7 +132,7 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="Configure"
+                    android:text="কনফিগার"
                     android:textSize="11sp" />
             </LinearLayout>
 
@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="1. Target Audience"
+                android:text="১. প্রাপক নির্বাচন"
                 android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -161,7 +161,7 @@
                     android:layout_weight="1"
                     android:checked="true"
                     android:fontFamily="sans-serif"
-                    android:text="📢 All Members"
+                    android:text="📢 সকল সদস্য"
                     android:textSize="12sp" />
 
                 <RadioButton
@@ -170,7 +170,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="sans-serif"
-                    android:text="👤 Single Member"
+                    android:text="👤 নির্দিষ্ট সদস্য"
                     android:textSize="12sp" />
             </RadioGroup>
 
@@ -187,7 +187,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="Select Recipient Member:"
+                    android:text="প্রাপক সদস্য নির্বাচন করুন:"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
 
@@ -206,7 +206,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="2. Delivery Channel"
+                android:text="২. পাঠানোর মাধ্যম"
                 android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -224,7 +224,7 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:fontFamily="sans-serif"
-                    android:text="🔔 Online Push Notification (Free • Instant Internet Delivery)"
+                    android:text="🔔 অনলাইন পুশ নোটিফিকেশন (ফ্রি • তাত্ক্ষণিক ইন্টারনেট)"
                     android:textSize="12sp" />
 
                 <RadioButton
@@ -232,7 +232,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="💬 SIM SMS Dispatch (Cellular SIM • Auto Ledger Accounting)"
+                    android:text="💬 সিম এসএমএস (মোবাইল সিম • মেস খতিয়ান থেকে খরচ)"
                     android:textSize="12sp" />
 
                 <RadioButton
@@ -240,7 +240,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="🚀 Both (Online Push + SIM SMS • Guaranteed Delivery)"
+                    android:text="🚀 উভয় মাধ্যমে (অনলাইন পুশ + সিম এসএমএস • শতভাগ নিশ্চয়তা)"
                     android:textSize="12sp" />
             </RadioGroup>
 
@@ -250,7 +250,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="3. Notification Template &amp; Type"
+                android:text="৩. নোটিফিকেশন টেমপ্লেট ও ধরন"
                 android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -273,7 +273,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="📢 Notice"
+                        android:text="📢 নোটিশ"
                         android:textSize="11sp" />
 
                     <com.google.android.material.chip.Chip
@@ -281,7 +281,7 @@
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="💰 Due Reminder"
+                        android:text="💰 বকেয়া তাগাদা"
                         android:textSize="11sp" />
 
                     <com.google.android.material.chip.Chip
@@ -289,7 +289,7 @@
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🍽️ Meal Lock"
+                        android:text="🍽️ মিল লক"
                         android:textSize="11sp" />
 
                     <com.google.android.material.chip.Chip
@@ -297,7 +297,7 @@
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🛒 Bazar Duty"
+                        android:text="🛒 বাজার ডিউটি"
                         android:textSize="11sp" />
 
                     <com.google.android.material.chip.Chip
@@ -305,7 +305,7 @@
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="⚠️ Urgent Alert"
+                        android:text="⚠️ জরুরি সতর্কতা"
                         android:textSize="11sp" />
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
@@ -316,7 +316,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="4. Title"
+                android:text="৪. শিরোনাম"
                 android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -332,8 +332,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:hint="Announcement Title"
-                    android:text="Urgent Mess Announcement"
+                    android:hint="বিজ্ঞপ্তির শিরোনাম"
+                    android:text="জরুরি মেস বিজ্ঞপ্তি"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -344,7 +344,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="5. Message Content"
+                android:text="৫. বার্তার বিবরণ"
                 android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -361,7 +361,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:gravity="top|start"
-                    android:hint="Type notice details here..."
+                    android:hint="এখানে বার্তার বিবরণ লিখুন..."
                     android:inputType="textMultiLine"
                     android:lines="4"
                     android:maxLines="8"
@@ -376,7 +376,7 @@
                 android:layout_marginTop="4dp"
                 android:fontFamily="sans-serif"
                 android:gravity="end"
-                android:text="0 characters • 1 SMS segment"
+                android:text="০ অক্ষর • ১টি এসএমএস"
                 android:textColor="@color/text_secondary"
                 android:textSize="11sp" />
 
@@ -386,7 +386,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="Live Receiver Notification Preview:"
+                android:text="লাইভ নোটিফিকেশন প্রিভিউ:"
                 android:textColor="@color/text_primary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -419,7 +419,7 @@
                         android:background="@drawable/badge_credit"
                         android:paddingHorizontal="6dp"
                         android:paddingVertical="2dp"
-                        android:text="🔔 PUSH"
+                        android:text="🔔 পুশ"
                         android:textColor="@color/primary_dark"
                         android:textSize="9sp"
                         android:textStyle="bold" />
@@ -433,7 +433,7 @@
                         android:ellipsize="end"
                         android:fontFamily="sans-serif-medium"
                         android:maxLines="1"
-                        android:text="Urgent Mess Announcement"
+                        android:text="জরুরি মেস বিজ্ঞপ্তি"
                         android:textColor="@color/text_primary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -447,7 +447,7 @@
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:maxLines="3"
-                    android:text="Type notice details here..."
+                    android:text="এখানে বার্তার বিবরণ লিখুন..."
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -459,7 +459,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:fontFamily="sans-serif"
-                android:text="Estimated Cost: ৳0.00 (Online Push is Free)"
+                android:text="আনুমানিক খরচ: ৳০.০০ (অনলাইন পুশ সম্পূর্ণ ফ্রি)"
                 android:textColor="@color/credit_green"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -473,7 +473,7 @@
                 android:layout_marginBottom="24dp"
                 android:backgroundTint="@color/primary"
                 android:fontFamily="sans-serif-medium"
-                android:text="🚀 Dispatch Notification"
+                android:text="🚀 নোটিফিকেশন পাঠান"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"

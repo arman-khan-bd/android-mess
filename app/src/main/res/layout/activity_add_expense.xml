@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Log Mess Cost / Bazar"
+            android:text="খরচ ও বাজার লিপিবদ্ধ করুন"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="20dp"
-            android:text="Choose pool category to automate rate calculation"
+            android:text="স্বয়ংক্রিয় মিল রেটের জন্য খরচের খাত নির্বাচন করুন"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
@@ -43,7 +43,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Item / Expense Title"
+                    android:text="খরচ বা পণ্যের বিবরণ"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -54,13 +54,13 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="14dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="e.g. Fish, Beef &amp; Vegetables"
+                    android:hint="যেমন: মাছ, মাংস ও শাকসবজি"
                     android:inputType="textCapSentences" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Amount (৳)"
+                    android:text="খরচের পরিমাণ (৳)"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -71,13 +71,13 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="14dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="0.00"
+                    android:hint="০.০০"
                     android:inputType="numberDecimal" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dual Expense Pool Category"
+                    android:text="খরচের খাত / পুল"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -92,7 +92,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Split Type"
+                    android:text="বণ্টনের নিয়ম"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -107,7 +107,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Buyer (Who Paid)"
+                    android:text="ক্রেতা (কে পরিশোধ করেছেন)"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -130,7 +130,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Target Member to Debit"
+                        android:text="সদস্য নির্বাচন (নির্দিষ্ট সদস্যের খরচ হলে)"
                         android:textColor="@color/text_primary"
                         android:textStyle="bold" />
 
@@ -146,7 +146,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Expense Date"
+                    android:text="খরচের তারিখ"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -157,14 +157,14 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="2026-10-09"
+                    android:hint="তারিখ নির্বাচন"
                     android:inputType="date" />
 
                 <!-- Voucher Attachment Section -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Voucher / Bill Receipt"
+                    android:text="ভাউচার / রসিদের ছবি"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -181,7 +181,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginEnd="6dp"
-                        android:text="Capture Receipt"
+                        android:text="ছবি তুলুন"
                         app:icon="@drawable/ic_camera"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
@@ -191,7 +191,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="6dp"
-                        android:text="Choose Gallery"
+                        android:text="গ্যালারি থেকে নিন"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
                 </LinearLayout>
 
@@ -225,7 +225,7 @@
                             android:id="@+id/tvVoucherTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Receipt Attached"
+                            android:text="রসিদ সংযুক্ত হয়েছে"
                             android:textColor="@color/text_primary"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -235,7 +235,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Compressed to WebP • 1080px max • 75% quality"
+                            android:text="ছবি অপ্টিমাইজ সম্পন্ন"
                             android:textColor="@color/primary"
                             android:textSize="11sp" />
 
@@ -243,7 +243,7 @@
                             android:id="@+id/tvVoucherStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Pending offline SQLite save"
+                            android:text="সংরক্ষণের অপেক্ষায়"
                             android:textColor="@color/text_secondary"
                             android:textSize="10sp" />
                     </LinearLayout>
@@ -253,7 +253,7 @@
                     android:id="@+id/btnSaveExpense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Save Expense Entry"
+                    android:text="খরচ সংরক্ষণ করুন"
                     style="@style/SmartButton" />
 
             </LinearLayout>

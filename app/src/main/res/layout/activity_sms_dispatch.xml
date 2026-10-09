@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SMS Due Reminder Dispatch"
+            android:text="এসএমএস বকেয়া তাগাদা প্রেরণ"
             android:textColor="@color/text_on_primary"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="Automated SIM dispatch • Cost debited to mess ledger"
+            android:text="স্বয়ংক্রিয় সিম এসএমএস • খরচ মেসের খতিয়ানে যুক্ত হবে"
             android:textColor="#D1FAE5"
             android:textSize="12sp" />
     </LinearLayout>
@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:buttonTint="@color/primary"
-            android:text="Select All Overdue"
+            android:text="সকল বকেয়াদার নির্বাচন করুন"
             android:textColor="@color/text_primary"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -66,7 +66,7 @@
             android:layout_height="36dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="SIM 1 (Active)"
+            android:text="সিম ১ (সক্রিয়)"
             android:textSize="11sp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
     </LinearLayout>
@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:text="Sending to 0 members. Estimated cost: ৳0.00 (Deducted from your mess ledger as credit)"
+                android:text="০ জন সদস্যকে পাঠানো হচ্ছে। আনুমানিক খরচ: ৳০.০০ (মেস খতিয়ান থেকে কর্তিত হবে)"
                 android:textColor="@color/primary_dark"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -132,7 +132,7 @@
             android:id="@+id/btnDispatchSms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send SMS Reminders"
+            android:text="এসএমএস তাগাদা পাঠান"
             style="@style/SmartButton" />
     </LinearLayout>
 

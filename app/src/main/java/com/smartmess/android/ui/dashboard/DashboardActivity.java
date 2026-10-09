@@ -220,7 +220,7 @@ public class DashboardActivity extends AppCompatActivity {
     private void showSmsOptionsDialog() {
         String[] options = {"Send Due Reminder to Member", "Broadcast Announcement Notice to All"};
         new AlertDialog.Builder(this)
-                .setTitle("SIM SMS Management")
+                .setTitle("সিম এসএমএস ব্যবস্থাপনা")
                 .setItems(options, (dialog, which) -> {
                     if (which == 0) {
                         startActivity(new Intent(this, DueReminderActivity.class));

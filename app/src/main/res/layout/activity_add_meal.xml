@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Log Meal Count"
+            android:text="মিল সংখ্যা এন্ট্রি করুন"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="20dp"
-            android:text="Assign consumed meal counts to a member"
+            android:text="সদস্যের খাওয়া মিল সংখ্যা লিপিবদ্ধ করুন"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
@@ -43,7 +43,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Select Member"
+                    android:text="সদস্য নির্বাচন করুন"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -58,7 +58,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Date (YYYY-MM-DD)"
+                    android:text="তারিখ (দিন-মাস-বছর)"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
@@ -69,7 +69,7 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="14dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="2026-10-09"
+                    android:hint="তারিখ নির্বাচন"
                     android:inputType="date" />
 
                 <!-- Meal Inputs Grid -->
@@ -88,7 +88,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Breakfast"
+                            android:text="সকাল"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
 
@@ -113,7 +113,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Lunch"
+                            android:text="দুপুর"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
 
@@ -137,7 +137,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Dinner"
+                            android:text="রাত"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
 
@@ -157,7 +157,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:text="Guest Meals"
+                    android:text="অতিথি মিল"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
@@ -175,7 +175,7 @@
                     android:id="@+id/btnSaveMeal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Save Meal Entry"
+                    android:text="মিল সংরক্ষণ করুন"
                     style="@style/SmartButton" />
 
             </LinearLayout>
