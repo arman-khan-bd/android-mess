@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
@@ -9,15 +10,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="20dp">
 
+        <!-- App Brand Header -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/register_title"
-            android:textColor="@color/text_primary"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="SmartMess"
+            android:textColor="@color/primary"
             android:textSize="26sp"
             android:textStyle="bold" />
 
@@ -25,11 +29,47 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="24dp"
-            android:text="Create a new mess or join with invite code"
+            android:layout_marginBottom="18dp"
+            android:fontFamily="sans-serif"
+            android:text="Enterprise Multi-Tenant Mess Accounting"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
+        <!-- Dual Path Mode Selector (Create Mess vs Join Existing) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_edittext"
+            android:orientation="horizontal"
+            android:padding="3dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPathCreateMess"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="Create Mess"
+                android:textSize="12sp"
+                style="@style/SmartButton" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPathJoinMess"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="Join Existing"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                app:backgroundTint="@android:color/transparent"
+                style="@style/Widget.MaterialComponents.Button.TextButton" />
+        </LinearLayout>
+
+        <!-- Main Card Form -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,122 +79,223 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="16dp">
 
+                <!-- 1. Full Name -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/full_name"
+                    android:fontFamily="sans-serif"
+                    android:text="Full Name *"
                     android:textColor="@color/text_primary"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/etName"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="14dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="Full Name"
-                    android:inputType="textPersonName" />
+                    android:hint="e.g. Arman Khan"
+                    android:inputType="textPersonName"
+                    android:paddingHorizontal="12dp"
+                    android:textSize="14sp" />
 
+                <!-- 2. Email Address -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/phone_number"
+                    android:fontFamily="sans-serif"
+                    android:text="Email Address"
                     android:textColor="@color/text_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/rounded_edittext"
+                    android:hint="user@example.com"
+                    android:inputType="textEmailAddress"
+                    android:paddingHorizontal="12dp"
+                    android:textSize="14sp" />
+
+                <!-- 3. Phone Number -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Phone Number *"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/etRegisterPhone"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="14dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="Phone number"
-                    android:inputType="phone" />
+                    android:hint="+8801700000000"
+                    android:inputType="phone"
+                    android:paddingHorizontal="12dp"
+                    android:textSize="14sp" />
 
+                <!-- 4. Password -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/mess_name"
+                    android:fontFamily="sans-serif"
+                    android:text="Password (min 6 characters) *"
                     android:textColor="@color/text_primary"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/etMessName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="14dp"
-                    android:background="@drawable/rounded_edittext"
-                    android:hint="e.g. Green Valley Mess"
-                    android:inputType="textCapWords" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/invite_code"
-                    android:textColor="@color/text_primary"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/etInviteCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="14dp"
-                    android:background="@drawable/rounded_edittext"
-                    android:hint="Leave empty if creating new mess"
-                    android:inputType="textCapCharacters" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/password"
-                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/etRegisterPassword"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="Choose password"
-                    android:inputType="textPassword" />
+                    android:hint="••••••••"
+                    android:inputType="textPassword"
+                    android:paddingHorizontal="12dp"
+                    android:textSize="14sp" />
 
+                <!-- PATH A SPECIFIC: Mess Name & Location -->
+                <LinearLayout
+                    android:id="@+id/layoutPathCreateFields"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="Mess Name *"
+                        android:textColor="@color/text_primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/etMessName"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/rounded_edittext"
+                        android:hint="e.g. Sunrise Bachelor Home"
+                        android:inputType="textCapWords"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="Location / Address"
+                        android:textColor="@color/text_primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/etLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/rounded_edittext"
+                        android:hint="e.g. Mirpur-10, Dhaka"
+                        android:inputType="textCapWords"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- PATH B SPECIFIC: 6-Character Invite Code -->
+                <LinearLayout
+                    android:id="@+id/layoutPathJoinFields"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="6-Character Invite Code *"
+                        android:textColor="@color/text_primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/etInviteCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/rounded_edittext"
+                        android:hint="e.g. SUN123"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="10"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- Network Connectivity Notice Banner -->
+                <TextView
+                    android:id="@+id/tvNetworkStatusNotice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:background="#FEF2F2"
+                    android:padding="8dp"
+                    android:text="No active internet. Please connect to Wi-Fi or Mobile Data to create an account."
+                    android:textColor="@color/due_red"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+
+                <!-- Submit Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnRegister"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/btn_register"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="4dp"
+                    android:text="Create Mess &amp; Register"
                     style="@style/SmartButton" />
 
                 <ProgressBar
                     android:id="@+id/pbRegister"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="8dp"
                     android:visibility="gone" />
 
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Go To Login Link -->
         <TextView
             android:id="@+id/tvGoToLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
+            android:fontFamily="sans-serif-medium"
             android:padding="8dp"
-            android:text="@string/have_account"
+            android:text="Already have an account? Sign In"
             android:textColor="@color/primary"
+            android:textSize="13sp"
             android:textStyle="bold" />
 
     </LinearLayout>
-
 </ScrollView>

@@ -135,14 +135,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageButton
+                    android:orientation="horizontal">                    <ImageButton
                         android:id="@+id/btnDecBreakfast"
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_meal"
+                        android:src="@drawable/ic_minus"
                         android:scaleType="centerInside"
                         android:tint="@color/text_secondary" />
 
@@ -195,7 +193,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_meal"
+                        android:src="@drawable/ic_minus"
                         android:scaleType="centerInside"
                         android:tint="@color/text_secondary" />
 
@@ -248,7 +246,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_meal"
+                        android:src="@drawable/ic_minus"
                         android:scaleType="centerInside"
                         android:tint="@color/text_secondary" />
 
@@ -301,7 +299,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_meal"
+                        android:src="@drawable/ic_minus"
                         android:scaleType="centerInside"
                         android:tint="@color/text_secondary" />
 

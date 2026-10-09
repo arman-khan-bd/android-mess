@@ -167,8 +167,8 @@ public class ApiClient {
         return null;
     }
 
-    public RegisterResponse register(String name, String phone, String password, String messName, String inviteCode) throws IOException {
-        String jsonBody = gson.toJson(new RegisterRequest(name, phone, password, messName, inviteCode));
+    public RegisterResponse register(RegisterRequest registerRequest) throws IOException {
+        String jsonBody = gson.toJson(registerRequest);
         RequestBody body = RequestBody.create(jsonBody, MediaType.parse("application/json; charset=utf-8"));
         Request request = new Request.Builder()
                 .url(ApiConfig.ROUTE_AUTH_REGISTER)
@@ -181,5 +181,9 @@ public class ApiClient {
             }
         }
         return null;
+    }
+
+    public RegisterResponse register(String name, String phone, String password, String messName, String inviteCode) throws IOException {
+        return register(new RegisterRequest(name, phone, password, messName, inviteCode));
     }
 }

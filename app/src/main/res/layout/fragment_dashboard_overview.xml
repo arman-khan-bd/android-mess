@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="10dp">
 
-        <!-- Stat Cards Grid -->
+        <!-- Stat Cards Grid (Live Meal Rate & Mess Cash in Hand) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,23 +24,20 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@color/surface"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="2dp"
-                app:strokeColor="@color/border_stroke"
-                app:strokeWidth="1dp">
+                style="@style/SmartCardView">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="14dp">
+                    android:padding="10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
                         android:text="Live Meal Rate"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
@@ -50,10 +47,11 @@
                         android:id="@+id/tvLiveMealRate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif-medium"
                         android:text="৳0.00"
                         android:textColor="@color/primary_dark"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -61,6 +59,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif"
                         android:text="0.0 Meals Logged"
                         android:textColor="@color/text_muted"
                         android:textSize="11sp" />
@@ -71,23 +70,20 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@color/surface"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="2dp"
-                app:strokeColor="@color/border_stroke"
-                app:strokeWidth="1dp">
+                style="@style/SmartCardView">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="14dp">
+                    android:padding="10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
                         android:text="Mess Cash in Hand"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
@@ -97,10 +93,11 @@
                         android:id="@+id/tvCashInHand"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif-medium"
                         android:text="৳0.00"
                         android:textColor="@color/credit_green"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -108,6 +105,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif"
                         android:text="0 Active Members"
                         android:textColor="@color/text_muted"
                         android:textSize="11sp" />
@@ -119,30 +117,28 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="2dp"
-            app:strokeColor="@color/border_stroke"
-            app:strokeWidth="1dp">
+            android:layout_marginTop="8dp"
+            style="@style/SmartCardView">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="12dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
                     android:text="Dual Expense Engine Pools"
                     android:textColor="@color/text_primary"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
                     android:text="Separates Raw Meal Bazaar from Shared Goods &amp; Utilities"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp" />
@@ -151,7 +147,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="8dp"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -163,6 +159,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
                             android:text="Raw Meal"
                             android:textColor="@color/primary"
                             android:textSize="11sp"
@@ -172,6 +169,7 @@
                             android:id="@+id/tvRawMealCost"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
                             android:text="৳0.00"
                             android:textColor="@color/text_primary"
                             android:textSize="14sp"
@@ -187,6 +185,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
                             android:text="Shared Food"
                             android:textColor="@color/accent"
                             android:textSize="11sp"
@@ -196,6 +195,7 @@
                             android:id="@+id/tvSharedFoodCost"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
                             android:text="৳0.00"
                             android:textColor="@color/text_primary"
                             android:textSize="14sp"
@@ -211,6 +211,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
                             android:text="Utilities &amp; Assets"
                             android:textColor="@color/warning_amber"
                             android:textSize="11sp"
@@ -220,6 +221,7 @@
                             android:id="@+id/tvUtilityCost"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
                             android:text="৳0.00"
                             android:textColor="@color/text_primary"
                             android:textSize="14sp"
@@ -234,11 +236,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="6dp"
+            android:fontFamily="sans-serif"
             android:text="Quick Operations"
             android:textColor="@color/text_secondary"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -249,21 +252,43 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnQuickAddExpense"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:text="Log Bazaar"
-                app:icon="@drawable/ic_add"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="Log Bazar"
+                android:textSize="11sp"
+                app:icon="@drawable/ic_lucide_cart"
+                app:iconSize="16dp"
                 style="@style/SmartButton" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnQuickAddDeposit"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="4dp"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="+ Deposit"
+                android:textSize="11sp"
+                app:icon="@drawable/ic_deposit"
+                app:iconSize="16dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnQuickSmsDispatch"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
                 android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
                 android:text="Due SMS"
-                app:icon="@drawable/ic_sms"
+                android:textSize="11sp"
+                app:icon="@drawable/ic_lucide_message_square"
+                app:iconSize="16dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
         </LinearLayout>
 

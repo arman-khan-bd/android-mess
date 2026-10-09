@@ -3,59 +3,91 @@ package com.smartmess.android.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.smartmess.android.R;
 import com.smartmess.android.data.local.DatabaseHelper;
 import com.smartmess.android.data.local.dao.MealDao;
+import com.smartmess.android.data.local.dao.UserDao;
 import com.smartmess.android.data.sync.SyncManager;
 import com.smartmess.android.engine.AccountingEngine;
 import com.smartmess.android.engine.CalculationModels.MemberBalanceSheet;
+import com.smartmess.android.engine.PlanGateManager;
 import com.smartmess.android.model.Meal;
+import com.smartmess.android.model.User;
+import com.smartmess.android.ui.auth.LoginActivity;
 import com.smartmess.android.ui.dashboard.FragmentDashboardOverview;
-import com.smartmess.android.ui.deposits.AddDepositActivity;
-import com.smartmess.android.ui.expenses.ExpenseListActivity;
+import com.smartmess.android.ui.expenses.FragmentExpenseList;
 import com.smartmess.android.ui.meals.FragmentMealSheet;
-import com.smartmess.android.ui.members.MemberListActivity;
+import com.smartmess.android.ui.members.FragmentMemberList;
+import com.smartmess.android.ui.reports.SummaryReportActivity;
+import com.smartmess.android.ui.settings.SettingsActivity;
+import com.smartmess.android.ui.sms.ActivitySmsDispatch;
+import com.smartmess.android.ui.support.ActivitySupportTickets;
+import com.smartmess.android.ui.telemetry.ActivityReportIssue;
 import com.smartmess.android.utils.CurrencyUtils;
 import com.smartmess.android.utils.DateTimeUtils;
 import com.smartmess.android.utils.SessionManager;
 
+import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_OPEN_TAB = "extra_open_tab";
 
-    private TextView tvMessTitle;
-    private TextView tvUserRoleBadge;
-    private Chip chipSyncIndicator;
-    private TextView tvPersonalBalance;
-    private TextView tvBalanceBadge;
-    private MaterialButton btnPayAdvance;
-    private TextView tvMealQuickStatus;
+    private DrawerLayout drawerLayout;
+    private TextView tvTopMessName;
+    private TextView tvTopPlanPill;
+    private TextView chipBalanceBadge;
     private SwitchMaterial switchQuickDinner;
+    private ImageButton btnCloudSync;
+    private View btnOpenProfileDrawer;
+    private TextView tvAvatarInitials;
     private BottomNavigationView bottomNavigation;
+
+    // Right Drawer Views
+    private TextView tvDrawerAvatarInitials;
+    private TextView tvDrawerUserName;
+    private TextView tvDrawerUserPhone;
+    private TextView tvDrawerRoleBadge;
+    private TextView tvDrawerPlanPill;
+    private View drawerItemProfile;
+    private View drawerItemPlans;
+    private View drawerItemSms;
+    private View drawerItemStatements;
+    private View drawerItemSupport;
+    private View drawerItemBugReport;
+    private View tvDrawerManagerHeader;
+    private View drawerItemSettings;
+    private View drawerItemHandover;
+    private View drawerItemSignOut;
 
     private SessionManager sessionManager;
     private AccountingEngine accountingEngine;
     private MealDao mealDao;
+    private UserDao userDao;
     private SyncManager syncManager;
-    private com.smartmess.android.engine.PlanGateManager planGateManager;
+    private PlanGateManager planGateManager;
+
+    private int currentSelectedNavId = R.id.nav_dashboard;
 
     private final android.content.BroadcastReceiver capabilitiesReceiver = new android.content.BroadcastReceiver() {
         @Override
         public void onReceive(android.content.Context context, Intent intent) {
             if (SessionManager.ACTION_CAPABILITIES_UPDATED.equals(intent.getAction())) {
                 loadHeaderData();
+                populateDrawerProfile();
             }
         }
     };
@@ -69,13 +101,15 @@ public class MainActivity extends AppCompatActivity {
         accountingEngine = new AccountingEngine(this);
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
         mealDao = new MealDao(helper);
+        userDao = new UserDao(helper);
         syncManager = SyncManager.getInstance(this);
-        planGateManager = new com.smartmess.android.engine.PlanGateManager(this);
+        planGateManager = new PlanGateManager(this);
 
         initViews();
         setupBottomNav();
         setupQuickMealToggle();
         setupSyncIndicator();
+        setupDrawerActions();
 
         // Check remote kill-switch, maintenance mode, and force updates
         try {
@@ -101,8 +135,11 @@ public class MainActivity extends AppCompatActivity {
     private void handleIncomingIntent(Intent intent, Bundle savedInstanceState) {
         if (intent != null && "meals".equals(intent.getStringExtra(EXTRA_OPEN_TAB))) {
             bottomNavigation.setSelectedItemId(R.id.nav_meals);
+            currentSelectedNavId = R.id.nav_meals;
             loadFragment(new FragmentMealSheet());
         } else if (savedInstanceState == null) {
+            bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
+            currentSelectedNavId = R.id.nav_dashboard;
             loadFragment(new FragmentDashboardOverview());
         }
     }
@@ -132,27 +169,55 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadHeaderData();
+        populateDrawerProfile();
     }
 
     private void initViews() {
-        tvMessTitle = findViewById(R.id.tvMessTitle);
-        tvUserRoleBadge = findViewById(R.id.tvUserRoleBadge);
-        chipSyncIndicator = findViewById(R.id.chipSyncIndicator);
-        tvPersonalBalance = findViewById(R.id.tvPersonalBalance);
-        tvBalanceBadge = findViewById(R.id.tvBalanceBadge);
-        btnPayAdvance = findViewById(R.id.btnPayAdvance);
-        tvMealQuickStatus = findViewById(R.id.tvMealQuickStatus);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        tvTopMessName = findViewById(R.id.tvTopMessName);
+        tvTopPlanPill = findViewById(R.id.tvTopPlanPill);
+        chipBalanceBadge = findViewById(R.id.chipBalanceBadge);
         switchQuickDinner = findViewById(R.id.switchQuickDinner);
+        btnCloudSync = findViewById(R.id.btnCloudSync);
+        btnOpenProfileDrawer = findViewById(R.id.btnOpenProfileDrawer);
+        tvAvatarInitials = findViewById(R.id.tvAvatarInitials);
         bottomNavigation = findViewById(R.id.bottom_navigation);
 
-        btnPayAdvance.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, AddDepositActivity.class));
+        // Right Drawer views
+        tvDrawerAvatarInitials = findViewById(R.id.tvDrawerAvatarInitials);
+        tvDrawerUserName = findViewById(R.id.tvDrawerUserName);
+        tvDrawerUserPhone = findViewById(R.id.tvDrawerUserPhone);
+        tvDrawerRoleBadge = findViewById(R.id.tvDrawerRoleBadge);
+        tvDrawerPlanPill = findViewById(R.id.tvDrawerPlanPill);
+        drawerItemProfile = findViewById(R.id.drawerItemProfile);
+        drawerItemPlans = findViewById(R.id.drawerItemPlans);
+        drawerItemSms = findViewById(R.id.drawerItemSms);
+        drawerItemStatements = findViewById(R.id.drawerItemStatements);
+        drawerItemSupport = findViewById(R.id.drawerItemSupport);
+        drawerItemBugReport = findViewById(R.id.drawerItemBugReport);
+        tvDrawerManagerHeader = findViewById(R.id.tvDrawerManagerHeader);
+        drawerItemSettings = findViewById(R.id.drawerItemSettings);
+        drawerItemHandover = findViewById(R.id.drawerItemHandover);
+        drawerItemSignOut = findViewById(R.id.drawerItemSignOut);
+
+        btnOpenProfileDrawer.setOnClickListener(v -> {
+            if (drawerLayout != null) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                    drawerLayout.closeDrawer(GravityCompat.END);
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.END);
+                }
+            }
         });
 
-        tvUserRoleBadge.setOnClickListener(v -> {
+        chipBalanceBadge.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, com.smartmess.android.ui.deposits.AddDepositActivity.class));
+        });
+
+        tvTopPlanPill.setOnClickListener(v -> {
             if (!planGateManager.isPro()) {
                 planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "SmartMess Pro",
-                        "Upgrade to unlock unlimited members, real-time cloud sync, and branded exports.");
+                        "Upgrade to unlock unlimited active members, multi-device cloud sync, and branded financial exports.");
             }
         });
     }
@@ -161,22 +226,30 @@ public class MainActivity extends AppCompatActivity {
         try {
             String messName = sessionManager.getMessName();
             if (messName == null || messName.isEmpty()) messName = "SmartMess";
-            tvMessTitle.setText(messName);
+            tvTopMessName.setText(messName);
 
-            String role = sessionManager.isManager() ? "Manager" : "Member";
             boolean isPro = planGateManager.isPro();
-
+            tvTopPlanPill.setText(isPro ? "PRO" : "FREE");
             if (isPro) {
-                tvUserRoleBadge.setText("PRO • " + role + " • " + (sessionManager.getUserPhone() != null ? sessionManager.getUserPhone() : ""));
-                tvUserRoleBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.primary_light));
+                tvTopPlanPill.setBackgroundResource(R.drawable.badge_credit);
+                tvTopPlanPill.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.primary_dark));
             } else {
-                tvUserRoleBadge.setText("FREE • " + role + " • Tap to Upgrade Pro ★");
-                tvUserRoleBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.warning_amber));
+                tvTopPlanPill.setBackgroundResource(R.drawable.badge_due);
+                tvTopPlanPill.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.warning_amber));
             }
 
-            // Gating Cloud Sync Button in Header: Hidden on Free (Background only), Visible on Pro for Manager
-            boolean showSyncButton = planGateManager.canUseCloudSync();
-            chipSyncIndicator.setVisibility(showSyncButton ? View.VISIBLE : View.GONE);
+            // Gating Cloud Sync Button in Header: Conditionally visible ONLY if manager AND plan_features.cloud_sync == true
+            boolean showSyncButton = sessionManager.isManager() && planGateManager.canUseCloudSync();
+            btnCloudSync.setVisibility(showSyncButton ? View.VISIBLE : View.GONE);
+
+            // Initials avatar
+            String userName = sessionManager.getUserName();
+            if (userName == null || userName.isEmpty()) userName = "User";
+            String[] parts = userName.trim().split("\\s+");
+            String initials = parts.length > 1
+                    ? ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase()
+                    : ("" + parts[0].charAt(0)).toUpperCase();
+            tvAvatarInitials.setText(initials);
 
             // Calculate Personal Ledger Balance
             long messId = sessionManager.getMessId();
@@ -184,35 +257,230 @@ public class MainActivity extends AppCompatActivity {
             MemberBalanceSheet sheet = accountingEngine.calculateMemberBalance(messId, userId);
 
             double balance = sheet != null ? sheet.getNetBalance() : 0.0;
-            tvPersonalBalance.setText(CurrencyUtils.format(balance));
-
-            if (sheet != null && sheet.isOverdue()) {
-                tvPersonalBalance.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.due_red));
-                tvBalanceBadge.setText("Payment Due");
-                tvBalanceBadge.setBackgroundResource(R.drawable.badge_due);
-                tvBalanceBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.due_red));
-                btnPayAdvance.setVisibility(View.VISIBLE);
+            if (balance >= 0) {
+                chipBalanceBadge.setText("+ " + CurrencyUtils.format(balance));
+                chipBalanceBadge.setBackgroundResource(R.drawable.badge_credit);
+                chipBalanceBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.credit_green));
             } else {
-                tvPersonalBalance.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.credit_green));
-                tvBalanceBadge.setText("Credit Advance");
-                tvBalanceBadge.setBackgroundResource(R.drawable.badge_credit);
-                tvBalanceBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.credit_green));
-                btnPayAdvance.setVisibility(View.GONE);
+                chipBalanceBadge.setText("- " + CurrencyUtils.format(Math.abs(balance)));
+                chipBalanceBadge.setBackgroundResource(R.drawable.badge_due);
+                chipBalanceBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.due_red));
             }
 
-            // Check tonight's meal state for today
+            // Check today's meal state
             String today = DateTimeUtils.getCurrentDate();
             Meal todayMeal = mealDao.getUserMealForDate(messId, userId, today);
-            boolean isDinnerOn = (todayMeal != null && todayMeal.getDinnerCount() > 0);
-            boolean isLunchOn = (todayMeal != null && todayMeal.getLunchCount() > 0);
+            boolean isMealOn = (todayMeal != null && (todayMeal.getDinnerCount() > 0 || todayMeal.getLunchCount() > 0));
+            switchQuickDinner.setChecked(isMealOn);
 
-            switchQuickDinner.setChecked(isDinnerOn);
-            tvMealQuickStatus.setText(String.format("Lunch: %s | Dinner: %s (Lock at 22:00)",
-                    isLunchOn ? "ON" : "OFF",
-                    isDinnerOn ? "ON" : "OFF"));
         } catch (Throwable t) {
             android.util.Log.e("MainActivity", "Error in loadHeaderData: " + t.getMessage(), t);
         }
+    }
+
+    private void populateDrawerProfile() {
+        try {
+            String userName = sessionManager.getUserName();
+            if (userName == null || userName.isEmpty()) userName = "Member";
+            tvDrawerUserName.setText(userName);
+
+            String userPhone = sessionManager.getUserPhone();
+            tvDrawerUserPhone.setText(userPhone != null && !userPhone.isEmpty() ? userPhone : "No phone registered");
+
+            String[] parts = userName.trim().split("\\s+");
+            String initials = parts.length > 1
+                    ? ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase()
+                    : ("" + parts[0].charAt(0)).toUpperCase();
+            tvDrawerAvatarInitials.setText(initials);
+
+            boolean isManager = sessionManager.isManager();
+            boolean isAssistant = sessionManager.isAssistant();
+            String roleStr = isManager ? "Manager" : (isAssistant ? "Assistant" : "Member");
+            tvDrawerRoleBadge.setText(roleStr);
+
+            boolean isPro = planGateManager.isPro();
+            tvDrawerPlanPill.setText(isPro ? "Pro Plan" : "Free Plan");
+            tvDrawerPlanPill.setTextColor(androidx.core.content.ContextCompat.getColor(this,
+                    isPro ? R.color.primary_dark : R.color.warning_amber));
+
+            // Manager Controls visibility
+            int managerVisibility = isManager ? View.VISIBLE : View.GONE;
+            if (tvDrawerManagerHeader != null) tvDrawerManagerHeader.setVisibility(managerVisibility);
+            if (drawerItemSettings != null) drawerItemSettings.setVisibility(managerVisibility);
+            if (drawerItemHandover != null) drawerItemHandover.setVisibility(managerVisibility);
+
+        } catch (Throwable t) {
+            android.util.Log.e("MainActivity", "Error in populateDrawerProfile: " + t.getMessage(), t);
+        }
+    }
+
+    private void setupDrawerActions() {
+        if (drawerItemProfile != null) {
+            drawerItemProfile.setOnClickListener(v -> {
+                closeDrawer();
+                showProfileDialog();
+            });
+        }
+
+        if (drawerItemPlans != null) {
+            drawerItemPlans.setOnClickListener(v -> {
+                closeDrawer();
+                planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "SmartMess SaaS Plans",
+                        "Upgrade to Pro for unlimited members, branded monthly audit reports, bulk SMS dispatcher, and cloud backup.");
+            });
+        }
+
+        if (drawerItemSms != null) {
+            drawerItemSms.setOnClickListener(v -> {
+                closeDrawer();
+                startActivity(new Intent(MainActivity.this, ActivitySmsDispatch.class));
+            });
+        }
+
+        if (drawerItemStatements != null) {
+            drawerItemStatements.setOnClickListener(v -> {
+                closeDrawer();
+                startActivity(new Intent(MainActivity.this, SummaryReportActivity.class));
+            });
+        }
+
+        if (drawerItemSupport != null) {
+            drawerItemSupport.setOnClickListener(v -> {
+                closeDrawer();
+                startActivity(new Intent(MainActivity.this, ActivitySupportTickets.class));
+            });
+        }
+
+        if (drawerItemBugReport != null) {
+            drawerItemBugReport.setOnClickListener(v -> {
+                closeDrawer();
+                startActivity(new Intent(MainActivity.this, ActivityReportIssue.class));
+            });
+        }
+
+        if (drawerItemSettings != null) {
+            drawerItemSettings.setOnClickListener(v -> {
+                closeDrawer();
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            });
+        }
+
+        if (drawerItemHandover != null) {
+            drawerItemHandover.setOnClickListener(v -> {
+                closeDrawer();
+                showHandoverDialog();
+            });
+        }
+
+        if (drawerItemSignOut != null) {
+            drawerItemSignOut.setOnClickListener(v -> {
+                closeDrawer();
+                confirmSignOut();
+            });
+        }
+    }
+
+    private void closeDrawer() {
+        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.END)) {
+            drawerLayout.closeDrawer(GravityCompat.END);
+        }
+    }
+
+    private void showProfileDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("My Account")
+                .setMessage("Name: " + sessionManager.getUserName() + "\n" +
+                        "Phone: " + sessionManager.getUserPhone() + "\n" +
+                        "Role: " + sessionManager.getUserRole().toUpperCase() + "\n" +
+                        "Mess: " + sessionManager.getMessName() + "\n" +
+                        "Plan: " + (planGateManager.isPro() ? "SmartMess PRO ★" : "Free Tier"))
+                .setPositiveButton("Close", null)
+                .show();
+    }
+
+    private void showHandoverDialog() {
+        long messId = sessionManager.getMessId();
+        List<User> members = userDao.getActiveMembersByMess(messId);
+        // Exclude current user
+        long currentUserId = sessionManager.getUserId();
+        java.util.ArrayList<User> candidates = new java.util.ArrayList<>();
+        for (User u : members) {
+            if (u.getId() != currentUserId) {
+                candidates.add(u);
+            }
+        }
+
+        if (candidates.isEmpty()) {
+            Toast.makeText(this, "No other active members available to receive Manager role.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String[] candidateNames = new String[candidates.size()];
+        for (int i = 0; i < candidates.size(); i++) {
+            candidateNames[i] = candidates.get(i).getName() + " (" + candidates.get(i).getPhone() + ")";
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Handover Manager Role")
+                .setItems(candidateNames, (dialog, which) -> {
+                    User selected = candidates.get(which);
+                    confirmHandoverToUser(selected);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void confirmHandoverToUser(User targetUser) {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Role Transfer")
+                .setMessage("Are you sure you want to transfer full Manager privileges to " + targetUser.getName() + "? You will become a general member.")
+                .setPositiveButton("Transfer", (dialog, which) -> {
+                    try {
+                        long currentUserId = sessionManager.getUserId();
+                        // Update in local DB
+                        userDao.updateRole(currentUserId, "member");
+                        userDao.updateRole(targetUser.getId(), "manager");
+
+                        sessionManager.createSession(
+                                sessionManager.getUserId(),
+                                sessionManager.getUserUuid(),
+                                sessionManager.getUserName(),
+                                sessionManager.getUserPhone(),
+                                "member",
+                                sessionManager.getMessId(),
+                                sessionManager.getMessUuid(),
+                                sessionManager.getMessName(),
+                                sessionManager.getAuthToken()
+                        );
+
+                        Toast.makeText(MainActivity.this, "Manager role transferred successfully to " + targetUser.getName(), Toast.LENGTH_LONG).show();
+                        loadHeaderData();
+                        populateDrawerProfile();
+
+                        // Background sync
+                        SyncManager.triggerSync(getApplicationContext());
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "Error during handover: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void confirmSignOut() {
+        new AlertDialog.Builder(this)
+                .setTitle("Sign Out")
+                .setMessage("Are you sure you want to securely sign out of SmartMess? All cached offline data remains encrypted.")
+                .setPositiveButton("Sign Out", (dialog, which) -> {
+                    sessionManager.clearSession();
+                    Toast.makeText(MainActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void setupQuickMealToggle() {
@@ -231,7 +499,7 @@ public class MainActivity extends AppCompatActivity {
                 meal.setUserId(userId);
                 meal.setMealDate(today);
                 meal.setBreakfastCount(0.0);
-                meal.setLunchCount(1.0);
+                meal.setLunchCount(isChecked ? 1.0 : 0.0);
                 meal.setDinnerCount(isChecked ? 1.0 : 0.0);
                 meal.setGuestMealCount(0.0);
                 meal.setIsLocked(0);
@@ -240,13 +508,14 @@ public class MainActivity extends AppCompatActivity {
                 meal.setUpdatedAt(DateTimeUtils.getCurrentDateTime());
             } else {
                 meal.setDinnerCount(isChecked ? 1.0 : 0.0);
+                meal.setLunchCount(isChecked ? 1.0 : 0.0);
                 meal.setSyncStatus(0);
                 meal.setUpdatedAt(DateTimeUtils.getCurrentDateTime());
             }
 
             mealDao.insertOrUpdate(meal);
             loadHeaderData();
-            Toast.makeText(this, isChecked ? "Dinner Enabled for Tonight" : "Dinner Cancelled for Tonight", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, isChecked ? "Meals Enabled for Today" : "Meals Turned OFF for Today", Toast.LENGTH_SHORT).show();
 
             // Background sync
             SyncManager.triggerSync(getApplicationContext());
@@ -254,31 +523,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupSyncIndicator() {
-        chipSyncIndicator.setOnClickListener(v -> {
+        btnCloudSync.setOnClickListener(v -> {
             if (!planGateManager.canUseCloudSync()) {
                 planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "Cloud Sync",
                         "Multi-device instant cloud sync is a Pro tier capability. Upgrade your mess to enable.");
                 return;
             }
 
-            chipSyncIndicator.setText("Syncing...");
+            Toast.makeText(MainActivity.this, "Triggering cloud sync...", Toast.LENGTH_SHORT).show();
             syncManager.triggerTwoWaySync(new SyncManager.SyncCallback() {
                 @Override
-                public void onSyncStarted() {
-                    chipSyncIndicator.setText("Syncing...");
-                }
+                public void onSyncStarted() {}
 
                 @Override
                 public void onSyncSuccess(String message) {
-                    chipSyncIndicator.setText("Cloud Synced");
-                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Sync Complete: " + message, Toast.LENGTH_SHORT).show();
                     loadHeaderData();
+                    populateDrawerProfile();
                 }
 
                 @Override
                 public void onSyncFailed(String error) {
-                    chipSyncIndicator.setText("Offline Mode");
-                    Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Sync Notice: " + error, Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -288,16 +554,29 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_dashboard) {
+                currentSelectedNavId = R.id.nav_dashboard;
                 loadFragment(new FragmentDashboardOverview());
                 return true;
+            } else if (itemId == R.id.nav_members) {
+                currentSelectedNavId = R.id.nav_members;
+                loadFragment(new FragmentMemberList());
+                return true;
+            } else if (itemId == R.id.nav_bazar) {
+                currentSelectedNavId = R.id.nav_bazar;
+                loadFragment(new FragmentExpenseList());
+                return true;
             } else if (itemId == R.id.nav_meals) {
+                currentSelectedNavId = R.id.nav_meals;
                 loadFragment(new FragmentMealSheet());
                 return true;
-            } else if (itemId == R.id.nav_expenses) {
-                startActivity(new Intent(MainActivity.this, ExpenseListActivity.class));
-                return false;
-            } else if (itemId == R.id.nav_members) {
-                startActivity(new Intent(MainActivity.this, MemberListActivity.class));
+            } else if (itemId == R.id.nav_menu) {
+                if (drawerLayout != null) {
+                    if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                        drawerLayout.closeDrawer(GravityCompat.END);
+                    } else {
+                        drawerLayout.openDrawer(GravityCompat.END);
+                    }
+                }
                 return false;
             }
             return false;
@@ -309,5 +588,20 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.END)) {
+            drawerLayout.closeDrawer(GravityCompat.END);
+            return;
+        }
+        if (currentSelectedNavId != R.id.nav_dashboard) {
+            bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
+            currentSelectedNavId = R.id.nav_dashboard;
+            loadFragment(new FragmentDashboardOverview());
+            return;
+        }
+        super.onBackPressed();
     }
 }

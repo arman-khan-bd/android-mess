@@ -54,9 +54,13 @@ public class FragmentDashboardOverview extends Fragment {
         tvUtilityCost = v.findViewById(R.id.tvUtilityCost);
         btnQuickAddExpense = v.findViewById(R.id.btnQuickAddExpense);
         btnQuickSmsDispatch = v.findViewById(R.id.btnQuickSmsDispatch);
+        MaterialButton btnQuickAddDeposit = v.findViewById(R.id.btnQuickAddDeposit);
 
         btnQuickAddExpense.setOnClickListener(view -> startActivity(new Intent(requireContext(), ActivityAddExpense.class)));
         btnQuickSmsDispatch.setOnClickListener(view -> startActivity(new Intent(requireContext(), ActivitySmsDispatch.class)));
+        if (btnQuickAddDeposit != null) {
+            btnQuickAddDeposit.setOnClickListener(view -> startActivity(new Intent(requireContext(), com.smartmess.android.ui.deposits.AddDepositActivity.class)));
+        }
 
         loadStats();
         return v;

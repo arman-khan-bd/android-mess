@@ -94,6 +94,14 @@ public class UserDao {
         return count;
     }
 
+    public void updateRole(long userId, String newRole) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(UserEntry.COL_ROLE, newRole);
+        values.put(UserEntry.COL_UPDATED_AT, com.smartmess.android.utils.DateTimeUtils.getCurrentDateTime());
+        db.update(UserEntry.TABLE_NAME, values, UserEntry.COL_ID + " = ?", new String[]{String.valueOf(userId)});
+    }
+
     private User cursorToUser(Cursor cursor) {
         User user = new User();
         user.setId(cursor.getLong(cursor.getColumnIndexOrThrow(UserEntry.COL_ID)));
