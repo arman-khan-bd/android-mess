@@ -119,29 +119,6 @@ public class ExpenseDao {
         return list;
     }
 
-    public List<Expense> getExpensesInDateRange(long messId, String startDate, String endDate) {
-        List<Expense> list = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String query = "SELECT e.*, u." + UserEntry.COL_NAME + " as buyer_name, tu." + UserEntry.COL_NAME + " as target_name "
-                + "FROM " + ExpenseEntry.TABLE_NAME + " e "
-                + "LEFT JOIN " + UserEntry.TABLE_NAME + " u ON e." + ExpenseEntry.COL_BUYER_USER_ID + " = u." + UserEntry.COL_ID + " "
-                + "LEFT JOIN " + UserEntry.TABLE_NAME + " tu ON e." + ExpenseEntry.COL_TARGET_USER_ID + " = tu." + UserEntry.COL_ID + " "
-                + "WHERE e." + ExpenseEntry.COL_MESS_ID + " = ? AND e." + ExpenseEntry.COL_EXPENSE_DATE + " BETWEEN ? AND ? "
-                + "ORDER BY e." + ExpenseEntry.COL_EXPENSE_DATE + " DESC, e." + ExpenseEntry.COL_ID + " DESC";
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(messId), startDate, endDate});
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                Expense expense = cursorToExpense(cursor);
-                int buyerIdx = cursor.getColumnIndex("buyer_name");
-                if (buyerIdx >= 0) expense.setBuyerName(cursor.getString(buyerIdx));
-                int targetIdx = cursor.getColumnIndex("target_name");
-                if (targetIdx >= 0 && !cursor.isNull(targetIdx)) expense.setTargetUserName(cursor.getString(targetIdx));
-                list.add(expense);
-            }
-            cursor.close();
-        }
-        return list;
-    }
 
     public List<Expense> getUserBazarTrips(long messId, long buyerUserId) {
         List<Expense> list = new ArrayList<>();

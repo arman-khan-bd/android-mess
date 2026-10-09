@@ -24,6 +24,7 @@
     <color name="credit_green_bg">#064E3B</color>
     <color name="due_red">#F87171</color>
     <color name="due_red_bg">#450A0A</color>
+    <color name="error_red">#F87171</color>
     <color name="warning_amber">#FBBF24</color>
     <color name="warning_amber_bg">#451A03</color>
     <color name="info_blue">#60A5FA</color>

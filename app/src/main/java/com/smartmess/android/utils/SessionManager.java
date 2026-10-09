@@ -24,6 +24,8 @@ public class SessionManager {
     private static final String KEY_MESS_NAME = "mess_name";
     private static final String KEY_LAST_SYNC = "last_sync_timestamp";
     private static final String KEY_PLAN_CAPABILITIES = "plan_capabilities_json";
+    private static final String KEY_USER_AVATAR = "user_avatar_url";
+    private static final String KEY_INVITE_CODE = "invite_code";
 
     private final SharedPreferences prefs;
 
@@ -69,6 +71,26 @@ public class SessionManager {
 
     public String getUserRole() {
         return prefs.getString(KEY_USER_ROLE, "member");
+    }
+
+    public void setUserRole(String role) {
+        prefs.edit().putString(KEY_USER_ROLE, role).apply();
+    }
+
+    public void setAvatarUrl(String url) {
+        prefs.edit().putString(KEY_USER_AVATAR, url).apply();
+    }
+
+    public String getAvatarUrl() {
+        return prefs.getString(KEY_USER_AVATAR, "");
+    }
+
+    public void setInviteCode(String code) {
+        prefs.edit().putString(KEY_INVITE_CODE, code).apply();
+    }
+
+    public String getInviteCode() {
+        return prefs.getString(KEY_INVITE_CODE, "");
     }
 
     public long getMessId() {

@@ -155,7 +155,10 @@ public class FragmentDashboardOverview extends Fragment {
 
     private void navigateToBottomTab(int tabId) {
         if (getActivity() != null) {
-            BottomNavigationView nav = getActivity().findViewById(R.id.bottomNavigation);
+            BottomNavigationView nav = getActivity().findViewById(R.id.bottom_navigation);
+            if (nav == null) {
+                nav = getActivity().findViewById(R.id.bottomNavigation);
+            }
             if (nav != null) {
                 nav.setSelectedItemId(tabId);
             }
@@ -316,7 +319,7 @@ public class FragmentDashboardOverview extends Fragment {
                 // Add thin divider between items
                 if (i < recentBazars.size() - 1) {
                     View divider = new View(requireContext());
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.match_parent, dpToPx(1));
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(1));
                     lp.setMargins(dpToPx(54), 0, 0, 0);
                     divider.setLayoutParams(lp);
                     divider.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.border_stroke));

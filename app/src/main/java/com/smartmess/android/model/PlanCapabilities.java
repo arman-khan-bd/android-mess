@@ -38,6 +38,10 @@ public class PlanCapabilities implements Serializable {
         return p;
     }
 
+    public static PlanCapabilities createFree() {
+        return createDefaultFree();
+    }
+
     public static PlanCapabilities createPro(String expiresAt) {
         PlanCapabilities p = new PlanCapabilities();
         p.setPlanTier("pro");
