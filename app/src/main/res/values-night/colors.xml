@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Emerald & Slate Palette (Dark Mode) -->
+    <color name="primary">#10B981</color>
+    <color name="primary_dark">#059669</color>
+    <color name="primary_light">#064E3B</color>
+    <color name="accent">#38BDF8</color>
+    
+    <!-- Neutral Tones (Dark Mode) -->
+    <color name="background">#0F172A</color>
+    <color name="surface">#1E293B</color>
+    <color name="surface_variant">#273549</color>
+    <color name="border_stroke">#334155</color>
+    
+    <!-- Typography (Dark Mode) -->
+    <color name="text_primary">#F8FAFC</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_muted">#64748B</color>
+    <color name="text_on_primary">#0F172A</color>
+    
+    <!-- Financial Statuses (Dark Mode) -->
+    <color name="credit_green">#34D399</color>
+    <color name="credit_green_bg">#064E3B</color>
+    <color name="due_red">#F87171</color>
+    <color name="due_red_bg">#450A0A</color>
+    <color name="warning_amber">#FBBF24</color>
+    <color name="warning_amber_bg">#451A03</color>
+    <color name="info_blue">#60A5FA</color>
+    <color name="info_blue_bg">#1E3A8A</color>
+    
+    <!-- Gradients & Accents (Dark Mode) -->
+    <color name="gradient_start">#064E3B</color>
+    <color name="gradient_end">#047857</color>
+    <color name="slate_800">#334155</color>
+    <color name="slate_900">#1E293B</color>
+</resources>

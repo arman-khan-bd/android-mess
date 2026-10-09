@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView chipBalanceBadge;
     private SwitchMaterial switchQuickDinner;
     private ImageButton btnCloudSync;
+    private View btnNotificationCenter;
+    private TextView tvNotificationBadge;
     private View btnOpenProfileDrawer;
     private TextView tvAvatarInitials;
     private BottomNavigationView bottomNavigation;
@@ -66,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
     private View drawerItemPlans;
     private View drawerItemSms;
     private View drawerItemStatements;
+    private View drawerItemVacation;
+    private View drawerItemNotifications;
     private View drawerItemSupport;
     private View drawerItemBugReport;
     private View tvDrawerManagerHeader;
@@ -170,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         loadHeaderData();
         populateDrawerProfile();
+        updateNotificationBadge();
     }
 
     private void initViews() {
@@ -179,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
         chipBalanceBadge = findViewById(R.id.chipBalanceBadge);
         switchQuickDinner = findViewById(R.id.switchQuickDinner);
         btnCloudSync = findViewById(R.id.btnCloudSync);
+        btnNotificationCenter = findViewById(R.id.btnNotificationCenter);
+        tvNotificationBadge = findViewById(R.id.tvNotificationBadge);
         btnOpenProfileDrawer = findViewById(R.id.btnOpenProfileDrawer);
         tvAvatarInitials = findViewById(R.id.tvAvatarInitials);
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -193,12 +200,19 @@ public class MainActivity extends AppCompatActivity {
         drawerItemPlans = findViewById(R.id.drawerItemPlans);
         drawerItemSms = findViewById(R.id.drawerItemSms);
         drawerItemStatements = findViewById(R.id.drawerItemStatements);
+        drawerItemVacation = findViewById(R.id.drawerItemVacation);
+        drawerItemNotifications = findViewById(R.id.drawerItemNotifications);
         drawerItemSupport = findViewById(R.id.drawerItemSupport);
         drawerItemBugReport = findViewById(R.id.drawerItemBugReport);
         tvDrawerManagerHeader = findViewById(R.id.tvDrawerManagerHeader);
         drawerItemSettings = findViewById(R.id.drawerItemSettings);
         drawerItemHandover = findViewById(R.id.drawerItemHandover);
         drawerItemSignOut = findViewById(R.id.drawerItemSignOut);
+
+        if (btnNotificationCenter != null) {
+            btnNotificationCenter.setOnClickListener(v ->
+                    startActivity(new Intent(MainActivity.this, com.smartmess.android.ui.notifications.ActivityNotificationCenter.class)));
+        }
 
         btnOpenProfileDrawer.setOnClickListener(v -> {
             if (drawerLayout != null) {
@@ -346,6 +360,20 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        if (drawerItemVacation != null) {
+            drawerItemVacation.setOnClickListener(v -> {
+                closeDrawer();
+                startActivity(new Intent(MainActivity.this, com.smartmess.android.ui.meals.ActivityMealVacation.class));
+            });
+        }
+
+        if (drawerItemNotifications != null) {
+            drawerItemNotifications.setOnClickListener(v -> {
+                closeDrawer();
+                startActivity(new Intent(MainActivity.this, com.smartmess.android.ui.notifications.ActivityNotificationCenter.class));
+            });
+        }
+
         if (drawerItemSupport != null) {
             drawerItemSupport.setOnClickListener(v -> {
                 closeDrawer();
@@ -380,6 +408,22 @@ public class MainActivity extends AppCompatActivity {
                 confirmSignOut();
             });
         }
+    }
+
+    private void updateNotificationBadge() {
+        try {
+            com.smartmess.android.data.local.dao.AppNotificationDao notifDao =
+                    new com.smartmess.android.data.local.dao.AppNotificationDao(com.smartmess.android.data.local.DatabaseHelper.getInstance(this));
+            int unread = notifDao.getUnreadCount(sessionManager.getMessId());
+            if (tvNotificationBadge != null) {
+                if (unread > 0) {
+                    tvNotificationBadge.setVisibility(View.VISIBLE);
+                    tvNotificationBadge.setText(unread > 99 ? "99+" : String.valueOf(unread));
+                } else {
+                    tvNotificationBadge.setVisibility(View.GONE);
+                }
+            }
+        } catch (Throwable ignored) {}
     }
 
     private void closeDrawer() {
@@ -458,6 +502,15 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Manager role transferred successfully to " + targetUser.getName(), Toast.LENGTH_LONG).show();
                         loadHeaderData();
                         populateDrawerProfile();
+
+                        com.smartmess.android.utils.NotificationCenterHelper.postNotification(
+                                getApplicationContext(),
+                                sessionManager.getMessId(),
+                                "Role Transferred",
+                                "Manager privileges transferred to " + targetUser.getName(),
+                                com.smartmess.android.utils.NotificationCenterHelper.TYPE_ROLE
+                        );
+                        updateNotificationBadge();
 
                         // Background sync
                         SyncManager.triggerSync(getApplicationContext());

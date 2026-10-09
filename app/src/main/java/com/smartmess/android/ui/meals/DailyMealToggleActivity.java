@@ -64,6 +64,24 @@ public class DailyMealToggleActivity extends AppCompatActivity {
 
     private void checkCutoffRule() {
         long messId = sessionManager.getMessId();
+        long userId = sessionManager.getUserId();
+
+        // Check if member is on scheduled vacation for tomorrow
+        com.smartmess.android.data.local.dao.MealVacationDao vacationDao =
+                new com.smartmess.android.data.local.dao.MealVacationDao(DatabaseHelper.getInstance(this));
+        if (vacationDao.isUserOnVacation(messId, userId, tomorrowDate)) {
+            isLocked = true;
+            layoutCutoffBanner.setBackgroundColor(getResources().getColor(R.color.info_blue_bg));
+            tvCutoffStatusText.setText("🏖️ Scheduled Vacation Active: Tomorrow's meals are auto-locked to 0.0.");
+            tvCutoffStatusText.setTextColor(getResources().getColor(R.color.accent));
+
+            switchBreakfast.setEnabled(false);
+            switchLunch.setEnabled(false);
+            switchDinner.setEnabled(false);
+            btnSaveDailyToggle.setEnabled(false);
+            return;
+        }
+
         Mess mess = messDao.getById(messId);
         String cutoffTime = mess != null ? mess.getMealCutoffTime() : "22:00:00";
 

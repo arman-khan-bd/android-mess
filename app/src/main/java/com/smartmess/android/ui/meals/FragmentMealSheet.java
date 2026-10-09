@@ -53,6 +53,7 @@ public class FragmentMealSheet extends Fragment {
 
     private MealDao mealDao;
     private UserDao userDao;
+    private com.smartmess.android.data.local.dao.MealVacationDao vacationDao;
     private SessionManager sessionManager;
     private MealGridAdapter adapter;
 
@@ -72,6 +73,7 @@ public class FragmentMealSheet extends Fragment {
         DatabaseHelper helper = DatabaseHelper.getInstance(requireContext());
         mealDao = new MealDao(helper);
         userDao = new UserDao(helper);
+        vacationDao = new com.smartmess.android.data.local.dao.MealVacationDao(helper);
         sessionManager = new SessionManager(requireContext());
 
         initViews(view);
@@ -157,6 +159,7 @@ public class FragmentMealSheet extends Fragment {
         double totalBf = 0, totalLn = 0, totalDn = 0, totalGuest = 0;
 
         for (User u : memberList) {
+            boolean onVacation = vacationDao != null && vacationDao.isUserOnVacation(messId, u.getId(), dateStr);
             Meal m = mealMap.get(u.getId());
             if (m == null) {
                 m = new Meal();
@@ -165,10 +168,10 @@ public class FragmentMealSheet extends Fragment {
                 m.setUserId(u.getId());
                 m.setMealDate(dateStr);
                 m.setBreakfastCount(0.0);
-                m.setLunchCount(1.0); // Default daily meals
-                m.setDinnerCount(1.0);
+                m.setLunchCount(onVacation ? 0.0 : 1.0); // 0.0 if on vacation
+                m.setDinnerCount(onVacation ? 0.0 : 1.0);
                 m.setGuestMealCount(0.0);
-                m.setIsLocked(isPastCutoff ? 1 : 0);
+                m.setIsLocked((isPastCutoff || onVacation) ? 1 : 0);
                 m.setSyncStatus(0);
                 m.setCreatedAt(DateTimeUtils.getCurrentDateTime());
                 m.setUpdatedAt(DateTimeUtils.getCurrentDateTime());
@@ -180,7 +183,7 @@ public class FragmentMealSheet extends Fragment {
             totalDn += m.getDinnerCount();
             totalGuest += m.getGuestMealCount();
 
-            rowList.add(new MealItemRow(u, m, isPastCutoff));
+            rowList.add(new MealItemRow(u, m, isPastCutoff || onVacation, onVacation));
         }
 
         // Update aggregate header text
@@ -224,11 +227,17 @@ public class FragmentMealSheet extends Fragment {
         public final User user;
         public final Meal meal;
         public final boolean isLocked;
+        public final boolean isOnVacation;
 
-        public MealItemRow(User user, Meal meal, boolean isLocked) {
+        public MealItemRow(User user, Meal meal, boolean isLocked, boolean isOnVacation) {
             this.user = user;
             this.meal = meal;
             this.isLocked = isLocked;
+            this.isOnVacation = isOnVacation;
+        }
+
+        public MealItemRow(User user, Meal meal, boolean isLocked) {
+            this(user, meal, isLocked, false);
         }
     }
 
@@ -305,15 +314,21 @@ public class FragmentMealSheet extends Fragment {
                         ? String.valueOf(user.getName().charAt(0)).toUpperCase(Locale.ROOT)
                         : "M";
                 tvAvatar.setText(initial);
-                tvMemberSubtext.setText("Room: " + (user.getRole() != null ? user.getRole() : "Member") + " • " + user.getPhone());
-
-                updateCountsDisplay(meal);
-
-                if (row.isLocked) {
+                if (row.isOnVacation) {
+                    tvMemberSubtext.setText("🏖️ On Vacation • Meals auto-locked to 0");
+                    tvLockBadge.setText("VACATION");
                     tvLockBadge.setVisibility(View.VISIBLE);
                 } else {
-                    tvLockBadge.setVisibility(View.GONE);
+                    tvMemberSubtext.setText("Room: " + (user.getRole() != null ? user.getRole() : "Member") + " • " + user.getPhone());
+                    if (row.isLocked) {
+                        tvLockBadge.setText("LOCKED");
+                        tvLockBadge.setVisibility(View.VISIBLE);
+                    } else {
+                        tvLockBadge.setVisibility(View.GONE);
+                    }
                 }
+
+                updateCountsDisplay(meal);
 
                 // Enable/disable stepper clicks based on lock status
                 btnDecBreakfast.setEnabled(!locked);

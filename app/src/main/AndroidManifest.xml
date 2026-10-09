@@ -78,6 +78,16 @@
         <activity
             android:name=".ui.meals.DailyMealToggleActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.meals.ActivityMealVacation"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Notification Center -->
+        <activity
+            android:name=".ui.notifications.ActivityNotificationCenter"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- Expenses -->
         <activity

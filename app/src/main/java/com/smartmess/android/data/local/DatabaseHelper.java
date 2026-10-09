@@ -126,11 +126,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + SmsLogEntry.COL_CREATED_AT + " TEXT, "
                 + SmsLogEntry.COL_UPDATED_AT + " TEXT);");
 
+        // 8. meal_vacations
+        db.execSQL("CREATE TABLE " + MealVacationEntry.TABLE_NAME + " ("
+                + MealVacationEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + MealVacationEntry.COL_UUID + " TEXT UNIQUE NOT NULL, "
+                + MealVacationEntry.COL_MESS_ID + " INTEGER NOT NULL, "
+                + MealVacationEntry.COL_USER_ID + " INTEGER NOT NULL, "
+                + MealVacationEntry.COL_START_DATE + " TEXT NOT NULL, "
+                + MealVacationEntry.COL_END_DATE + " TEXT NOT NULL, "
+                + MealVacationEntry.COL_REASON + " TEXT, "
+                + MealVacationEntry.COL_STATUS + " TEXT DEFAULT 'active', "
+                + MealVacationEntry.COL_CREATED_AT + " TEXT, "
+                + MealVacationEntry.COL_UPDATED_AT + " TEXT);");
+
+        // 9. app_notifications
+        db.execSQL("CREATE TABLE " + NotificationEntry.TABLE_NAME + " ("
+                + NotificationEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + NotificationEntry.COL_UUID + " TEXT UNIQUE NOT NULL, "
+                + NotificationEntry.COL_MESS_ID + " INTEGER NOT NULL, "
+                + NotificationEntry.COL_USER_ID + " INTEGER DEFAULT 0, "
+                + NotificationEntry.COL_TITLE + " TEXT NOT NULL, "
+                + NotificationEntry.COL_MESSAGE + " TEXT NOT NULL, "
+                + NotificationEntry.COL_TYPE + " TEXT DEFAULT 'system', "
+                + NotificationEntry.COL_IS_READ + " INTEGER DEFAULT 0, "
+                + NotificationEntry.COL_CREATED_AT + " TEXT);");
+
         // Indexes for high performance queries
         db.execSQL("CREATE INDEX idx_meals_mess_date ON " + MealEntry.TABLE_NAME + " (" + MealEntry.COL_MESS_ID + ", " + MealEntry.COL_MEAL_DATE + ");");
         db.execSQL("CREATE INDEX idx_expenses_mess_date ON " + ExpenseEntry.TABLE_NAME + " (" + ExpenseEntry.COL_MESS_ID + ", " + ExpenseEntry.COL_EXPENSE_DATE + ");");
         db.execSQL("CREATE INDEX idx_deposits_mess_date ON " + DepositEntry.TABLE_NAME + " (" + DepositEntry.COL_MESS_ID + ", " + DepositEntry.COL_DEPOSIT_DATE + ");");
         db.execSQL("CREATE INDEX idx_users_mess ON " + UserEntry.TABLE_NAME + " (" + UserEntry.COL_MESS_ID + ");");
+        db.execSQL("CREATE INDEX idx_vacations_user ON " + MealVacationEntry.TABLE_NAME + " (" + MealVacationEntry.COL_MESS_ID + ", " + MealVacationEntry.COL_USER_ID + ");");
+        db.execSQL("CREATE INDEX idx_notifications_mess ON " + NotificationEntry.TABLE_NAME + " (" + NotificationEntry.COL_MESS_ID + ");");
     }
 
     @Override
@@ -141,6 +168,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (Exception ignored) {}
         try {
             db.execSQL("ALTER TABLE " + UserEntry.TABLE_NAME + " ADD COLUMN " + UserEntry.COL_AVATAR_URL + " TEXT;");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + MealVacationEntry.TABLE_NAME + " ("
+                    + MealVacationEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + MealVacationEntry.COL_UUID + " TEXT UNIQUE NOT NULL, "
+                    + MealVacationEntry.COL_MESS_ID + " INTEGER NOT NULL, "
+                    + MealVacationEntry.COL_USER_ID + " INTEGER NOT NULL, "
+                    + MealVacationEntry.COL_START_DATE + " TEXT NOT NULL, "
+                    + MealVacationEntry.COL_END_DATE + " TEXT NOT NULL, "
+                    + MealVacationEntry.COL_REASON + " TEXT, "
+                    + MealVacationEntry.COL_STATUS + " TEXT DEFAULT 'active', "
+                    + MealVacationEntry.COL_CREATED_AT + " TEXT, "
+                    + MealVacationEntry.COL_UPDATED_AT + " TEXT);");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + NotificationEntry.TABLE_NAME + " ("
+                    + NotificationEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + NotificationEntry.COL_UUID + " TEXT UNIQUE NOT NULL, "
+                    + NotificationEntry.COL_MESS_ID + " INTEGER NOT NULL, "
+                    + NotificationEntry.COL_USER_ID + " INTEGER DEFAULT 0, "
+                    + NotificationEntry.COL_TITLE + " TEXT NOT NULL, "
+                    + NotificationEntry.COL_MESSAGE + " TEXT NOT NULL, "
+                    + NotificationEntry.COL_TYPE + " TEXT DEFAULT 'system', "
+                    + NotificationEntry.COL_IS_READ + " INTEGER DEFAULT 0, "
+                    + NotificationEntry.COL_CREATED_AT + " TEXT);");
         } catch (Exception ignored) {}
     }
 

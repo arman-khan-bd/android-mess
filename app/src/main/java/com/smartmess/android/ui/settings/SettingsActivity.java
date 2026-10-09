@@ -45,6 +45,10 @@ public class SettingsActivity extends AppCompatActivity {
     private MaterialButton btnUpgradePlan;
     private MaterialButton btnSupportTickets;
     private MaterialButton btnReportIssue;
+    private TextView tvCurrentThemeBadge;
+    private MaterialButton btnChangeTheme;
+    private MaterialButton btnMealVacationMode;
+    private MaterialButton btnNotificationCenterSettings;
     private MaterialButton btnLogout;
 
     private MessDao messDao;
@@ -67,6 +71,10 @@ public class SettingsActivity extends AppCompatActivity {
         btnUpgradePlan = findViewById(R.id.btnUpgradePlan);
         btnSupportTickets = findViewById(R.id.btnSupportTickets);
         btnReportIssue = findViewById(R.id.btnReportIssue);
+        tvCurrentThemeBadge = findViewById(R.id.tvCurrentThemeBadge);
+        btnChangeTheme = findViewById(R.id.btnChangeTheme);
+        btnMealVacationMode = findViewById(R.id.btnMealVacationMode);
+        btnNotificationCenterSettings = findViewById(R.id.btnNotificationCenterSettings);
         btnLogout = findViewById(R.id.btnLogout);
 
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
@@ -87,6 +95,17 @@ public class SettingsActivity extends AppCompatActivity {
         if (btnReportIssue != null) {
             btnReportIssue.setOnClickListener(v ->
                     startActivity(new Intent(this, ActivityReportIssue.class)));
+        }
+        if (btnChangeTheme != null) {
+            btnChangeTheme.setOnClickListener(v -> showThemeSelectionDialog());
+        }
+        if (btnMealVacationMode != null) {
+            btnMealVacationMode.setOnClickListener(v ->
+                    startActivity(new Intent(this, com.smartmess.android.ui.meals.ActivityMealVacation.class)));
+        }
+        if (btnNotificationCenterSettings != null) {
+            btnNotificationCenterSettings.setOnClickListener(v ->
+                    startActivity(new Intent(this, com.smartmess.android.ui.notifications.ActivityNotificationCenter.class)));
         }
         btnLogout.setOnClickListener(v -> performLogout());
     }
@@ -115,6 +134,28 @@ public class SettingsActivity extends AppCompatActivity {
             sb.append("• ").append(feature).append("\n");
         }
         tvPlanFeaturesDescription.setText(sb.toString().trim());
+
+        if (tvCurrentThemeBadge != null) {
+            tvCurrentThemeBadge.setText(com.smartmess.android.utils.ThemeManager.getThemeName(this));
+        }
+    }
+
+    private void showThemeSelectionDialog() {
+        final String[] themes = new String[]{"System Default", "Light Mode", "Dark Mode"};
+        int currentMode = com.smartmess.android.utils.ThemeManager.getThemeMode(this);
+
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("Select Appearance Theme")
+                .setSingleChoiceItems(themes, currentMode, (dialog, which) -> {
+                    com.smartmess.android.utils.ThemeManager.setThemeMode(SettingsActivity.this, which);
+                    if (tvCurrentThemeBadge != null) {
+                        tvCurrentThemeBadge.setText(themes[which]);
+                    }
+                    dialog.dismiss();
+                    Toast.makeText(SettingsActivity.this, "Theme updated to " + themes[which], Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void saveSettings() {

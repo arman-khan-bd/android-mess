@@ -754,6 +754,15 @@ public class ActivityAddBazar extends AppCompatActivity {
             }
         }
 
+        // Post in-app notification to SQLite Notification Center
+        com.smartmess.android.utils.NotificationCenterHelper.postNotification(
+                getApplicationContext(),
+                messId,
+                "New Market Expense Added",
+                "৳" + String.format(java.util.Locale.US, "%.2f", totalBill) + " bazar recorded (" + date + ") with " + payerRows.size() + " payers",
+                com.smartmess.android.utils.NotificationCenterHelper.TYPE_EXPENSE
+        );
+
         // Trigger background sync
         SyncManager.triggerSync(getApplicationContext());
 

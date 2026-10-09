@@ -261,6 +261,15 @@ public class AddExpenseActivity extends AppCompatActivity {
         expense.setUpdatedAt(now);
 
         expenseDao.insertOrUpdate(expense);
+
+        com.smartmess.android.utils.NotificationCenterHelper.postNotification(
+                getApplicationContext(),
+                sessionManager.getMessId(),
+                "New Expense Added",
+                buyer.getName() + " added ৳" + String.format(java.util.Locale.US, "%.2f", amount) + " (" + title + ")",
+                com.smartmess.android.utils.NotificationCenterHelper.TYPE_EXPENSE
+        );
+
         Toast.makeText(this, "Expense recorded successfully!", Toast.LENGTH_SHORT).show();
         finish();
     }

@@ -207,6 +207,22 @@ public class FragmentDashboardOverview extends Fragment {
                     tvTargetBudgetBadge.setTextColor(ContextCompat.getColor(requireContext(), R.color.due_red));
                     tvTargetBudgetBadge.setText("Exceeding Budget (" + CurrencyUtils.format(targetBudget) + ")");
                 }
+
+                // Point 16 & Notification Center: Log budget alert notification once per day
+                String today = com.smartmess.android.utils.DateTimeUtils.getCurrentDate();
+                String lastBudgetAlertKey = "last_budget_alert_date_" + messId;
+                android.content.SharedPreferences sp = requireContext().getSharedPreferences("smartmess_alerts", android.content.Context.MODE_PRIVATE);
+                if (!today.equals(sp.getString(lastBudgetAlertKey, ""))) {
+                    sp.edit().putString(lastBudgetAlertKey, today).apply();
+                    com.smartmess.android.utils.NotificationCenterHelper.postNotification(
+                            requireContext().getApplicationContext(),
+                            messId,
+                            "Budget Exceeded",
+                            String.format(Locale.US, "Current meal rate (%s) has exceeded your target budget (%s)",
+                                    CurrencyUtils.format(liveMealRate), CurrencyUtils.format(targetBudget)),
+                            com.smartmess.android.utils.NotificationCenterHelper.TYPE_BUDGET
+                    );
+                }
             } else {
                 if (cardBudgetWarning != null) {
                     cardBudgetWarning.setVisibility(View.GONE);

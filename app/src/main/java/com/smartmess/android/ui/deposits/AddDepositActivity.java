@@ -108,6 +108,15 @@ public class AddDepositActivity extends AppCompatActivity {
         deposit.setUpdatedAt(now);
 
         depositDao.insertOrUpdate(deposit);
+
+        com.smartmess.android.utils.NotificationCenterHelper.postNotification(
+                getApplicationContext(),
+                sessionManager.getMessId(),
+                "Deposit Recorded",
+                "৳" + String.format(java.util.Locale.US, "%.2f", amount) + " deposit received from " + selected.getName(),
+                com.smartmess.android.utils.NotificationCenterHelper.TYPE_DEPOSIT
+        );
+
         Toast.makeText(this, "Deposit of " + amount + " saved for " + selected.getName(), Toast.LENGTH_SHORT).show();
         finish();
     }

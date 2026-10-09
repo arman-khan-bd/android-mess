@@ -225,6 +225,15 @@ public class ActivityMemberManage extends AppCompatActivity {
         // 4. Synchronize with remote Laravel API in background
         syncRoleAndStatusToServer(targetUserId, role, status);
 
+        // 5. Post notification
+        com.smartmess.android.utils.NotificationCenterHelper.postNotification(
+                getApplicationContext(),
+                sessionManager.getMessId(),
+                "Member Permissions Updated",
+                (targetUser != null ? targetUser.getName() : "Member") + " updated to " + role + " (" + status + ")",
+                com.smartmess.android.utils.NotificationCenterHelper.TYPE_ROLE
+        );
+
         Toast.makeText(this, "Member role & status updated successfully!", Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
         finish();

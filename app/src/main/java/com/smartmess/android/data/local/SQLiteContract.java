@@ -115,4 +115,31 @@ public final class SQLiteContract {
         public static final String COL_CREATED_AT = "created_at";
         public static final String COL_UPDATED_AT = "updated_at";
     }
+
+    public static final class MealVacationEntry {
+        public static final String TABLE_NAME = "meal_vacations";
+        public static final String COL_ID = "id";
+        public static final String COL_UUID = "uuid";
+        public static final String COL_MESS_ID = "mess_id";
+        public static final String COL_USER_ID = "user_id";
+        public static final String COL_START_DATE = "start_date";
+        public static final String COL_END_DATE = "end_date";
+        public static final String COL_REASON = "reason";
+        public static final String COL_STATUS = "status"; // 'active', 'cancelled', 'completed'
+        public static final String COL_CREATED_AT = "created_at";
+        public static final String COL_UPDATED_AT = "updated_at";
+    }
+
+    public static final class NotificationEntry {
+        public static final String TABLE_NAME = "app_notifications";
+        public static final String COL_ID = "id";
+        public static final String COL_UUID = "uuid";
+        public static final String COL_MESS_ID = "mess_id";
+        public static final String COL_USER_ID = "user_id";
+        public static final String COL_TITLE = "title";
+        public static final String COL_MESSAGE = "message";
+        public static final String COL_TYPE = "type"; // 'expense', 'role', 'budget_alert', 'vacation', 'deposit', 'system'
+        public static final String COL_IS_READ = "is_read"; // 0 or 1
+        public static final String COL_CREATED_AT = "created_at";
+    }
 }

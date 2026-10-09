@@ -41,6 +41,11 @@ public class SmartMessApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        // Apply Dark/Light Material Theme from Preferences or System
+        try {
+            com.smartmess.android.utils.ThemeManager.applyTheme(this);
+        } catch (Throwable ignored) {}
+
         // Install Global Uncaught Exception & Crash Telemetry Engine
         try {
             com.smartmess.android.engine.CrashTelemetryHandler.install(this);
