@@ -67,10 +67,14 @@ public class MainActivity extends AppCompatActivity {
         setupSyncIndicator();
 
         // Check remote kill-switch, maintenance mode, and force updates
-        com.smartmess.android.engine.RemoteConfigManager.checkRemoteConfig(this, null);
+        try {
+            com.smartmess.android.engine.RemoteConfigManager.checkRemoteConfig(this, null);
+        } catch (Throwable ignored) {}
 
         // Schedule daily 22:00 notification alarm
-        com.smartmess.android.notification.NotificationScheduler.scheduleDailyReminder(this, null);
+        try {
+            com.smartmess.android.notification.NotificationScheduler.scheduleDailyReminder(this, null);
+        } catch (Throwable ignored) {}
 
         // Check if opened from Daily Meal Status Reminder notification
         handleIncomingIntent(getIntent(), savedInstanceState);
@@ -115,45 +119,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadHeaderData() {
-        String messName = sessionManager.getMessName();
-        if (messName == null || messName.isEmpty()) messName = "SmartMess";
-        tvMessTitle.setText(messName);
+        try {
+            String messName = sessionManager.getMessName();
+            if (messName == null || messName.isEmpty()) messName = "SmartMess";
+            tvMessTitle.setText(messName);
 
-        String role = sessionManager.isManager() ? "Manager" : "Member";
-        tvUserRoleBadge.setText(role + " • " + sessionManager.getUserPhone());
+            String role = sessionManager.isManager() ? "Manager" : "Member";
+            tvUserRoleBadge.setText(role + " • " + (sessionManager.getUserPhone() != null ? sessionManager.getUserPhone() : ""));
 
-        // Calculate Personal Ledger Balance
-        long messId = sessionManager.getMessId();
-        long userId = sessionManager.getUserId();
-        MemberBalanceSheet sheet = accountingEngine.calculateMemberBalance(messId, userId);
+            // Calculate Personal Ledger Balance
+            long messId = sessionManager.getMessId();
+            long userId = sessionManager.getUserId();
+            MemberBalanceSheet sheet = accountingEngine.calculateMemberBalance(messId, userId);
 
-        double balance = sheet.getNetBalance();
-        tvPersonalBalance.setText(CurrencyUtils.format(balance));
+            double balance = sheet != null ? sheet.getNetBalance() : 0.0;
+            tvPersonalBalance.setText(CurrencyUtils.format(balance));
 
-        if (sheet.isOverdue()) {
-            tvPersonalBalance.setTextColor(getResources().getColor(R.color.due_red));
-            tvBalanceBadge.setText("Payment Due");
-            tvBalanceBadge.setBackgroundResource(R.drawable.badge_due);
-            tvBalanceBadge.setTextColor(getResources().getColor(R.color.due_red));
-            btnPayAdvance.setVisibility(View.VISIBLE);
-        } else {
-            tvPersonalBalance.setTextColor(getResources().getColor(R.color.credit_green));
-            tvBalanceBadge.setText("Credit Advance");
-            tvBalanceBadge.setBackgroundResource(R.drawable.badge_credit);
-            tvBalanceBadge.setTextColor(getResources().getColor(R.color.credit_green));
-            btnPayAdvance.setVisibility(View.GONE);
+            if (sheet != null && sheet.isOverdue()) {
+                tvPersonalBalance.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.due_red));
+                tvBalanceBadge.setText("Payment Due");
+                tvBalanceBadge.setBackgroundResource(R.drawable.badge_due);
+                tvBalanceBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.due_red));
+                btnPayAdvance.setVisibility(View.VISIBLE);
+            } else {
+                tvPersonalBalance.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.credit_green));
+                tvBalanceBadge.setText("Credit Advance");
+                tvBalanceBadge.setBackgroundResource(R.drawable.badge_credit);
+                tvBalanceBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.credit_green));
+                btnPayAdvance.setVisibility(View.GONE);
+            }
+
+            // Check tonight's meal state for today
+            String today = DateTimeUtils.getCurrentDate();
+            Meal todayMeal = mealDao.getUserMealForDate(messId, userId, today);
+            boolean isDinnerOn = (todayMeal != null && todayMeal.getDinnerCount() > 0);
+            boolean isLunchOn = (todayMeal != null && todayMeal.getLunchCount() > 0);
+
+            switchQuickDinner.setChecked(isDinnerOn);
+            tvMealQuickStatus.setText(String.format("Lunch: %s | Dinner: %s (Lock at 22:00)",
+                    isLunchOn ? "ON" : "OFF",
+                    isDinnerOn ? "ON" : "OFF"));
+        } catch (Throwable t) {
+            android.util.Log.e("MainActivity", "Error in loadHeaderData: " + t.getMessage(), t);
         }
-
-        // Check tonight's meal state for today
-        String today = DateTimeUtils.getCurrentDate();
-        Meal todayMeal = mealDao.getUserMealForDate(messId, userId, today);
-        boolean isDinnerOn = (todayMeal != null && todayMeal.getDinnerCount() > 0);
-        boolean isLunchOn = (todayMeal != null && todayMeal.getLunchCount() > 0);
-
-        switchQuickDinner.setChecked(isDinnerOn);
-        tvMealQuickStatus.setText(String.format("Lunch: %s | Dinner: %s (Lock at 22:00)",
-                isLunchOn ? "ON" : "OFF",
-                isDinnerOn ? "ON" : "OFF"));
     }
 
     private void setupQuickMealToggle() {

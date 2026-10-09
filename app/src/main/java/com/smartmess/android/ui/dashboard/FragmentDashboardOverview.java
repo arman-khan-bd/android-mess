@@ -69,16 +69,21 @@ public class FragmentDashboardOverview extends Fragment {
     }
 
     private void loadStats() {
-        long messId = sessionManager.getMessId();
-        CycleSummary summary = accountingEngine.calculateCurrentCycleSummary(messId);
+        try {
+            long messId = sessionManager.getMessId();
+            CycleSummary summary = accountingEngine.calculateCurrentCycleSummary(messId);
+            if (summary == null) return;
 
-        tvLiveMealRate.setText(CurrencyUtils.format(summary.getLiveMealRate()));
-        tvTotalMessMeals.setText(String.format(Locale.US, "%.1f Meals Logged", summary.getTotalMeals()));
-        tvCashInHand.setText(CurrencyUtils.format(summary.getCashInHand()));
-        tvActiveMembers.setText(summary.getActiveMemberCount() + " Active Members");
+            tvLiveMealRate.setText(CurrencyUtils.format(summary.getLiveMealRate()));
+            tvTotalMessMeals.setText(String.format(Locale.US, "%.1f Meals Logged", summary.getTotalMeals()));
+            tvCashInHand.setText(CurrencyUtils.format(summary.getCashInHand()));
+            tvActiveMembers.setText(summary.getActiveMemberCount() + " Active Members");
 
-        tvRawMealCost.setText(CurrencyUtils.format(summary.getRawMealCost()));
-        tvSharedFoodCost.setText(CurrencyUtils.format(summary.getSharedFoodCost()));
-        tvUtilityCost.setText(CurrencyUtils.format(summary.getUtilityCost()));
+            tvRawMealCost.setText(CurrencyUtils.format(summary.getRawMealCost()));
+            tvSharedFoodCost.setText(CurrencyUtils.format(summary.getSharedFoodCost()));
+            tvUtilityCost.setText(CurrencyUtils.format(summary.getUtilityCost()));
+        } catch (Throwable t) {
+            android.util.Log.e("FragmentDashboard", "Error loading stats: " + t.getMessage(), t);
+        }
     }
 }

@@ -23,6 +23,12 @@ import java.util.UUID;
 
 public class SmartMessApp extends Application {
 
+    static {
+        try {
+            androidx.appcompat.app.AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        } catch (Throwable ignored) {}
+    }
+
     @Override
     protected void attachBaseContext(android.content.Context base) {
         super.attachBaseContext(base);
@@ -36,17 +42,25 @@ public class SmartMessApp extends Application {
         super.onCreate();
 
         // Install Global Uncaught Exception & Crash Telemetry Engine
-        com.smartmess.android.engine.CrashTelemetryHandler.install(this);
+        try {
+            com.smartmess.android.engine.CrashTelemetryHandler.install(this);
+        } catch (Throwable ignored) {}
 
-        DatabaseHelper.getInstance(this);
+        try {
+            DatabaseHelper.getInstance(this);
+        } catch (Throwable ignored) {}
 
         // Schedule periodic sync with cloud
         try {
             SyncWorker.schedulePeriodicSync(this);
-        } catch (Exception ignored) {}
+        } catch (Throwable ignored) {}
 
         // Prepopulate demo mess & default plans if fresh database
-        seedInitialDataIfEmpty();
+        try {
+            seedInitialDataIfEmpty();
+        } catch (Throwable t) {
+            android.util.Log.e("SmartMessApp", "Error during DB initial seed: " + t.getMessage(), t);
+        }
     }
 
     private void seedInitialDataIfEmpty() {

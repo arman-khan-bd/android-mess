@@ -18,13 +18,18 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            SessionManager sessionManager = new SessionManager(this);
-            if (sessionManager.isLoggedIn()) {
-                startActivity(new Intent(SplashActivity.this, com.smartmess.android.ui.MainActivity.class));
-            } else {
+            if (isFinishing()) return;
+            try {
+                SessionManager sessionManager = new SessionManager(this);
+                if (sessionManager.isLoggedIn()) {
+                    startActivity(new Intent(SplashActivity.this, com.smartmess.android.ui.MainActivity.class));
+                } else {
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                }
+            } catch (Throwable t) {
                 startActivity(new Intent(SplashActivity.this, LoginActivity.class));
             }
             finish();
-        }, 1200);
+        }, 1000);
     }
 }

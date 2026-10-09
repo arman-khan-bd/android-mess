@@ -61,23 +61,48 @@ public class NotificationScheduler {
                 flags
         );
 
-        // Schedule exact alarm for reliability on modern Android (API 23+)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    pendingIntent
-            );
-        } else {
-            alarmManager.setRepeating(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY,
-                    pendingIntent
-            );
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            calendar.getTimeInMillis(),
+                            pendingIntent
+                    );
+                } else {
+                    alarmManager.set(
+                            AlarmManager.RTC_WAKEUP,
+                            calendar.getTimeInMillis(),
+                            pendingIntent
+                    );
+                }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendar.getTimeInMillis(),
+                        pendingIntent
+                );
+            } else {
+                alarmManager.setRepeating(
+                        AlarmManager.RTC_WAKEUP,
+                        calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY,
+                        pendingIntent
+                );
+            }
+            Log.i(TAG, "Daily meal reminder alarm scheduled for: " + calendar.getTime().toString());
+        } catch (SecurityException se) {
+            try {
+                alarmManager.set(
+                        AlarmManager.RTC_WAKEUP,
+                        calendar.getTimeInMillis(),
+                        pendingIntent
+                );
+            } catch (Throwable ignored) {}
+            Log.w(TAG, "Exact alarm permission not granted, fell back to standard alarm: " + se.getMessage());
+        } catch (Throwable t) {
+            Log.w(TAG, "Could not schedule reminder alarm: " + t.getMessage());
         }
-
-        Log.i(TAG, "Daily meal reminder alarm scheduled for: " + calendar.getTime().toString());
     }
 
     /**

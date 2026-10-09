@@ -137,10 +137,10 @@ public class FragmentMealSheet extends Fragment {
         boolean isPastCutoff = isDateLocked(dateStr);
         if (isPastCutoff) {
             tvCutoffStatus.setText("Locked for today (Cutoff 22:00 passed)");
-            tvCutoffStatus.setTextColor(getResources().getColor(R.color.due_red));
+            tvCutoffStatus.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.due_red));
         } else {
             tvCutoffStatus.setText("Open for entry (Locks daily at 22:00)");
-            tvCutoffStatus.setTextColor(getResources().getColor(R.color.primary));
+            tvCutoffStatus.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary));
         }
 
         long messId = sessionManager.getMessId();

@@ -83,14 +83,23 @@ public class CrashTelemetryHandler implements Thread.UncaughtExceptionHandler {
             }
         } catch (Throwable ignored) {}
 
-        // Send synchronously on crash thread before JVM terminates
+        // Send crash report on background thread to prevent NetworkOnMainThreadException
+        Thread networkThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ApiService apiService = ApiClient.getApiService(context);
+                    apiService.sendTelemetryReport(request).execute();
+                    Log.i(TAG, "Crash report successfully transmitted to server.");
+                } catch (Throwable netEx) {
+                    Log.w(TAG, "Could not upload crash report: " + netEx.getMessage());
+                }
+            }
+        });
+        networkThread.start();
         try {
-            ApiService apiService = ApiClient.getApiService(context);
-            apiService.sendTelemetryReport(request).execute();
-            Log.i(TAG, "Crash report successfully transmitted to server.");
-        } catch (Throwable netEx) {
-            Log.w(TAG, "Could not upload crash report synchronously (offline): " + netEx.getMessage());
-        }
+            networkThread.join(2000);
+        } catch (InterruptedException ignored) {}
     }
 
     public static Map<String, String> getDeviceDiagnostics(Context context) {
