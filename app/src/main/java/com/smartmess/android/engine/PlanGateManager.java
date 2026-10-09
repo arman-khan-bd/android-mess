@@ -7,6 +7,7 @@ import com.smartmess.android.data.local.DatabaseHelper;
 import com.smartmess.android.data.local.dao.MessDao;
 import com.smartmess.android.data.local.dao.SaasPlanDao;
 import com.smartmess.android.data.local.dao.UserDao;
+import com.smartmess.android.model.Mess;
 import com.smartmess.android.model.PlanCapabilities;
 import com.smartmess.android.model.SaasPlan;
 import com.smartmess.android.ui.dialogs.UpgradeProBottomSheet;
@@ -40,7 +41,38 @@ public class PlanGateManager {
         return sessionManager.isPro();
     }
 
+    /**
+     * Resolves the active SaasPlan for the given mess, falling back to Pro / Free defaults.
+     */
+    public SaasPlan getActivePlanForMess(long messId) {
+        if (messId > 0) {
+            Mess mess = messDao.getById(messId);
+            if (mess != null && mess.getCurrentPlanId() != null && mess.getCurrentPlanId() > 0) {
+                SaasPlan plan = planDao.getById(mess.getCurrentPlanId());
+                if (plan != null) {
+                    return plan;
+                }
+            }
+        }
+
+        if (sessionManager.isPro()) {
+            SaasPlan proPlan = new SaasPlan();
+            proPlan.setName("Pro");
+            proPlan.setFeaturesJson("{\"max_members\":99999,\"sms_sim\":true,\"sms_cloud\":true,\"ocr_receipt\":true,\"pdf_branding\":true,\"ad_free\":true}");
+            return proPlan;
+        }
+
+        SaasPlan freePlan = new SaasPlan();
+        freePlan.setName("Free");
+        freePlan.setFeaturesJson("{\"max_members\":6,\"sms_sim\":true,\"sms_cloud\":false,\"ocr_receipt\":false,\"pdf_branding\":false,\"ad_free\":false}");
+        return freePlan;
+    }
+
     public int getMaxAllowedMembers(long messId) {
+        SaasPlan activePlan = getActivePlanForMess(messId);
+        if (activePlan != null && activePlan.getMaxMembers() > 0) {
+            return activePlan.getMaxMembers();
+        }
         PlanCapabilities caps = getCapabilities();
         return caps.getMaxMembers();
     }
