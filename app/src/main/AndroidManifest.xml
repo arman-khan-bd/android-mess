@@ -124,6 +124,21 @@
             android:name=".ui.settings.SettingsActivity"
             android:exported="false" />
 
+        <!-- Telemetry & Feedback Reporting -->
+        <activity
+            android:name=".ui.telemetry.ActivityReportIssue"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Two-Way Support Desk -->
+        <activity
+            android:name=".ui.support.ActivitySupportTickets"
+            android:exported="false" />
+        <activity
+            android:name=".ui.support.ActivityTicketChat"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Network Change Receiver for Auto Sync on Reconnection -->
         <receiver
             android:name=".data.sync.NetworkChangeReceiver"

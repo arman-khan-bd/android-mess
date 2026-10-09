@@ -31,6 +31,8 @@ import com.smartmess.android.ui.reports.SummaryReportActivity;
 import com.smartmess.android.ui.settings.SettingsActivity;
 import com.smartmess.android.ui.sms.DueReminderActivity;
 import com.smartmess.android.ui.sms.SmsBroadcastActivity;
+import com.smartmess.android.ui.support.ActivitySupportTickets;
+import com.smartmess.android.ui.telemetry.ActivityReportIssue;
 import com.smartmess.android.utils.CurrencyUtils;
 import com.smartmess.android.utils.DateTimeUtils;
 import com.smartmess.android.utils.SessionManager;
@@ -240,6 +242,12 @@ public class DashboardActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_sync) {
             performSync();
+            return true;
+        } else if (id == R.id.action_support) {
+            startActivity(new Intent(this, ActivitySupportTickets.class));
+            return true;
+        } else if (id == R.id.action_report_issue) {
+            startActivity(new Intent(this, ActivityReportIssue.class));
             return true;
         } else if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));

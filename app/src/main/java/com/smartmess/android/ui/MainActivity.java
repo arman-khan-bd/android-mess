@@ -66,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
         setupQuickMealToggle();
         setupSyncIndicator();
 
+        // Check remote kill-switch, maintenance mode, and force updates
+        com.smartmess.android.engine.RemoteConfigManager.checkRemoteConfig(this, null);
+
         // Schedule daily 22:00 notification alarm
         com.smartmess.android.notification.NotificationScheduler.scheduleDailyReminder(this, null);
 

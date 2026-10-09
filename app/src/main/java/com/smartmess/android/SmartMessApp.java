@@ -34,6 +34,10 @@ public class SmartMessApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Install Global Uncaught Exception & Crash Telemetry Engine
+        com.smartmess.android.engine.CrashTelemetryHandler.install(this);
+
         DatabaseHelper.getInstance(this);
 
         // Schedule periodic sync with cloud

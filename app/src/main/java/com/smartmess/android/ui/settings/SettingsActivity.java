@@ -17,6 +17,8 @@ import com.smartmess.android.engine.PlanGateManager;
 import com.smartmess.android.model.Mess;
 import com.smartmess.android.model.SaasPlan;
 import com.smartmess.android.ui.auth.LoginActivity;
+import com.smartmess.android.ui.support.ActivitySupportTickets;
+import com.smartmess.android.ui.telemetry.ActivityReportIssue;
 import com.smartmess.android.utils.SessionManager;
 
 import java.util.List;
@@ -30,6 +32,8 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView tvPlanTitle;
     private TextView tvPlanFeaturesDescription;
     private MaterialButton btnUpgradePlan;
+    private MaterialButton btnSupportTickets;
+    private MaterialButton btnReportIssue;
     private MaterialButton btnLogout;
 
     private MessDao messDao;
@@ -48,6 +52,8 @@ public class SettingsActivity extends AppCompatActivity {
         tvPlanTitle = findViewById(R.id.tvPlanTitle);
         tvPlanFeaturesDescription = findViewById(R.id.tvPlanFeaturesDescription);
         btnUpgradePlan = findViewById(R.id.btnUpgradePlan);
+        btnSupportTickets = findViewById(R.id.btnSupportTickets);
+        btnReportIssue = findViewById(R.id.btnReportIssue);
         btnLogout = findViewById(R.id.btnLogout);
 
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
@@ -60,6 +66,14 @@ public class SettingsActivity extends AppCompatActivity {
 
         btnSaveMessSettings.setOnClickListener(v -> saveSettings());
         btnUpgradePlan.setOnClickListener(v -> showPlanPicker());
+        if (btnSupportTickets != null) {
+            btnSupportTickets.setOnClickListener(v ->
+                    startActivity(new Intent(this, ActivitySupportTickets.class)));
+        }
+        if (btnReportIssue != null) {
+            btnReportIssue.setOnClickListener(v ->
+                    startActivity(new Intent(this, ActivityReportIssue.class)));
+        }
         btnLogout.setOnClickListener(v -> performLogout());
     }
 
