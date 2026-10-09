@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="12dp">
+
+    <!-- 1. Date (95dp) -->
+    <TextView
+        android:id="@+id/tvRowDate"
+        android:layout_width="95dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:text="2026-10-09"
+        android:textColor="@color/text_primary"
+        android:textSize="12sp" />
+
+    <!-- 2. Items & Highlights (180dp) -->
+    <TextView
+        android:id="@+id/tvRowTitle"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingEnd="8dp"
+        android:text="Chicken 2kg, Rice 5kg"
+        android:textColor="@color/text_primary"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <!-- 3. Category (115dp) -->
+    <FrameLayout
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:paddingEnd="8dp">
+
+        <TextView
+            android:id="@+id/tvRowCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/badge_credit"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:text="Raw Meal"
+            android:textColor="@color/credit_green"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+    <!-- 4. Total Amount (100dp) -->
+    <TextView
+        android:id="@+id/tvRowAmount"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:paddingEnd="8dp"
+        android:text="৳ 1,500.00"
+        android:textColor="@color/primary_dark"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <!-- 5. Paid By (Multi-member badges) (130dp) -->
+    <FrameLayout
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:paddingEnd="8dp">
+
+        <TextView
+            android:id="@+id/tvRowBuyer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_payer_badge"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:text="Tanvir H."
+            android:textColor="@color/text_primary"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+    <!-- 6. Voucher Link (90dp) -->
+    <TextView
+        android:id="@+id/tvRowVoucher"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:text="📎 View"
+        android:textColor="@color/accent"
+        android:textSize="11sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

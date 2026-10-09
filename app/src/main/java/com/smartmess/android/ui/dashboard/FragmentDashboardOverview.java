@@ -114,9 +114,9 @@ public class FragmentDashboardOverview extends Fragment {
             btnQuickAddDeposit.setOnClickListener(view -> startActivity(new Intent(requireContext(), com.smartmess.android.ui.deposits.AddDepositActivity.class)));
         }
 
-        // View All Bazars navigation
+        // View All Bazars navigation to interactive ledger table
         if (btnViewAllBazars != null) {
-            btnViewAllBazars.setOnClickListener(view -> navigateToBottomTab(R.id.nav_bazar));
+            btnViewAllBazars.setOnClickListener(view -> startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityBazarLedger.class)));
         }
 
         // View Meal Sheet navigation

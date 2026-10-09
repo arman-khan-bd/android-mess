@@ -129,8 +129,10 @@ public class ApiClient {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
                     Request original = chain.request();
-                    Request.Builder requestBuilder = original.newBuilder()
-                            .header("Accept", "application/json");
+                    Request.Builder requestBuilder = original.newBuilder();
+                    if (original.header("Accept") == null) {
+                        requestBuilder.header("Accept", "application/json");
+                    }
 
                     String token = sessionManager.getAuthToken();
                     if (token != null && !token.trim().isEmpty()) {

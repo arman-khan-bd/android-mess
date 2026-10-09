@@ -62,7 +62,23 @@ public class SummaryReportActivity extends AppCompatActivity {
                 planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "Branded PDF & Excel Export",
                         "Watermark-free branded PDF and Excel statement exports are a Pro feature.");
             } else {
-                Toast.makeText(this, "Generating settlement report...", Toast.LENGTH_SHORT).show();
+                long messId = sessionManager.getMessId();
+                Mess mess = messDao.getById(messId);
+                int startDay = mess != null ? mess.getCycleStartDay() : 1;
+                String start = DateTimeUtils.currentMonthStart(startDay);
+                String end = DateTimeUtils.currentMonthEnd(startDay);
+
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                        .setTitle("Choose Export Format")
+                        .setItems(new CharSequence[]{"PDF Statement (.pdf)", "Excel Workbook (.xlsx)"}, (dialog, which) -> {
+                            if (which == 0) {
+                                com.smartmess.android.utils.FileDownloadHelper.downloadReport(this, "pdf", start, end, null);
+                            } else {
+                                com.smartmess.android.utils.FileDownloadHelper.downloadReport(this, "excel", start, end, null);
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
             }
         });
     }
