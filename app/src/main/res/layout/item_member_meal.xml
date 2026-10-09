@@ -53,7 +53,7 @@
                         android:id="@+id/tvMemberName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tanvir Hossain"
+                        android:text="Member Name"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -62,7 +62,7 @@
                         android:id="@+id/tvMemberSubtext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Active Member • 01711000000"
+                        android:text="Active Member • 01700000000"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -81,9 +81,9 @@
                     android:id="@+id/tvDailyTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Total: 2.5"
+                    android:text="Total: 0.0"
                     android:textColor="@color/primary_dark"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -104,226 +104,339 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <!-- Stepper Controls Grid: Breakfast, Lunch, Dinner, Guest -->
+        <!-- Stepper Controls 2x2 Grid with accessible 48x48dp targets & 18sp bold counters -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
             android:background="@color/surface_variant"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:padding="8dp">
 
-            <!-- 1. Breakfast Stepper (0.5 / 1.0) -->
+            <!-- Row 1: Breakfast & Lunch -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Breakfast"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
+                <!-- 1. Breakfast Stepper (0.5 step) -->
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">                    <ImageButton
-                        android:id="@+id/btnDecBreakfast"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_minus"
-                        android:scaleType="centerInside"
-                        android:tint="@color/text_secondary" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tvBreakfastCount"
-                        android:layout_width="32dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0.5"
-                        android:textColor="@color/text_primary"
-                        android:textSize="13sp"
+                        android:text="Breakfast"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
-                    <ImageButton
-                        android:id="@+id/btnIncBreakfast"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_add"
-                        android:scaleType="centerInside"
-                        android:tint="@color/primary" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/btnDecBreakfast"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Decrease Breakfast"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/ic_lucide_minus"
+                            app:tint="@color/text_secondary" />
+
+                        <TextView
+                            android:id="@+id/tvBreakfastCount"
+                            android:layout_width="48dp"
+                            android:layout_height="38dp"
+                            android:layout_marginHorizontal="2dp"
+                            android:background="@drawable/bg_counter_pill"
+                            android:gravity="center"
+                            android:text="0.0"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/btnIncBreakfast"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Increase Breakfast"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/ic_lucide_plus"
+                            app:tint="@color/primary" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 2. Lunch Stepper (1.0 step) -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lunch"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/btnDecLunch"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Decrease Lunch"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/ic_lucide_minus"
+                            app:tint="@color/text_secondary" />
+
+                        <TextView
+                            android:id="@+id/tvLunchCount"
+                            android:layout_width="48dp"
+                            android:layout_height="38dp"
+                            android:layout_marginHorizontal="2dp"
+                            android:background="@drawable/bg_counter_pill"
+                            android:gravity="center"
+                            android:text="1.0"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/btnIncLunch"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Increase Lunch"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/ic_lucide_plus"
+                            app:tint="@color/primary" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 2. Lunch Stepper (1.0) -->
+            <!-- Row 2: Dinner & Guest -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Lunch"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
+                <!-- 3. Dinner Stepper (1.0 step) -->
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/btnDecLunch"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_minus"
-                        android:scaleType="centerInside"
-                        android:tint="@color/text_secondary" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tvLunchCount"
-                        android:layout_width="32dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="1.0"
-                        android:textColor="@color/text_primary"
-                        android:textSize="13sp"
+                        android:text="Dinner"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
-                    <ImageButton
-                        android:id="@+id/btnIncLunch"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_add"
-                        android:scaleType="centerInside"
-                        android:tint="@color/primary" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/btnDecDinner"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Decrease Dinner"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/ic_lucide_minus"
+                            app:tint="@color/text_secondary" />
+
+                        <TextView
+                            android:id="@+id/tvDinnerCount"
+                            android:layout_width="48dp"
+                            android:layout_height="38dp"
+                            android:layout_marginHorizontal="2dp"
+                            android:background="@drawable/bg_counter_pill"
+                            android:gravity="center"
+                            android:text="1.0"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/btnIncDinner"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Increase Dinner"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/ic_lucide_plus"
+                            app:tint="@color/primary" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 4. Guest Stepper (1.0 step) -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Guest"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/btnDecGuest"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Decrease Guest"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/ic_lucide_minus"
+                            app:tint="@color/text_secondary" />
+
+                        <TextView
+                            android:id="@+id/tvGuestCount"
+                            android:layout_width="48dp"
+                            android:layout_height="38dp"
+                            android:layout_marginHorizontal="2dp"
+                            android:background="@drawable/bg_counter_pill"
+                            android:gravity="center"
+                            android:text="0.0"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/btnIncGuest"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Increase Guest"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/ic_lucide_plus"
+                            app:tint="@color/primary" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 3. Dinner Stepper (1.0) -->
-            <LinearLayout
-                android:layout_width="0dp"
+        </LinearLayout>
+
+        <!-- Quick Presets Row: +0.5 (half meal), +1.0 (full meal), and Clear (0.0) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_marginEnd="6dp"
+                android:text="Preset:"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dinner"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/btnDecDinner"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_minus"
-                        android:scaleType="centerInside"
-                        android:tint="@color/text_secondary" />
-
-                    <TextView
-                        android:id="@+id/tvDinnerCount"
-                        android:layout_width="32dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="1.0"
-                        android:textColor="@color/text_primary"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <ImageButton
-                        android:id="@+id/btnIncDinner"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_add"
-                        android:scaleType="centerInside"
-                        android:tint="@color/primary" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- 4. Guest Meal Stepper -->
-            <LinearLayout
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPresetHalf"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                android:text="+0.5"
+                android:textAllCaps="false"
+                android:textColor="@color/primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:strokeColor="@color/primary"
+                app:strokeWidth="1dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Guest"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPresetFull"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                android:text="+1.0"
+                android:textAllCaps="false"
+                android:textColor="@color/primary_dark"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:strokeColor="@color/primary_dark"
+                app:strokeWidth="1dp" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/btnDecGuest"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_minus"
-                        android:scaleType="centerInside"
-                        android:tint="@color/text_secondary" />
-
-                    <TextView
-                        android:id="@+id/tvGuestCount"
-                        android:layout_width="32dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0.0"
-                        android:textColor="@color/text_primary"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <ImageButton
-                        android:id="@+id/btnIncGuest"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/rounded_edittext"
-                        android:src="@drawable/ic_add"
-                        android:scaleType="centerInside"
-                        android:tint="@color/primary" />
-                </LinearLayout>
-            </LinearLayout>
-
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPresetClear"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                android:text="Clear (0.0)"
+                android:textAllCaps="false"
+                android:textColor="@color/due_red"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                app:strokeColor="@color/due_red"
+                app:strokeWidth="1dp" />
         </LinearLayout>
 
     </LinearLayout>

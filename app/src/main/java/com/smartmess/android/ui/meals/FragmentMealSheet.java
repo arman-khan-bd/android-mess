@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.smartmess.android.R;
 import com.smartmess.android.data.local.DatabaseHelper;
 import com.smartmess.android.data.local.dao.MealDao;
@@ -265,6 +266,7 @@ public class FragmentMealSheet extends Fragment {
             ImageButton btnDecLunch, btnIncLunch;
             ImageButton btnDecDinner, btnIncDinner;
             ImageButton btnDecGuest, btnIncGuest;
+            MaterialButton btnPresetHalf, btnPresetFull, btnPresetClear;
 
             public ViewHolder(@NonNull View v) {
                 super(v);
@@ -287,6 +289,10 @@ public class FragmentMealSheet extends Fragment {
                 btnIncDinner = v.findViewById(R.id.btnIncDinner);
                 btnDecGuest = v.findViewById(R.id.btnDecGuest);
                 btnIncGuest = v.findViewById(R.id.btnIncGuest);
+
+                btnPresetHalf = v.findViewById(R.id.btnPresetHalf);
+                btnPresetFull = v.findViewById(R.id.btnPresetFull);
+                btnPresetClear = v.findViewById(R.id.btnPresetClear);
             }
 
             public void bind(MealItemRow row) {
@@ -318,6 +324,44 @@ public class FragmentMealSheet extends Fragment {
                 btnIncDinner.setEnabled(!locked);
                 btnDecGuest.setEnabled(!locked);
                 btnIncGuest.setEnabled(!locked);
+                if (btnPresetHalf != null) btnPresetHalf.setEnabled(!locked);
+                if (btnPresetFull != null) btnPresetFull.setEnabled(!locked);
+                if (btnPresetClear != null) btnPresetClear.setEnabled(!locked);
+
+                // Quick Presets: +0.5 (half meal), +1.0 (full meal), and Clear (0.0)
+                if (btnPresetHalf != null) {
+                    btnPresetHalf.setOnClickListener(v -> {
+                        meal.setBreakfastCount(0.0);
+                        meal.setLunchCount(0.5);
+                        meal.setDinnerCount(0.0);
+                        meal.setGuestMealCount(0.0);
+                        saveMeal(meal);
+                    });
+                }
+
+                if (btnPresetFull != null) {
+                    btnPresetFull.setOnClickListener(v -> {
+                        if (meal.getLunchCount() == 1.0 && meal.getDinnerCount() == 0.0) {
+                            meal.setDinnerCount(1.0);
+                        } else {
+                            meal.setBreakfastCount(0.0);
+                            meal.setLunchCount(1.0);
+                            meal.setDinnerCount(0.0);
+                            meal.setGuestMealCount(0.0);
+                        }
+                        saveMeal(meal);
+                    });
+                }
+
+                if (btnPresetClear != null) {
+                    btnPresetClear.setOnClickListener(v -> {
+                        meal.setBreakfastCount(0.0);
+                        meal.setLunchCount(0.0);
+                        meal.setDinnerCount(0.0);
+                        meal.setGuestMealCount(0.0);
+                        saveMeal(meal);
+                    });
+                }
 
                 // 1. Breakfast (0.5 step)
                 btnDecBreakfast.setOnClickListener(v -> {
