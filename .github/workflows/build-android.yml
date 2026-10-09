@@ -18,7 +18,7 @@ on:
           - both
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -78,16 +78,35 @@ jobs:
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
           name: smartmess-debug-apk-api19
           path: app/build/outputs/apk/debug/*.apk
-          retention-days: 14
+          retention-days: 1
           if-no-files-found: warn
 
       - name: Upload Release APK Artifact
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
           name: smartmess-release-unsigned-apk-api19
           path: app/build/outputs/apk/release/*.apk
-          retention-days: 14
+          retention-days: 1
           if-no-files-found: warn
+
+      - name: Publish APK to GitHub Releases (Unlimited Storage)
+        if: ${{ success() }}
+        continue-on-error: true
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: "SmartMess Android Build (API 19+ KitKat to Android 14)"
+          body: |
+            Automated Android Build:
+            - **Compatibility**: Android 4.4+ (API 19) to Android 14
+            - **Commit**: ${{ github.sha }}
+          files: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/release/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
