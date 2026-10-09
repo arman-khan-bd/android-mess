@@ -11,6 +11,7 @@
     <color name="surface">#FFFFFF</color>
     <color name="surface_variant">#F1F5F9</color>
     <color name="border_stroke">#E2E8F0</color>
+    <color name="divider">#E2E8F0</color>
     
     <!-- Typography -->
     <color name="text_primary">#0F172A</color>
