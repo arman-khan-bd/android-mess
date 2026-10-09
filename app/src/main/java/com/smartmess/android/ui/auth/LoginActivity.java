@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         userDao = new UserDao(helper);
         messDao = new MessDao(helper);
         sessionManager = new SessionManager(this);
-        apiClient = new ApiClient();
+        apiClient = new ApiClient(this);
 
         btnLogin.setOnClickListener(v -> performLogin());
 

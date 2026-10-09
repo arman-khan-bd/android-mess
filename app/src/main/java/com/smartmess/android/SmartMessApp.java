@@ -46,6 +46,11 @@ public class SmartMessApp extends Application {
             com.smartmess.android.engine.CrashTelemetryHandler.install(this);
         } catch (Throwable ignored) {}
 
+        // Install Google Play Services Security Provider for Android 6.0.1 (API 23) compatibility
+        try {
+            com.smartmess.android.utils.SecurityProviderHelper.installIfNeeded(this);
+        } catch (Throwable ignored) {}
+
         try {
             DatabaseHelper.getInstance(this);
         } catch (Throwable ignored) {}

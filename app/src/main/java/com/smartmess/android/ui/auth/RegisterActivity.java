@@ -83,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
         userDao = new UserDao(helper);
         messDao = new MessDao(helper);
         sessionManager = new SessionManager(this);
-        apiClient = new ApiClient();
+        apiClient = new ApiClient(this);
 
         setupPathSelectors();
 
