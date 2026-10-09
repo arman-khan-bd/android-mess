@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmartMess</string>
+    <string name="tagline">Multi-Tenant Mess &amp; Meal Management</string>
+    <string name="currency_symbol">৳</string>
+
+    <!-- Auth -->
+    <string name="login_title">Welcome Back</string>
+    <string name="login_subtitle">Sign in to manage your mess meals and finances</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="password">Password</string>
+    <string name="btn_login">Sign In</string>
+    <string name="btn_register">Create New Mess</string>
+    <string name="register_title">Setup Your Mess</string>
+    <string name="mess_name">Mess Name</string>
+    <string name="full_name">Your Full Name</string>
+    <string name="invite_code">Invite Code (Optional)</string>
+    <string name="have_account">Already have an account? Sign In</string>
+    <string name="no_account">Don\'t have a mess account? Create One</string>
+
+    <!-- Dashboard -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_meals">Meals</string>
+    <string name="nav_expenses">Expenses</string>
+    <string name="nav_deposits">Deposits</string>
+    <string name="nav_members">Members</string>
+    <string name="nav_reports">Summary</string>
+    <string name="nav_settings">Settings</string>
+    
+    <string name="label_meal_rate">Live Meal Rate</string>
+    <string name="label_total_meals">Total Mess Meals</string>
+    <string name="label_bazar_cost">Meal Pool (Bazar)</string>
+    <string name="label_fixed_cost">Shared / Fixed Pool</string>
+    <string name="label_my_balance">My Balance</string>
+    <string name="label_my_meals">My Meals</string>
+    <string name="label_my_deposits">My Deposits</string>
+    <string name="label_sync_status">Sync Status</string>
+    <string name="action_sync_now">Sync Now</string>
+    
+    <!-- Actions -->
+    <string name="btn_add_meal">Add Meal Count</string>
+    <string name="btn_log_expense">Log Bazar / Expense</string>
+    <string name="btn_add_deposit">Add Deposit</string>
+    <string name="btn_send_sms">Send Due Reminder SMS</string>
+    <string name="btn_save">Save Changes</string>
+    <string name="btn_cancel">Cancel</string>
+
+    <!-- Expenses -->
+    <string name="cat_raw_meal">Variable (Bazar / Raw Meal)</string>
+    <string name="cat_shared_food">Shared Food (Oil, Salt, Gas)</string>
+    <string name="cat_utility_asset">Asset &amp; Utility (Rent, Maid, Wi-Fi)</string>
+    <string name="cat_sms_charge">SMS Gateway Charge</string>
+
+    <!-- Roles -->
+    <string name="role_manager">Manager</string>
+    <string name="role_assistant">Assistant Manager / Bazar Boy</string>
+    <string name="role_member">General Member</string>
+    <string name="role_superadmin">Super Admin</string>
+
+    <!-- Statuses -->
+    <string name="status_synced">Synced with Cloud</string>
+    <string name="status_pending">Pending Offline Sync</string>
+    <string name="status_refundable">Refundable (Credit)</string>
+    <string name="status_due">Due (Payable)</string>
+</resources>

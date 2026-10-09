@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.smartmess.android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:name=".SmartMessApp"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_meal"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/ic_meal"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SmartMess"
+        tools:targetApi="34">
+
+        <!-- Splash Activity (Launcher) -->
+        <activity
+            android:name=".ui.auth.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SmartMess.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Auth Activities -->
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.auth.RegisterActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Main App Core Navigation -->
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="false" />
+
+        <!-- Dashboard Activity -->
+        <activity
+            android:name=".ui.dashboard.DashboardActivity"
+            android:exported="false" />
+
+        <!-- Expenses -->
+        <activity
+            android:name=".ui.expenses.ActivityAddExpense"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Meals -->
+        <activity
+            android:name=".ui.meals.MealListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.meals.AddMealActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.meals.DailyMealToggleActivity"
+            android:exported="false" />
+
+        <!-- Expenses -->
+        <activity
+            android:name=".ui.expenses.ExpenseListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.expenses.AddExpenseActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Deposits -->
+        <activity
+            android:name=".ui.deposits.DepositListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.deposits.AddDepositActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Members -->
+        <activity
+            android:name=".ui.members.MemberListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.members.AddMemberActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- SMS Management & Costing -->
+        <activity
+            android:name=".ui.sms.ActivitySmsDispatch"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.sms.SmsBroadcastActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.sms.DueReminderActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Financial Reports & Settlement -->
+        <activity
+            android:name=".ui.reports.SummaryReportActivity"
+            android:exported="false" />
+
+        <!-- Mess Settings & Subscription -->
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:exported="false" />
+
+        <!-- Network Change Receiver for Auto Sync on Reconnection -->
+        <receiver
+            android:name=".data.sync.NetworkChangeReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Daily 22:00 Cut-Off Meal Reminder Receiver -->
+        <receiver
+            android:name=".notification.DailyReminderReceiver"
+            android:exported="false" />
+
+        <!-- Reboot Alarm Restorer Receiver -->
+        <receiver
+            android:name=".notification.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

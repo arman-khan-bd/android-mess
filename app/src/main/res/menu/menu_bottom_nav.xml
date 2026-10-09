@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@drawable/ic_dashboard"
+        android:title="Dashboard" />
+
+    <item
+        android:id="@+id/nav_meals"
+        android:icon="@drawable/ic_meal"
+        android:title="Daily Meals" />
+
+    <item
+        android:id="@+id/nav_expenses"
+        android:icon="@drawable/ic_expense"
+        android:title="Expenses" />
+
+    <item
+        android:id="@+id/nav_members"
+        android:icon="@drawable/ic_members"
+        android:title="Members &amp; Dues" />
+</menu>
