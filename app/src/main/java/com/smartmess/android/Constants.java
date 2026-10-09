@@ -9,8 +9,8 @@ package com.smartmess.android;
 public class Constants {
 
     // 1. Backend Server REST API Configuration
-    // Replace with your production domain where Laravel 11 backend is deployed
-    public static final String SERVER_BASE_URL = "https://mess.e-bd.shop/api/v1/";
+    // References AppConfig.BASE_URL for single point of modification
+    public static final String SERVER_BASE_URL = AppConfig.BASE_URL;
 
     // 2. Localization & Currency Branding
     public static final String APP_NAME = "SmartMess";
