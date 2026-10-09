@@ -223,7 +223,8 @@ public class ActivityMealVacation extends AppCompatActivity {
                         .setMessage("Do you want to cancel this vacation? You will be able to log meals normally again.")
                         .setPositiveButton("Yes, Cancel", (dialog, which) -> {
                             vacationDao.cancelVacation(v.getId());
-                            NotificationCenterHelper.postNotification(ActivityMealVacation.this, messId, "Vacation Mode Cancelled",
+                            long currentMessId = sessionManager.getMessId();
+                            NotificationCenterHelper.postNotification(ActivityMealVacation.this, currentMessId, "Vacation Mode Cancelled",
                                     sessionManager.getUserName() + " cancelled vacation (" + DateTimeUtils.formatDisplayDate(v.getStartDate()) + " to " + DateTimeUtils.formatDisplayDate(v.getEndDate()) + ")",
                                     NotificationCenterHelper.TYPE_VACATION);
                             Toast.makeText(ActivityMealVacation.this, "Vacation schedule cancelled.", Toast.LENGTH_SHORT).show();
