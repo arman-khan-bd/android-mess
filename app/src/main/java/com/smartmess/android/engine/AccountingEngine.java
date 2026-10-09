@@ -123,6 +123,18 @@ public class AccountingEngine {
         return fallback;
     }
 
+    public CycleSummary calculateCurrentCycleSummary(long messId) {
+        String startDate = com.smartmess.android.utils.DateTimeUtils.getCurrentMonthStart();
+        String endDate = com.smartmess.android.utils.DateTimeUtils.getCurrentMonthEnd();
+        return calculateCycleSummary(messId, startDate, endDate);
+    }
+
+    public MemberBalanceSheet calculateMemberBalance(long messId, long userId) {
+        String startDate = com.smartmess.android.utils.DateTimeUtils.getCurrentMonthStart();
+        String endDate = com.smartmess.android.utils.DateTimeUtils.getCurrentMonthEnd();
+        return calculateSingleMemberBalance(messId, userId, startDate, endDate);
+    }
+
     public static double round(double value) {
         return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }

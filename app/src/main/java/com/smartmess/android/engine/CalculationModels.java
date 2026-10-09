@@ -57,6 +57,13 @@ public class CalculationModels {
 
         public List<MemberBalanceSheet> getMemberBalances() { return memberBalances; }
         public void setMemberBalances(List<MemberBalanceSheet> memberBalances) { this.memberBalances = memberBalances; }
+
+        public double getLiveMealRate() { return mealRate; }
+        public double getTotalMeals() { return totalMessMeals; }
+        public double getCashInHand() { return messCashInHand; }
+        public double getRawMealCost() { return totalRawMealExpense; }
+        public double getSharedFoodCost() { return totalSharedFoodExpense; }
+        public double getUtilityCost() { return totalUtilityAssetExpense; }
     }
 
     public static class MemberBalanceSheet {
@@ -107,6 +114,10 @@ public class CalculationModels {
 
         public boolean isDue() {
             return netBalance < 0;
+        }
+
+        public boolean isOverdue() {
+            return isDue();
         }
 
         public double getDueAmount() {

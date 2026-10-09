@@ -19,6 +19,10 @@ public class ExpenseDao {
         this.dbHelper = dbHelper;
     }
 
+    public long insert(Expense expense) {
+        return insertOrUpdate(expense);
+    }
+
     public long insertOrUpdate(Expense expense) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();

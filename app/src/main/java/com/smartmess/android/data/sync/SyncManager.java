@@ -51,7 +51,7 @@ public class SyncManager {
      * Static helper to trigger sync on background thread from BroadcastReceiver or Services.
      */
     public static void triggerSync(Context context) {
-        getInstance(context).triggerSync(null);
+        getInstance(context).triggerSync((SyncCallback) null);
     }
 
     /**

@@ -27,6 +27,22 @@ public class DateTimeUtils {
         return new SimpleDateFormat(ISO_FORMAT, Locale.US).format(new Date());
     }
 
+    public static String getCurrentDate() {
+        return currentDate();
+    }
+
+    public static String getCurrentDateTime() {
+        return nowIso();
+    }
+
+    public static String getCurrentMonthStart() {
+        return currentMonthStart(1);
+    }
+
+    public static String getCurrentMonthEnd() {
+        return currentMonthEnd(1);
+    }
+
     public static String currentMonthStart(int startDay) {
         Calendar cal = Calendar.getInstance();
         if (startDay <= 0 || startDay > 28) startDay = 1;
