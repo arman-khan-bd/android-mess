@@ -49,7 +49,7 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_lucide_pie_chart"
+                android:src="@drawable/ic_lucide_cart"
                 app:tint="@color/primary" />
 
             <TextView
@@ -385,7 +385,7 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_close"
+                android:src="@drawable/ic_lucide_minus"
                 app:tint="@color/text_primary"
                 android:contentDescription="Decrease" />
 
@@ -404,7 +404,7 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_menu"
+                android:src="@drawable/ic_lucide_plus"
                 app:tint="@color/primary"
                 android:contentDescription="Increase" />
         </LinearLayout>

@@ -70,7 +70,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:background="@drawable/bg_dark_pill"
-            android:src="@drawable/ic_close"
+            android:src="@drawable/ic_lucide_minus"
             app:tint="@android:color/white"
             android:contentDescription="Decrease" />
 
@@ -89,7 +89,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:background="@drawable/bg_mint_pill"
-            android:src="@drawable/ic_menu"
+            android:src="@drawable/ic_lucide_plus"
             app:tint="#10B981"
             android:contentDescription="Increase" />
     </LinearLayout>

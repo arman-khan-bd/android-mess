@@ -83,7 +83,7 @@
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lucide_pie_chart"
+                    android:src="@drawable/ic_lucide_cart"
                     app:tint="@color/primary" />
 
                 <TextView
@@ -217,7 +217,7 @@
                 <ImageView
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:src="@drawable/ic_lucide_pie_chart"
+                    android:src="@drawable/ic_lucide_cart"
                     app:tint="@color/text_muted" />
 
                 <TextView
