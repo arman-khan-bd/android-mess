@@ -1,187 +1,612 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:fillViewport="true">
+    android:orientation="vertical">
 
+    <!-- Top App Bar matching mockup: Back button and title -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="16dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_chevron_left"
+            app:tint="@color/text_primary" />
 
         <TextView
+            android:id="@+id/tvScreenTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="মিল সংখ্যা এন্ট্রি করুন"
+            android:layout_marginStart="8dp"
+            android:text="মিল যুক্ত"
             android:textColor="@color/text_primary"
-            android:textSize="22sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="20dp"
-            android:text="সদস্যের খাওয়া মিল সংখ্যা লিপিবদ্ধ করুন"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/SmartCardView">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="সদস্য নির্বাচন করুন"
-                    android:textColor="@color/text_primary"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/spMember"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="14dp"
-                    android:background="@drawable/rounded_edittext" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="তারিখ (দিন-মাস-বছর)"
-                    android:textColor="@color/text_primary"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/etMealDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="14dp"
-                    android:background="@drawable/rounded_edittext"
-                    android:hint="তারিখ নির্বাচন"
-                    android:inputType="date" />
-
-                <!-- Meal Inputs Grid -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="সকাল"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="12sp" />
-
-                        <EditText
-                            android:id="@+id/etBreakfast"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:background="@drawable/rounded_edittext"
-                            android:hint="0.0"
-                            android:inputType="numberDecimal" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="দুপুর"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="12sp" />
-
-                        <EditText
-                            android:id="@+id/etLunch"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:background="@drawable/rounded_edittext"
-                            android:hint="1.0"
-                            android:inputType="numberDecimal" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="রাত"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="12sp" />
-
-                        <EditText
-                            android:id="@+id/etDinner"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:background="@drawable/rounded_edittext"
-                            android:hint="1.0"
-                            android:inputType="numberDecimal" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:text="অতিথি মিল"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
-
-                <EditText
-                    android:id="@+id/etGuestMeal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/rounded_edittext"
-                    android:hint="0.0"
-                    android:inputType="numberDecimal" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSaveMeal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="মিল সংরক্ষণ করুন"
-                    style="@style/SmartButton" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 
-</ScrollView>
+    <!-- Segmented Tab Pills: [ মিল যুক্ত ] [ মিল রিকুয়েস্ট ] -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btnTabAddMeal"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:background="@drawable/bg_pill_selected"
+            android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="মিল যুক্ত"
+            android:textColor="@color/surface"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btnTabMealRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_pill_unselected"
+            android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="মিল রিকুয়েস্ট"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- TAB 1: ADD / AUTO-SET MEAL CONTENT -->
+    <LinearLayout
+        android:id="@+id/layoutAddMealTab"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Fixed Header Controls (Dropdowns & Labels) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <!-- Member Filter Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="মেম্বার সংখ্যা সিলেক্ট করুন"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <!-- Custom Dropdown Spinner for Members -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_dropdown_card">
+
+                <Spinner
+                    android:id="@+id/spMemberSelection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="40dp" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="14dp"
+                    android:src="@drawable/ic_chevron_down"
+                    app:tint="@color/text_secondary" />
+            </FrameLayout>
+
+            <!-- Meal Date Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="মিলের তারিখ সিলেক্ট করুন"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <!-- Date Picker Card -->
+            <LinearLayout
+                android:id="@+id/layoutDatePicker"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_dropdown_card"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_calendar" />
+
+                <TextView
+                    android:id="@+id/tvSelectedMealDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:text="07 Aug 2026"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_down"
+                    app:tint="@color/text_secondary" />
+            </LinearLayout>
+
+            <!-- Section Label with Edit Pencil -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="মেম্বারদের মিল সংখ্যা সেট করুন"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/btnAutoResetMeals"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_pencil"
+                    android:tooltipText="ডিফল্ট মিল অটো সেট করুন" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Member Meal Steppers List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvBulkMembers"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingStart="16dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp" />
+
+        <!-- Sticky Bottom Confirm Button Container -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConfirmMeals"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/coral_primary"
+                android:text="কনফার্ম করুন"
+                android:textColor="@color/surface"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="14dp" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- TAB 2: MEAL REQUEST CONTENT -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/layoutMealRequestTab"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Request Submission Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="1dp"
+                app:strokeColor="#F1F5F9"
+                app:strokeWidth="1dp"
+                app:cardBackgroundColor="@color/surface">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="মিল বা অতিথি মিলের রিকুয়েস্ট"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="গেস্ট আসলে বা মিলের সংখ্যা পরিবর্তন করতে রিকুয়েস্ট পাঠান।"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <!-- Date Selection for Request -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="রিকুয়েস্টের তারিখ"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutReqDatePicker"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="14dp"
+                        android:background="@drawable/bg_dropdown_card"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_calendar" />
+
+                        <TextView
+                            android:id="@+id/tvReqSelectedDate"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:text="10 Oct 2026"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_chevron_down"
+                            app:tint="@color/text_secondary" />
+                    </LinearLayout>
+
+                    <!-- Stepper Inputs for Request: সকাল, দুপুর, রাত, অতিথি -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <!-- Breakfast -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="সকাল"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageButton
+                                    android:id="@+id/btnReqMinusBreakfast"
+                                    android:layout_width="26dp"
+                                    android:layout_height="26dp"
+                                    android:background="@drawable/bg_stepper_circle"
+                                    android:padding="5dp"
+                                    android:src="@drawable/ic_lucide_minus"
+                                    app:tint="@color/stepper_btn_tint" />
+
+                                <TextView
+                                    android:id="@+id/tvReqBreakfastCount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:minWidth="30dp"
+                                    android:gravity="center"
+                                    android:text="0.0"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                                <ImageButton
+                                    android:id="@+id/btnReqPlusBreakfast"
+                                    android:layout_width="26dp"
+                                    android:layout_height="26dp"
+                                    android:background="@drawable/bg_stepper_circle"
+                                    android:padding="5dp"
+                                    android:src="@drawable/ic_lucide_plus"
+                                    app:tint="@color/stepper_btn_tint" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Lunch -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="দুপুর"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageButton
+                                    android:id="@+id/btnReqMinusLunch"
+                                    android:layout_width="26dp"
+                                    android:layout_height="26dp"
+                                    android:background="@drawable/bg_stepper_circle"
+                                    android:padding="5dp"
+                                    android:src="@drawable/ic_lucide_minus"
+                                    app:tint="@color/stepper_btn_tint" />
+
+                                <TextView
+                                    android:id="@+id/tvReqLunchCount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:minWidth="30dp"
+                                    android:gravity="center"
+                                    android:text="1.0"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                                <ImageButton
+                                    android:id="@+id/btnReqPlusLunch"
+                                    android:layout_width="26dp"
+                                    android:layout_height="26dp"
+                                    android:background="@drawable/bg_stepper_circle"
+                                    android:padding="5dp"
+                                    android:src="@drawable/ic_lucide_plus"
+                                    app:tint="@color/stepper_btn_tint" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Dinner -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="রাত"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageButton
+                                    android:id="@+id/btnReqMinusDinner"
+                                    android:layout_width="26dp"
+                                    android:layout_height="26dp"
+                                    android:background="@drawable/bg_stepper_circle"
+                                    android:padding="5dp"
+                                    android:src="@drawable/ic_lucide_minus"
+                                    app:tint="@color/stepper_btn_tint" />
+
+                                <TextView
+                                    android:id="@+id/tvReqDinnerCount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:minWidth="30dp"
+                                    android:gravity="center"
+                                    android:text="1.0"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                                <ImageButton
+                                    android:id="@+id/btnReqPlusDinner"
+                                    android:layout_width="26dp"
+                                    android:layout_height="26dp"
+                                    android:background="@drawable/bg_stepper_circle"
+                                    android:padding="5dp"
+                                    android:src="@drawable/ic_lucide_plus"
+                                    app:tint="@color/stepper_btn_tint" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Guest -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="অতিথি"
+                                android:textColor="@color/coral_primary"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageButton
+                                    android:id="@+id/btnReqMinusGuest"
+                                    android:layout_width="26dp"
+                                    android:layout_height="26dp"
+                                    android:background="@drawable/bg_stepper_circle"
+                                    android:padding="5dp"
+                                    android:src="@drawable/ic_lucide_minus"
+                                    app:tint="@color/stepper_btn_tint" />
+
+                                <TextView
+                                    android:id="@+id/tvReqGuestCount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:minWidth="30dp"
+                                    android:gravity="center"
+                                    android:text="0.0"
+                                    android:textColor="@color/coral_primary"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                                <ImageButton
+                                    android:id="@+id/btnReqPlusGuest"
+                                    android:layout_width="26dp"
+                                    android:layout_height="26dp"
+                                    android:background="@drawable/bg_stepper_circle"
+                                    android:padding="5dp"
+                                    android:src="@drawable/ic_lucide_plus"
+                                    app:tint="@color/stepper_btn_tint" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Optional Note Field -->
+                    <EditText
+                        android:id="@+id/etReqNote"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/rounded_edittext"
+                        android:hint="মন্তব্য / নোট (যেমন: ২ জন অতিথি আসবে)"
+                        android:padding="12dp"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:textSize="13sp" />
+
+                    <!-- Submit Request Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSubmitRequest"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:backgroundTint="@color/coral_primary"
+                        android:text="রিকুয়েস্ট পাঠান"
+                        android:textColor="@color/surface"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="12dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Requests List Header -->
+            <TextView
+                android:id="@+id/tvRequestsHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="মেসের রিকুয়েস্ট সমূহ"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <!-- Empty Requests State -->
+            <TextView
+                android:id="@+id/tvEmptyRequests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:text="কোনো রিকুয়েস্ট পাওয়া যায়নি।"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <!-- Meal Requests RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMealRequests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

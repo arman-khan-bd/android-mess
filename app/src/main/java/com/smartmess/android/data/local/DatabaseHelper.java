@@ -151,6 +151,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + NotificationEntry.COL_IS_READ + " INTEGER DEFAULT 0, "
                 + NotificationEntry.COL_CREATED_AT + " TEXT);");
 
+        // 10. meal_requests
+        db.execSQL("CREATE TABLE " + MealRequestEntry.TABLE_NAME + " ("
+                + MealRequestEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + MealRequestEntry.COL_UUID + " TEXT UNIQUE NOT NULL, "
+                + MealRequestEntry.COL_MESS_ID + " INTEGER NOT NULL, "
+                + MealRequestEntry.COL_USER_ID + " INTEGER NOT NULL, "
+                + MealRequestEntry.COL_REQUEST_DATE + " TEXT NOT NULL, "
+                + MealRequestEntry.COL_BREAKFAST_COUNT + " REAL DEFAULT 0.0, "
+                + MealRequestEntry.COL_LUNCH_COUNT + " REAL DEFAULT 0.0, "
+                + MealRequestEntry.COL_DINNER_COUNT + " REAL DEFAULT 0.0, "
+                + MealRequestEntry.COL_GUEST_COUNT + " REAL DEFAULT 0.0, "
+                + MealRequestEntry.COL_NOTE + " TEXT, "
+                + MealRequestEntry.COL_STATUS + " TEXT DEFAULT 'pending', "
+                + MealRequestEntry.COL_CREATED_AT + " TEXT, "
+                + MealRequestEntry.COL_UPDATED_AT + " TEXT);");
+
         // Indexes for high performance queries
         db.execSQL("CREATE INDEX idx_meals_mess_date ON " + MealEntry.TABLE_NAME + " (" + MealEntry.COL_MESS_ID + ", " + MealEntry.COL_MEAL_DATE + ");");
         db.execSQL("CREATE INDEX idx_expenses_mess_date ON " + ExpenseEntry.TABLE_NAME + " (" + ExpenseEntry.COL_MESS_ID + ", " + ExpenseEntry.COL_EXPENSE_DATE + ");");
@@ -158,6 +174,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE INDEX idx_users_mess ON " + UserEntry.TABLE_NAME + " (" + UserEntry.COL_MESS_ID + ");");
         db.execSQL("CREATE INDEX idx_vacations_user ON " + MealVacationEntry.TABLE_NAME + " (" + MealVacationEntry.COL_MESS_ID + ", " + MealVacationEntry.COL_USER_ID + ");");
         db.execSQL("CREATE INDEX idx_notifications_mess ON " + NotificationEntry.TABLE_NAME + " (" + NotificationEntry.COL_MESS_ID + ");");
+        db.execSQL("CREATE INDEX idx_meal_requests_mess ON " + MealRequestEntry.TABLE_NAME + " (" + MealRequestEntry.COL_MESS_ID + ", " + MealRequestEntry.COL_REQUEST_DATE + ");");
     }
 
     @Override
@@ -193,6 +210,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + NotificationEntry.COL_TYPE + " TEXT DEFAULT 'system', "
                     + NotificationEntry.COL_IS_READ + " INTEGER DEFAULT 0, "
                     + NotificationEntry.COL_CREATED_AT + " TEXT);");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + MealRequestEntry.TABLE_NAME + " ("
+                    + MealRequestEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + MealRequestEntry.COL_UUID + " TEXT UNIQUE NOT NULL, "
+                    + MealRequestEntry.COL_MESS_ID + " INTEGER NOT NULL, "
+                    + MealRequestEntry.COL_USER_ID + " INTEGER NOT NULL, "
+                    + MealRequestEntry.COL_REQUEST_DATE + " TEXT NOT NULL, "
+                    + MealRequestEntry.COL_BREAKFAST_COUNT + " REAL DEFAULT 0.0, "
+                    + MealRequestEntry.COL_LUNCH_COUNT + " REAL DEFAULT 0.0, "
+                    + MealRequestEntry.COL_DINNER_COUNT + " REAL DEFAULT 0.0, "
+                    + MealRequestEntry.COL_GUEST_COUNT + " REAL DEFAULT 0.0, "
+                    + MealRequestEntry.COL_NOTE + " TEXT, "
+                    + MealRequestEntry.COL_STATUS + " TEXT DEFAULT 'pending', "
+                    + MealRequestEntry.COL_CREATED_AT + " TEXT, "
+                    + MealRequestEntry.COL_UPDATED_AT + " TEXT);");
         } catch (Exception ignored) {}
     }
 

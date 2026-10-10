@@ -35,4 +35,12 @@
     <color name="gradient_end">#059669</color>
     <color name="slate_800">#1E293B</color>
     <color name="slate_900">#0F172A</color>
+    
+    <!-- Coral Meal Mockup Palette -->
+    <color name="coral_primary">#F05252</color>
+    <color name="coral_primary_dark">#DC2626</color>
+    <color name="coral_light">#FFF1F1</color>
+    <color name="coral_pill_unselected">#FFFFFF</color>
+    <color name="stepper_btn_bg">#F1F5F9</color>
+    <color name="stepper_btn_tint">#475569</color>
 </resources>

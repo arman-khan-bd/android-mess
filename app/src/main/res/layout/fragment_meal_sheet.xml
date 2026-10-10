@@ -113,13 +113,32 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Members Meal RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMealSheet"
+    <!-- Members Meal RecyclerView Container with FAB -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingTop="8dp"
-        android:paddingBottom="80dp" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvMealSheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="8dp"
+            android:paddingBottom="90dp" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabAddMeal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="80dp"
+            android:text="মিল যুক্ত / রিকুয়েস্ট"
+            android:textColor="@color/surface"
+            app:icon="@drawable/ic_meal"
+            app:iconTint="@color/surface"
+            app:backgroundTint="@color/coral_primary" />
+
+    </FrameLayout>
 
 </LinearLayout>

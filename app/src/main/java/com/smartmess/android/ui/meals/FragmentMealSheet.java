@@ -110,6 +110,20 @@ public class FragmentMealSheet extends Fragment {
         });
 
         layoutDateSelect.setOnClickListener(v -> showDatePicker());
+
+        View fabAddMeal = view.findViewById(R.id.fabAddMeal);
+        if (fabAddMeal != null) {
+            fabAddMeal.setOnClickListener(v -> {
+                android.content.Intent intent = new android.content.Intent(requireContext(), AddMealActivity.class);
+                startActivity(intent);
+            });
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadMealsForCurrentDate();
     }
 
     private void setupDatePickers() {

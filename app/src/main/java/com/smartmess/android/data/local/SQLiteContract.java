@@ -142,4 +142,21 @@ public final class SQLiteContract {
         public static final String COL_IS_READ = "is_read"; // 0 or 1
         public static final String COL_CREATED_AT = "created_at";
     }
+
+    public static final class MealRequestEntry {
+        public static final String TABLE_NAME = "meal_requests";
+        public static final String COL_ID = "id";
+        public static final String COL_UUID = "uuid";
+        public static final String COL_MESS_ID = "mess_id";
+        public static final String COL_USER_ID = "user_id";
+        public static final String COL_REQUEST_DATE = "request_date";
+        public static final String COL_BREAKFAST_COUNT = "breakfast_count";
+        public static final String COL_LUNCH_COUNT = "lunch_count";
+        public static final String COL_DINNER_COUNT = "dinner_count";
+        public static final String COL_GUEST_COUNT = "guest_count";
+        public static final String COL_NOTE = "note";
+        public static final String COL_STATUS = "status"; // 'pending', 'approved', 'rejected'
+        public static final String COL_CREATED_AT = "created_at";
+        public static final String COL_UPDATED_AT = "updated_at";
+    }
 }
