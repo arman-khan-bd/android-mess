@@ -59,6 +59,7 @@ import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -75,6 +76,7 @@ public class ActivityUserProfile extends AppCompatActivity {
 
     private View btnBack;
     private MaterialButton btnManageMemberTop;
+    private MaterialButton btnEditProfileInfo;
     private ImageView ivProfileAvatar;
     private View btnEditAvatar;
     private TextView tvProfileName;
@@ -157,8 +159,14 @@ public class ActivityUserProfile extends AppCompatActivity {
         layoutManagerActions = findViewById(R.id.layoutManagerActions);
         btnManageMemberPermissions = findViewById(R.id.btnManageMemberPermissions);
         btnSendDueReminderSms = findViewById(R.id.btnSendDueReminderSms);
+        btnEditProfileInfo = findViewById(R.id.btnEditProfileInfo);
 
         if (btnBack != null) btnBack.setOnClickListener(v -> finish());
+
+        // Edit Profile Details Button
+        if (btnEditProfileInfo != null) {
+            btnEditProfileInfo.setOnClickListener(v -> showEditProfileDialog());
+        }
 
         // Avatar Click / Edit Button
         View.OnClickListener avatarPickerListener = v -> {
@@ -194,6 +202,32 @@ public class ActivityUserProfile extends AppCompatActivity {
 
     private void loadUserProfile() {
         targetUser = userDao.getById(targetUserId);
+
+        // Fallback: If not found by targetUserId, lookup by phone or synthesize from SessionManager
+        if (targetUser == null) {
+            if (sessionManager.getUserPhone() != null && !sessionManager.getUserPhone().isEmpty()) {
+                targetUser = userDao.getByPhone(sessionManager.getUserPhone());
+                if (targetUser != null) {
+                    targetUserId = targetUser.getId();
+                }
+            }
+            if (targetUser == null && (sessionManager.getUserId() == targetUserId || targetUserId <= 0)) {
+                // Synthesize from SessionManager so logged-in user profile always loads!
+                targetUser = new User();
+                long sUid = sessionManager.getUserId() > 0 ? sessionManager.getUserId() : 1;
+                targetUser.setId(sUid);
+                targetUser.setMessId(sessionManager.getMessId());
+                targetUser.setName(sessionManager.getUserName() != null && !sessionManager.getUserName().isEmpty() ? sessionManager.getUserName() : "আমার প্রোফাইল");
+                targetUser.setPhone(sessionManager.getUserPhone() != null ? sessionManager.getUserPhone() : "");
+                targetUser.setRole(sessionManager.getUserRole() != null ? sessionManager.getUserRole() : User.ROLE_MEMBER);
+                targetUser.setStatus(User.STATUS_ACTIVE);
+                targetUser.setCreatedAt(DateTimeUtils.getCurrentDateTime());
+                targetUser.setUpdatedAt(DateTimeUtils.getCurrentDateTime());
+                targetUserId = sUid;
+                userDao.insertOrUpdate(targetUser);
+            }
+        }
+
         if (targetUser == null) {
             Toast.makeText(this, "সদস্য পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
             finish();
@@ -261,8 +295,10 @@ public class ActivityUserProfile extends AppCompatActivity {
 
         if (!isSelf && !isManager) {
             btnEditAvatar.setVisibility(View.GONE);
+            if (btnEditProfileInfo != null) btnEditProfileInfo.setVisibility(View.GONE);
         } else {
             btnEditAvatar.setVisibility(View.VISIBLE);
+            if (btnEditProfileInfo != null) btnEditProfileInfo.setVisibility(View.VISIBLE);
         }
 
         // 2. Financial Ledger Card
@@ -270,6 +306,113 @@ public class ActivityUserProfile extends AppCompatActivity {
 
         // 3. Activity History
         loadActivityHistory();
+    }
+
+    private void showEditProfileDialog() {
+        if (targetUser == null) return;
+
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        layout.setPadding(48, 24, 48, 16);
+
+        final com.google.android.material.textfield.TextInputLayout tilName = new com.google.android.material.textfield.TextInputLayout(this);
+        tilName.setHint("নাম");
+        final com.google.android.material.textfield.TextInputEditText etName = new com.google.android.material.textfield.TextInputEditText(this);
+        etName.setText(targetUser.getName());
+        tilName.addView(etName);
+        layout.addView(tilName);
+
+        final com.google.android.material.textfield.TextInputLayout tilPhone = new com.google.android.material.textfield.TextInputLayout(this);
+        tilPhone.setHint("ফোন নম্বর");
+        android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        lp.topMargin = 24;
+        tilPhone.setLayoutParams(lp);
+        final com.google.android.material.textfield.TextInputEditText etPhone = new com.google.android.material.textfield.TextInputEditText(this);
+        etPhone.setText(targetUser.getPhone());
+        etPhone.setInputType(android.text.InputType.TYPE_CLASS_PHONE);
+        tilPhone.addView(etPhone);
+        layout.addView(tilPhone);
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("প্রোফাইল তথ্য পরিবর্তন")
+                .setView(layout)
+                .setPositiveButton("সংরক্ষণ করুন", (dialog, which) -> {
+                    String newName = etName.getText() != null ? etName.getText().toString().trim() : "";
+                    String newPhone = etPhone.getText() != null ? etPhone.getText().toString().trim() : "";
+                    if (newName.isEmpty()) {
+                        Toast.makeText(this, "নাম খালি রাখা যাবে না", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (newPhone.isEmpty()) {
+                        Toast.makeText(this, "ফোন নম্বর খালি রাখা যাবে না", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    saveProfileChanges(newName, newPhone);
+                })
+                .setNegativeButton("বাতিল", null)
+                .show();
+    }
+
+    private void saveProfileChanges(String newName, String newPhone) {
+        targetUser.setName(newName);
+        targetUser.setPhone(newPhone);
+        userDao.updateUserProfile(targetUserId, newName, newPhone, targetUser.getAvatarUrl());
+
+        if (sessionManager.getUserId() == targetUserId) {
+            sessionManager.setUserName(newName);
+            sessionManager.setUserPhone(newPhone);
+        }
+
+        tvProfileName.setText(newName);
+        boolean isManager = sessionManager.isManager();
+        boolean isSelf = (sessionManager.getUserId() == targetUserId);
+        if (isManager || isSelf) {
+            tvProfilePhone.setText(newPhone);
+        } else {
+            tvProfilePhone.setText(maskPhoneNumber(newPhone));
+        }
+
+        Toast.makeText(this, "প্রোফাইল তথ্য সফলভাবে আপডেট হয়েছে!", Toast.LENGTH_SHORT).show();
+
+        // Sync to server API
+        syncProfileToServer(newName, newPhone);
+    }
+
+    private void syncProfileToServer(String newName, String newPhone) {
+        OkHttpClient client = ApiClient.getOkHttpClient(getApplicationContext());
+        boolean isSelf = (sessionManager.getUserId() == targetUserId);
+
+        String url = isSelf ? (ApiConfig.BASE_URL + "users/profile")
+                            : (ApiConfig.BASE_URL + "members/" + targetUserId + "/update");
+
+        FormBody.Builder formBuilder = new FormBody.Builder()
+                .add("name", newName)
+                .add("phone", newPhone);
+
+        if (!isSelf) {
+            if (targetUser.getRole() != null) formBuilder.add("role", targetUser.getRole());
+            if (targetUser.getStatus() != null) formBuilder.add("status", targetUser.getStatus());
+        }
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBuilder.build())
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                // Offline fallback already updated in SQLite
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                response.close();
+            }
+        });
     }
 
     private void loadFinancialStatement() {

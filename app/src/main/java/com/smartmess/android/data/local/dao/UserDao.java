@@ -21,6 +21,9 @@ public class UserDao {
     public long insertOrUpdate(User user) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
+        if (user.getId() > 0) {
+            values.put(UserEntry.COL_ID, user.getId());
+        }
         values.put(UserEntry.COL_UUID, user.getUuid());
         values.put(UserEntry.COL_MESS_ID, user.getMessId());
         values.put(UserEntry.COL_NAME, user.getName());
@@ -52,6 +55,20 @@ public class UserDao {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(UserEntry.TABLE_NAME, null,
                 UserEntry.COL_PHONE + " = ?", new String[]{phone},
+                null, null, null);
+        User user = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            user = cursorToUser(cursor);
+            cursor.close();
+        }
+        return user;
+    }
+
+    public User getByUuid(String uuid) {
+        if (uuid == null || uuid.isEmpty()) return null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(UserEntry.TABLE_NAME, null,
+                UserEntry.COL_UUID + " = ?", new String[]{uuid},
                 null, null, null);
         User user = null;
         if (cursor != null && cursor.moveToFirst()) {
@@ -140,6 +157,16 @@ public class UserDao {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(UserEntry.COL_AVATAR_URL, avatarUrl);
+        values.put(UserEntry.COL_UPDATED_AT, com.smartmess.android.utils.DateTimeUtils.getCurrentDateTime());
+        db.update(UserEntry.TABLE_NAME, values, UserEntry.COL_ID + " = ?", new String[]{String.valueOf(userId)});
+    }
+
+    public void updateUserProfile(long userId, String name, String phone, String avatarUrl) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        if (name != null) values.put(UserEntry.COL_NAME, name);
+        if (phone != null) values.put(UserEntry.COL_PHONE, phone);
+        if (avatarUrl != null) values.put(UserEntry.COL_AVATAR_URL, avatarUrl);
         values.put(UserEntry.COL_UPDATED_AT, com.smartmess.android.utils.DateTimeUtils.getCurrentDateTime());
         db.update(UserEntry.TABLE_NAME, values, UserEntry.COL_ID + " = ?", new String[]{String.valueOf(userId)});
     }

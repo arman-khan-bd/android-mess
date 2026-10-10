@@ -308,7 +308,7 @@ public class FragmentMealSheet extends Fragment {
                 User user = row.user;
                 Meal meal = row.meal;
                 boolean isManager = sessionManager.isManager();
-                // ONLY managers can set or change meal count up down
+                // Managers can edit meals only if member is NOT on vacation
                 boolean canEdit = isManager && !row.isOnVacation;
 
                 tvMemberName.setText(user.getName());
@@ -317,17 +317,17 @@ public class FragmentMealSheet extends Fragment {
                         : "M";
                 tvAvatar.setText(initial);
                 if (row.isOnVacation) {
-                    tvMemberSubtext.setText("🏖️ On Vacation • Meals auto-locked to 0");
-                    tvLockBadge.setText("VACATION");
+                    tvMemberSubtext.setText("🏖️ ছুটিতে আছেন (ভ্যাকেশন মোড) • মিল স্বয়ংক্রিয়ভাবে বন্ধ (০.০)");
+                    tvLockBadge.setText("ছুটিতে (ভ্যাকেশন)");
                     tvLockBadge.setVisibility(View.VISIBLE);
                 } else if (!isManager) {
-                    tvMemberSubtext.setText("Room: " + (user.getRole() != null ? user.getRole() : "Member") + " • " + user.getPhone());
-                    tvLockBadge.setText("VIEW ONLY");
+                    tvMemberSubtext.setText("রুম: " + (user.getRole() != null ? user.getRole() : "Member") + " • " + user.getPhone());
+                    tvLockBadge.setText("শুধুমাত্র দেখার অনুমতি");
                     tvLockBadge.setVisibility(View.VISIBLE);
                 } else {
-                    tvMemberSubtext.setText("Room: " + (user.getRole() != null ? user.getRole() : "Member") + " • " + user.getPhone());
+                    tvMemberSubtext.setText("রুম: " + (user.getRole() != null ? user.getRole() : "Member") + " • " + user.getPhone());
                     if (row.isLocked) {
-                        tvLockBadge.setText("MANAGER EDIT");
+                        tvLockBadge.setText("ম্যানেজার এডিট");
                         tvLockBadge.setVisibility(View.VISIBLE);
                     } else {
                         tvLockBadge.setVisibility(View.GONE);
@@ -336,7 +336,7 @@ public class FragmentMealSheet extends Fragment {
 
                 updateCountsDisplay(meal);
 
-                // Enable/disable stepper clicks based strictly on manager permission
+                // Enable/disable stepper clicks based strictly on manager permission and vacation status
                 btnDecBreakfast.setEnabled(canEdit);
                 btnIncBreakfast.setEnabled(canEdit);
                 btnDecLunch.setEnabled(canEdit);
@@ -349,7 +349,11 @@ public class FragmentMealSheet extends Fragment {
                 if (btnPresetFull != null) btnPresetFull.setEnabled(canEdit);
                 if (btnPresetClear != null) btnPresetClear.setEnabled(canEdit);
 
-                if (!isManager) {
+                if (row.isOnVacation) {
+                    View.OnClickListener vacationNotice = v -> Toast.makeText(itemView.getContext(),
+                            "সদস্য ছুটিতে আছেন (ভ্যাকেশন মোড)। এই তারিখে মিল পরিবর্তন করা যাবে না।", Toast.LENGTH_SHORT).show();
+                    itemView.setOnClickListener(vacationNotice);
+                } else if (!isManager) {
                     View.OnClickListener memberNotice = v -> Toast.makeText(itemView.getContext(),
                             "শুধুমাত্র মেস ম্যানেজার মিলের সংখ্যা পরিবর্তন করতে পারবেন।", Toast.LENGTH_SHORT).show();
                     itemView.setOnClickListener(memberNotice);
@@ -357,19 +361,27 @@ public class FragmentMealSheet extends Fragment {
                     itemView.setOnClickListener(null);
                 }
 
-                // Quick Presets: +0.5 (half meal), +1.0 (full meal), and Clear (0.0)
+                // Quick Presets: 0.5 (নাস্তা), 1.0 (পূর্ণ মিল), and Clear (0.0)
                 if (btnPresetHalf != null) {
                     btnPresetHalf.setOnClickListener(v -> {
-                        meal.setBreakfastCount(0.0);
-                        meal.setLunchCount(0.5);
+                        if (!canEdit) {
+                            showEditBlockedNotice(row);
+                            return;
+                        }
+                        meal.setBreakfastCount(0.5);
+                        meal.setLunchCount(0.0);
                         meal.setDinnerCount(0.0);
                         meal.setGuestMealCount(0.0);
-                        saveMeal(meal);
+                        saveMeal(meal, row);
                     });
                 }
 
                 if (btnPresetFull != null) {
                     btnPresetFull.setOnClickListener(v -> {
+                        if (!canEdit) {
+                            showEditBlockedNotice(row);
+                            return;
+                        }
                         if (meal.getLunchCount() == 1.0 && meal.getDinnerCount() == 0.0) {
                             meal.setDinnerCount(1.0);
                         } else {
@@ -378,70 +390,121 @@ public class FragmentMealSheet extends Fragment {
                             meal.setDinnerCount(0.0);
                             meal.setGuestMealCount(0.0);
                         }
-                        saveMeal(meal);
+                        saveMeal(meal, row);
                     });
                 }
 
                 if (btnPresetClear != null) {
                     btnPresetClear.setOnClickListener(v -> {
+                        if (!canEdit) {
+                            showEditBlockedNotice(row);
+                            return;
+                        }
                         meal.setBreakfastCount(0.0);
                         meal.setLunchCount(0.0);
                         meal.setDinnerCount(0.0);
                         meal.setGuestMealCount(0.0);
-                        saveMeal(meal);
+                        saveMeal(meal, row);
                     });
                 }
 
                 // 1. Breakfast (0.5 step)
                 btnDecBreakfast.setOnClickListener(v -> {
+                    if (!canEdit) {
+                        showEditBlockedNotice(row);
+                        return;
+                    }
                     if (meal.getBreakfastCount() >= 0.5) {
                         meal.setBreakfastCount(meal.getBreakfastCount() - 0.5);
-                        saveMeal(meal);
+                        saveMeal(meal, row);
                     }
                 });
                 btnIncBreakfast.setOnClickListener(v -> {
+                    if (!canEdit) {
+                        showEditBlockedNotice(row);
+                        return;
+                    }
                     meal.setBreakfastCount(meal.getBreakfastCount() + 0.5);
-                    saveMeal(meal);
+                    saveMeal(meal, row);
                 });
 
                 // 2. Lunch (1.0 step)
                 btnDecLunch.setOnClickListener(v -> {
+                    if (!canEdit) {
+                        showEditBlockedNotice(row);
+                        return;
+                    }
                     if (meal.getLunchCount() >= 1.0) {
                         meal.setLunchCount(meal.getLunchCount() - 1.0);
-                        saveMeal(meal);
+                        saveMeal(meal, row);
                     }
                 });
                 btnIncLunch.setOnClickListener(v -> {
+                    if (!canEdit) {
+                        showEditBlockedNotice(row);
+                        return;
+                    }
                     meal.setLunchCount(meal.getLunchCount() + 1.0);
-                    saveMeal(meal);
+                    saveMeal(meal, row);
                 });
 
                 // 3. Dinner (1.0 step)
                 btnDecDinner.setOnClickListener(v -> {
+                    if (!canEdit) {
+                        showEditBlockedNotice(row);
+                        return;
+                    }
                     if (meal.getDinnerCount() >= 1.0) {
                         meal.setDinnerCount(meal.getDinnerCount() - 1.0);
-                        saveMeal(meal);
+                        saveMeal(meal, row);
                     }
                 });
                 btnIncDinner.setOnClickListener(v -> {
+                    if (!canEdit) {
+                        showEditBlockedNotice(row);
+                        return;
+                    }
                     meal.setDinnerCount(meal.getDinnerCount() + 1.0);
-                    saveMeal(meal);
+                    saveMeal(meal, row);
                 });
 
                 // 4. Guest (1.0 step)
                 btnDecGuest.setOnClickListener(v -> {
+                    if (!canEdit) {
+                        showEditBlockedNotice(row);
+                        return;
+                    }
                     if (meal.getGuestMealCount() >= 1.0) {
                         meal.setGuestMealCount(meal.getGuestMealCount() - 1.0);
-                        saveMeal(meal);
+                        saveMeal(meal, row);
                     }
                 });
                 btnIncGuest.setOnClickListener(v -> {
+                    if (!canEdit) {
+                        showEditBlockedNotice(row);
+                        return;
+                    }
                     meal.setGuestMealCount(meal.getGuestMealCount() + 1.0);
-                    saveMeal(meal);
+                    saveMeal(meal, row);
                 });
             }
 
-            private void saveMeal(Meal meal) {
+            private void showEditBlockedNotice(MealItemRow row) {
+                if (row.isOnVacation) {
+                    Toast.makeText(itemView.getContext(),
+                            "সদস্য ছুটিতে আছেন (ভ্যাকেশন মোড)। এই তারিখে মিল পরিবর্তন করা যাবে না।", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(itemView.getContext(),
+                            "শুধুমাত্র মেস ম্যানেজার মিলের সংখ্যা পরিবর্তন করতে পারবেন।", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            private void saveMeal(Meal meal, MealItemRow row) {
+                if (row.isOnVacation || (vacationDao != null && vacationDao.isUserOnVacation(sessionManager.getMessId(), meal.getUserId(), meal.getMealDate()))) {
+                    Toast.makeText(itemView.getContext(),
+                            "সদস্য ছুটিতে (ভ্যাকেশন মোড) আছেন। এই তারিখে মিল এডিট করা যাবে না।", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 meal.setSyncStatus(0);
                 meal.setUpdatedAt(DateTimeUtils.getCurrentDateTime());
                 mealDao.insertOrUpdate(meal);
@@ -463,7 +526,7 @@ public class FragmentMealSheet extends Fragment {
                 tvGuestCount.setText(String.format(Locale.US, "%.1f", meal.getGuestMealCount()));
 
                 double dailySum = meal.getBreakfastCount() + meal.getLunchCount() + meal.getDinnerCount() + meal.getGuestMealCount();
-                tvDailyTotal.setText(String.format(Locale.US, "Total: %.1f", dailySum));
+                tvDailyTotal.setText(String.format(Locale.US, "মোট: %.1f", dailySum));
             }
         }
     }

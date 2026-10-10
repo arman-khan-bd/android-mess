@@ -104,11 +104,6 @@ public class ActivityNotificationManager extends AppCompatActivity {
         setContentView(R.layout.activity_notification_manager);
 
         sessionManager = new SessionManager(this);
-        if (!sessionManager.isManager() && !sessionManager.isAssistant()) {
-            Toast.makeText(this, "অনুমতি নেই: শুধুমাত্র মেস ম্যানেজার নোটিফিকেশন পাঠাতে পারবেন।", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
 
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
         userDao = new UserDao(dbHelper);
@@ -116,11 +111,15 @@ public class ActivityNotificationManager extends AppCompatActivity {
         smsCostingManager = new SmsCostingManager(this);
         apiService = ApiClient.getApiService(this);
 
-        initViews();
-        loadMembers();
-        updateBatteryOptCard();
-        setupListeners();
-        updateCostEstimate();
+        try {
+            initViews();
+            loadMembers();
+            updateBatteryOptCard();
+            setupListeners();
+            updateCostEstimate();
+        } catch (Throwable t) {
+            android.util.Log.e("ActivityNotifManager", "Init error: " + t.getMessage(), t);
+        }
     }
 
     private void initViews() {
@@ -157,41 +156,75 @@ public class ActivityNotificationManager extends AppCompatActivity {
 
         btnDispatchNotification = findViewById(R.id.btnDispatchNotification);
 
-        btnBackNotifManager.setOnClickListener(v -> finish());
-        badgeManagerRole.setText(sessionManager.isManager() ? "MANAGER" : "ASSISTANT");
+        if (btnBackNotifManager != null) {
+            btnBackNotifManager.setOnClickListener(v -> finish());
+        }
+
+        if (badgeManagerRole != null) {
+            if (sessionManager.isManager()) {
+                badgeManagerRole.setText("ম্যানেজার");
+            } else if (sessionManager.isAssistant()) {
+                badgeManagerRole.setText("সহকারী");
+            } else {
+                badgeManagerRole.setText("সদস্য");
+            }
+        }
     }
 
     private void updateBatteryOptCard() {
-        boolean isIgnored = BatteryOptimizationHelper.isBatteryOptimizationIgnored(this);
-        if (isIgnored) {
-            ivBatteryStatusIcon.setColorFilter(ContextCompat.getColor(this, R.color.credit_green));
-            tvBatteryStatusTitle.setText("Background Push Delivery: Unrestricted");
-            tvBatteryStatusDesc.setText("Notifications arrive instantly when the app is in background or closed.");
-            btnFixBatteryOpt.setText("Verified");
-            btnFixBatteryOpt.setEnabled(false);
-        } else {
-            ivBatteryStatusIcon.setColorFilter(ContextCompat.getColor(this, R.color.warning_amber));
-            tvBatteryStatusTitle.setText("Battery Optimization Enabled");
-            tvBatteryStatusDesc.setText("Background sync may be delayed when app is closed. Tap to whitelist.");
-            btnFixBatteryOpt.setText("Disable");
-            btnFixBatteryOpt.setEnabled(true);
-            btnFixBatteryOpt.setOnClickListener(v -> {
-                BatteryOptimizationHelper.showBatteryOptimizationDialog(this, this::updateBatteryOptCard);
-            });
+        try {
+            boolean isIgnored = BatteryOptimizationHelper.isBatteryOptimizationIgnored(this);
+            if (ivBatteryStatusIcon == null || tvBatteryStatusTitle == null || tvBatteryStatusDesc == null || btnFixBatteryOpt == null) return;
+            if (isIgnored) {
+                ivBatteryStatusIcon.setColorFilter(ContextCompat.getColor(this, R.color.credit_green));
+                tvBatteryStatusTitle.setText("ব্যাকগ্রাউন্ড পুশ ডেলিভারি: সক্রিয়");
+                tvBatteryStatusDesc.setText("অ্যাপ বন্ধ থাকলেও নোটিফিকেশন সাথে সাথে পৌঁছাবে।");
+                btnFixBatteryOpt.setText("সক্রিয়");
+                btnFixBatteryOpt.setEnabled(false);
+            } else {
+                ivBatteryStatusIcon.setColorFilter(ContextCompat.getColor(this, R.color.warning_amber));
+                tvBatteryStatusTitle.setText("ব্যাটারি অপটিমাইজেশন সক্রিয় আছে");
+                tvBatteryStatusDesc.setText("অ্যাপ বন্ধ থাকলে নোটিফিকেশন দেরিতে আসতে পারে। ট্যাপ করে অনুমতি দিন।");
+                btnFixBatteryOpt.setText("অনুমতি দিন");
+                btnFixBatteryOpt.setEnabled(true);
+                btnFixBatteryOpt.setOnClickListener(v -> {
+                    BatteryOptimizationHelper.showBatteryOptimizationDialog(this, this::updateBatteryOptCard);
+                });
+            }
+        } catch (Throwable t) {
+            if (cardBatteryOptimization != null) {
+                cardBatteryOptimization.setVisibility(View.GONE);
+            }
         }
     }
 
     private void loadMembers() {
         long messId = sessionManager.getMessId();
         activeMembers = userDao.getActiveMembersByMess(messId);
+        if (activeMembers == null || activeMembers.isEmpty()) {
+            activeMembers = userDao.getAllMembers(messId);
+        }
+        if (activeMembers == null) {
+            activeMembers = new ArrayList<>();
+        }
 
         List<String> memberLabels = new ArrayList<>();
         for (User u : activeMembers) {
-            memberLabels.add(u.getName() + " (" + (u.getPhone() != null ? u.getPhone() : "No phone") + ")");
+            if (u != null) {
+                String name = u.getName() != null ? u.getName() : "সদস্য";
+                String phone = u.getPhone() != null ? u.getPhone() : "ফোন নেই";
+                memberLabels.add(name + " (" + phone + ")");
+            }
+        }
+
+        if (memberLabels.isEmpty()) {
+            memberLabels.add("কোনো সদস্য পাওয়া যায়নি");
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, memberLabels);
-        spinnerTargetMember.setAdapter(adapter);
+        if (spinnerTargetMember != null) {
+            spinnerTargetMember.setAdapter(adapter);
+        }
     }
 
     private void setupListeners() {

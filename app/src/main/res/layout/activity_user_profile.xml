@@ -115,7 +115,7 @@
                             android:backgroundTint="@color/primary"
                             android:contentDescription="ছবি পরিবর্তন"
                             android:padding="7dp"
-                            app:srcCompat="@drawable/ic_lucide_file_text"
+                            app:srcCompat="@drawable/ic_camera"
                             app:tint="@android:color/white" />
                     </FrameLayout>
 
@@ -179,6 +179,26 @@
                             android:textSize="11sp"
                             android:textStyle="bold" />
                     </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnEditProfileInfo"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="38dp"
+                        android:layout_marginTop="12dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:paddingHorizontal="14dp"
+                        android:text="তথ্য পরিবর্তন করুন"
+                        android:textAllCaps="false"
+                        android:textColor="@color/primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:icon="@drawable/ic_lucide_user_cog"
+                        app:iconSize="14dp"
+                        app:iconTint="@color/primary"
+                        app:strokeColor="@color/primary"
+                        app:strokeWidth="1dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

@@ -428,18 +428,31 @@ public class ActivityAddBazar extends AppCompatActivity {
 
     private void splitBillEquallyAmongPayers() {
         double totalBill = calculateTotalItemCost();
-        if (payerRows.isEmpty()) {
-            Toast.makeText(this, "প্রথমে অন্তত ১ জন টাকা প্রদানকারী যোগ করুন", Toast.LENGTH_SHORT).show();
+        if (members == null || members.isEmpty()) {
+            loadMembers();
+        }
+        if (members == null || members.isEmpty()) {
+            Toast.makeText(this, "মেসে কোনো সদস্য পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Auto-show all mess members in payer list
+        layoutPayersContainer.removeAllViews();
+        payerRows.clear();
+
+        for (User u : members) {
+            addPayerRow(u.getId());
+        }
+
         int count = payerRows.size();
+        if (count == 0) return;
+
         double splitAmount = round(totalBill / count);
         double distributed = 0.0;
 
         for (int i = 0; i < count; i++) {
             if (i == count - 1) {
-                // Adjust rounding difference on last payer
+                // Adjust rounding difference on last member
                 double lastShare = round(totalBill - distributed);
                 payerRows.get(i).setAmount(lastShare);
             } else {
@@ -449,6 +462,7 @@ public class ActivityAddBazar extends AppCompatActivity {
         }
 
         recalculateTotals();
+        Toast.makeText(this, "সকল " + count + " জন সদস্যের মধ্যে সমান ভাগ করা হয়েছে (জনপ্রতি ৳" + String.format(Locale.US, "%.2f", splitAmount) + ")", Toast.LENGTH_SHORT).show();
     }
 
     // ==========================================
