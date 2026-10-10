@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <!-- Background Circle -->
+    <path
+        android:fillColor="#FEE2E2"
+        android:pathData="M20,20m-20,0a20,20 0,1 1,40,0a20,20 0,1 1,-40,0" />
+    <!-- Shoulders/Suit -->
+    <path
+        android:fillColor="#334155"
+        android:pathData="M9,37c0,-6 4.9,-10.8 11,-10.8s11,4.8 11,10.8z" />
+    <!-- White shirt collar -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M16.5,27.5L20,33l3.5,-5.5L20,26z" />
+    <!-- Red Bow Tie -->
+    <path
+        android:fillColor="#EF4444"
+        android:pathData="M18,29l4,-1.5 -1.5,2.5 1.5,2.5 -4,-1.5z" />
+    <!-- Face -->
+    <path
+        android:fillColor="#FED7AA"
+        android:pathData="M20,11.5m-6.5,0a6.5,7 0,1 1,13,0a6.5,7 0,1 1,-13,0" />
+    <!-- Hair -->
+    <path
+        android:fillColor="#78350F"
+        android:pathData="M13.5,12c0,-4 2.8,-7.5 6.5,-7.5s6.5,3.5 6.5,7.5c-1.5,-2 -4,-3 -6.5,-3s-5,1 -6.5,3z" />
+    <!-- Smile & Eyes -->
+    <path
+        android:strokeColor="#78350F"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:pathData="M17,11h0.01M23,11h0.01M18,14.5a2,2 0,0 0,4,0" />
+</vector>

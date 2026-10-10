@@ -31,13 +31,13 @@
                 android:id="@+id/btnMenu"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/bg_dropdown_card"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_lucide_menu"
                     app:tint="@color/text_primary" />
@@ -47,7 +47,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -73,13 +73,14 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Notification Chat Bubble Button with Badge -->
+            <!-- Notification Chat Bubble Button with Badge (Dark slate button + white chat icon) -->
             <FrameLayout
                 android:id="@+id/btnNotificationCenter"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/bg_stepper_circle"
+                android:backgroundTint="#0F172A"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -88,7 +89,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_chat_bubble"
-                    app:tint="@color/text_primary" />
+                    app:tint="@android:color/white" />
 
                 <TextView
                     android:id="@+id/tvNotificationBadge"
@@ -106,7 +107,7 @@
                     android:visibility="gone" />
             </FrameLayout>
 
-            <!-- Profile Avatar Button -->
+            <!-- Profile Avatar Button (Cartoon avatar matching mockup) -->
             <FrameLayout
                 android:id="@+id/btnOpenProfileDrawer"
                 android:layout_width="38dp"
@@ -116,6 +117,13 @@
                 android:clickable="true"
                 android:focusable="true">
 
+                <ImageView
+                    android:id="@+id/ivAvatarMockup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_avatar_cartoon" />
+
                 <TextView
                     android:id="@+id/tvAvatarInitials"
                     android:layout_width="match_parent"
@@ -124,7 +132,8 @@
                     android:text="মে"
                     android:textColor="@color/coral_primary"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
             </FrameLayout>
 
             <!-- Backwards-compatibility stubs retained with GONE visibility -->
@@ -146,17 +155,17 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <!-- 5-TAB COMPACT BOTTOM NAVIGATION BAR -->
+        <!-- 5-TAB COMPACT BOTTOM NAVIGATION BAR MATCHING MOCKUP (UNLABELED WITH ACTIVE CORAL ACCENT) -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="56dp"
             android:background="@color/surface"
             app:elevation="8dp"
             app:itemIconTint="@color/selector_nav_tint"
             app:itemTextColor="@color/selector_nav_tint"
-            app:itemIconSize="20dp"
-            app:labelVisibilityMode="labeled"
+            app:itemIconSize="24dp"
+            app:labelVisibilityMode="unlabeled"
             app:menu="@menu/menu_bottom_nav" />
 
     </LinearLayout>

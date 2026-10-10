@@ -246,6 +246,14 @@ public class FragmentDashboardOverview extends Fragment {
                 nav = getActivity().findViewById(R.id.bottomNavigation);
             }
             if (nav != null) {
+                if (tabId == R.id.nav_meals) {
+                    if (nav.getMenu().findItem(R.id.nav_cycle) != null) tabId = R.id.nav_cycle;
+                } else if (tabId == R.id.nav_members) {
+                    if (nav.getMenu().findItem(R.id.nav_profile) != null) tabId = R.id.nav_profile;
+                } else if (tabId == R.id.nav_bazar) {
+                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityBazarLedger.class));
+                    return;
+                }
                 nav.setSelectedItemId(tabId);
             }
         }

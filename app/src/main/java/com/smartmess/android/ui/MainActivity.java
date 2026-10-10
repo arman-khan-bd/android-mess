@@ -507,7 +507,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            if (bottomNavigation != null) {
+            if (bottomNavigation != null && bottomNavigation.getMenu().findItem(R.id.nav_notifications) != null) {
                 com.google.android.material.badge.BadgeDrawable badge = bottomNavigation.getOrCreateBadge(R.id.nav_notifications);
                 if (unread > 0) {
                     badge.setVisible(true);
@@ -699,17 +699,24 @@ public class MainActivity extends AppCompatActivity {
                 currentSelectedNavId = R.id.nav_dashboard;
                 loadFragment(new FragmentDashboardOverview());
                 return true;
-            } else if (itemId == R.id.nav_members) {
-                currentSelectedNavId = R.id.nav_members;
+            } else if (itemId == R.id.nav_home) {
+                currentSelectedNavId = R.id.nav_home;
+                loadFragment(new FragmentDashboardOverview());
+                return true;
+            } else if (itemId == R.id.nav_help) {
+                showHelpDialog();
+                return false;
+            } else if (itemId == R.id.nav_cycle || itemId == R.id.nav_meals) {
+                currentSelectedNavId = itemId;
+                loadFragment(new FragmentMealSheet());
+                return true;
+            } else if (itemId == R.id.nav_profile || itemId == R.id.nav_members) {
+                currentSelectedNavId = itemId;
                 loadFragment(new FragmentMemberList());
                 return true;
             } else if (itemId == R.id.nav_bazar) {
                 currentSelectedNavId = R.id.nav_bazar;
                 loadFragment(new FragmentExpenseList());
-                return true;
-            } else if (itemId == R.id.nav_meals) {
-                currentSelectedNavId = R.id.nav_meals;
-                loadFragment(new FragmentMealSheet());
                 return true;
             } else if (itemId == R.id.nav_notifications) {
                 currentSelectedNavId = R.id.nav_notifications;
@@ -729,6 +736,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void showHelpDialog() {
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("স্মার্ট মেস গাইড ও সহায়তা")
+                .setMessage("• ড্যাশবোর্ড: এক নজরে মেসের ব্যালেন্স, মিল রেট ও খরচের হিসাব।\n"
+                        + "• কুইক অ্যাকশন: সরাসরি মিল যোগ, টাকা জমা, খরচ যোগ ও মিল ফিক্সড করুন।\n"
+                        + "• বিস্তারিত হিসাব: পূর্ণাঙ্গ মেস সামারি দেখতে 'বিস্তারিত হিসাব →' লিংকে ট্যাপ করুন।\n"
+                        + "• মিল শিট: সদস্যভিত্তিক দৈনিক মিল গণনার তালিকা দেখতে ৪ নম্বর ট্যাবে যান।\n"
+                        + "• সহায়তা: কোনো অনুসন্ধানের জন্য ডানদিকের ড্রয়ারের 'Support' ব্যবহার করুন।")
+                .setPositiveButton("বুঝেছি", null)
+                .show();
+    }
+
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -742,7 +761,7 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.END);
             return;
         }
-        if (currentSelectedNavId != R.id.nav_dashboard) {
+        if (currentSelectedNavId != R.id.nav_dashboard && currentSelectedNavId != R.id.nav_home) {
             bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
             currentSelectedNavId = R.id.nav_dashboard;
             loadFragment(new FragmentDashboardOverview());
