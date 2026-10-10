@@ -226,7 +226,7 @@ public class FragmentDashboardOverview extends Fragment {
         }
 
         if (btnViewMealSheet != null) {
-            btnViewMealSheet.setOnClickListener(view -> navigateToBottomTab(R.id.nav_meals));
+            btnViewMealSheet.setOnClickListener(view -> navigateToBottomTab(R.id.nav_cycle));
         }
 
         loadAllData();
@@ -246,15 +246,19 @@ public class FragmentDashboardOverview extends Fragment {
                 nav = getActivity().findViewById(R.id.bottomNavigation);
             }
             if (nav != null) {
-                if (tabId == R.id.nav_meals) {
+                if (tabId == R.id.nav_meals || tabId == R.id.nav_cycle) {
                     if (nav.getMenu().findItem(R.id.nav_cycle) != null) tabId = R.id.nav_cycle;
-                } else if (tabId == R.id.nav_members) {
+                    else if (nav.getMenu().findItem(R.id.nav_meals) != null) tabId = R.id.nav_meals;
+                } else if (tabId == R.id.nav_members || tabId == R.id.nav_profile) {
                     if (nav.getMenu().findItem(R.id.nav_profile) != null) tabId = R.id.nav_profile;
+                    else if (nav.getMenu().findItem(R.id.nav_members) != null) tabId = R.id.nav_members;
                 } else if (tabId == R.id.nav_bazar) {
                     startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityBazarLedger.class));
                     return;
                 }
-                nav.setSelectedItemId(tabId);
+                if (nav.getMenu().findItem(tabId) != null) {
+                    nav.setSelectedItemId(tabId);
+                }
             }
         }
     }
@@ -471,7 +475,7 @@ public class FragmentDashboardOverview extends Fragment {
                     ivThumbnail.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.primary)));
                 }
 
-                itemView.setOnClickListener(v -> navigateToBottomTab(R.id.nav_bazar));
+                itemView.setOnClickListener(v -> startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityBazarLedger.class)));
 
                 layoutRecentBazarsContainer.addView(itemView);
 

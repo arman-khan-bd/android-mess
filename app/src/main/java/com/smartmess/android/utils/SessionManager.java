@@ -73,8 +73,16 @@ public class SessionManager {
         return prefs.getString(KEY_USER_NAME, "Member");
     }
 
+    public void setUserName(String name) {
+        prefs.edit().putString(KEY_USER_NAME, name).apply();
+    }
+
     public String getUserPhone() {
         return prefs.getString(KEY_USER_PHONE, "");
+    }
+
+    public void setUserPhone(String phone) {
+        prefs.edit().putString(KEY_USER_PHONE, phone).apply();
     }
 
     public String getUserRole() {

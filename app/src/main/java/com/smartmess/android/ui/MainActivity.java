@@ -159,16 +159,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleIncomingIntent(Intent intent, Bundle savedInstanceState) {
         if (intent != null && "notifications".equals(intent.getStringExtra(com.smartmess.android.notification.PushNotificationManager.EXTRA_NAV_TARGET))) {
-            bottomNavigation.setSelectedItemId(R.id.nav_notifications);
-            currentSelectedNavId = R.id.nav_notifications;
+            if (bottomNavigation.getMenu().findItem(R.id.nav_notifications) != null) {
+                bottomNavigation.setSelectedItemId(R.id.nav_notifications);
+                currentSelectedNavId = R.id.nav_notifications;
+            }
             loadFragment(new com.smartmess.android.ui.notifications.FragmentNotifications());
             long notifId = intent.getLongExtra(com.smartmess.android.notification.PushNotificationManager.EXTRA_NOTIFICATION_ID, 0);
             if (notifId > 0) {
                 showFullNotificationById(notifId);
             }
         } else if (intent != null && "meals".equals(intent.getStringExtra(EXTRA_OPEN_TAB))) {
-            bottomNavigation.setSelectedItemId(R.id.nav_meals);
-            currentSelectedNavId = R.id.nav_meals;
+            int mealTabId = (bottomNavigation.getMenu().findItem(R.id.nav_cycle) != null) ? R.id.nav_cycle : R.id.nav_meals;
+            if (bottomNavigation.getMenu().findItem(mealTabId) != null) {
+                bottomNavigation.setSelectedItemId(mealTabId);
+            }
+            currentSelectedNavId = mealTabId;
             loadFragment(new FragmentMealSheet());
         } else if (savedInstanceState == null) {
             bottomNavigation.setSelectedItemId(R.id.nav_dashboard);

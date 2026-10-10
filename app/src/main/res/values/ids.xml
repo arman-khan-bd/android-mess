@@ -2,4 +2,8 @@
 <resources>
     <item name="bottomNavigation" type="id" />
     <item name="nav_menu" type="id" />
+    <item name="nav_meals" type="id" />
+    <item name="nav_members" type="id" />
+    <item name="nav_bazar" type="id" />
+    <item name="nav_notifications" type="id" />
 </resources>
