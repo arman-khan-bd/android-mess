@@ -307,7 +307,9 @@ public class FragmentMealSheet extends Fragment {
             public void bind(MealItemRow row) {
                 User user = row.user;
                 Meal meal = row.meal;
-                boolean locked = row.isLocked && !sessionManager.isManager();
+                boolean isManager = sessionManager.isManager();
+                // ONLY managers can set or change meal count up down
+                boolean canEdit = isManager && !row.isOnVacation;
 
                 tvMemberName.setText(user.getName());
                 String initial = (user.getName() != null && !user.getName().isEmpty())
@@ -318,10 +320,14 @@ public class FragmentMealSheet extends Fragment {
                     tvMemberSubtext.setText("🏖️ On Vacation • Meals auto-locked to 0");
                     tvLockBadge.setText("VACATION");
                     tvLockBadge.setVisibility(View.VISIBLE);
+                } else if (!isManager) {
+                    tvMemberSubtext.setText("Room: " + (user.getRole() != null ? user.getRole() : "Member") + " • " + user.getPhone());
+                    tvLockBadge.setText("VIEW ONLY");
+                    tvLockBadge.setVisibility(View.VISIBLE);
                 } else {
                     tvMemberSubtext.setText("Room: " + (user.getRole() != null ? user.getRole() : "Member") + " • " + user.getPhone());
                     if (row.isLocked) {
-                        tvLockBadge.setText("LOCKED");
+                        tvLockBadge.setText("MANAGER EDIT");
                         tvLockBadge.setVisibility(View.VISIBLE);
                     } else {
                         tvLockBadge.setVisibility(View.GONE);
@@ -330,18 +336,26 @@ public class FragmentMealSheet extends Fragment {
 
                 updateCountsDisplay(meal);
 
-                // Enable/disable stepper clicks based on lock status
-                btnDecBreakfast.setEnabled(!locked);
-                btnIncBreakfast.setEnabled(!locked);
-                btnDecLunch.setEnabled(!locked);
-                btnIncLunch.setEnabled(!locked);
-                btnDecDinner.setEnabled(!locked);
-                btnIncDinner.setEnabled(!locked);
-                btnDecGuest.setEnabled(!locked);
-                btnIncGuest.setEnabled(!locked);
-                if (btnPresetHalf != null) btnPresetHalf.setEnabled(!locked);
-                if (btnPresetFull != null) btnPresetFull.setEnabled(!locked);
-                if (btnPresetClear != null) btnPresetClear.setEnabled(!locked);
+                // Enable/disable stepper clicks based strictly on manager permission
+                btnDecBreakfast.setEnabled(canEdit);
+                btnIncBreakfast.setEnabled(canEdit);
+                btnDecLunch.setEnabled(canEdit);
+                btnIncLunch.setEnabled(canEdit);
+                btnDecDinner.setEnabled(canEdit);
+                btnIncDinner.setEnabled(canEdit);
+                btnDecGuest.setEnabled(canEdit);
+                btnIncGuest.setEnabled(canEdit);
+                if (btnPresetHalf != null) btnPresetHalf.setEnabled(canEdit);
+                if (btnPresetFull != null) btnPresetFull.setEnabled(canEdit);
+                if (btnPresetClear != null) btnPresetClear.setEnabled(canEdit);
+
+                if (!isManager) {
+                    View.OnClickListener memberNotice = v -> Toast.makeText(itemView.getContext(),
+                            "শুধুমাত্র মেস ম্যানেজার মিলের সংখ্যা পরিবর্তন করতে পারবেন।", Toast.LENGTH_SHORT).show();
+                    itemView.setOnClickListener(memberNotice);
+                } else {
+                    itemView.setOnClickListener(null);
+                }
 
                 // Quick Presets: +0.5 (half meal), +1.0 (full meal), and Clear (0.0)
                 if (btnPresetHalf != null) {
@@ -433,7 +447,13 @@ public class FragmentMealSheet extends Fragment {
                 mealDao.insertOrUpdate(meal);
                 updateCountsDisplay(meal);
                 loadMealsForCurrentDate(); // recalculates aggregate totals
-                scheduleDebouncedSync();
+
+                // Auto store on database with cloud if Pro subscription
+                if (sessionManager.isPro() && getContext() != null) {
+                    SyncManager.triggerSync(requireContext().getApplicationContext());
+                } else {
+                    scheduleDebouncedSync();
+                }
             }
 
             private void updateCountsDisplay(Meal meal) {

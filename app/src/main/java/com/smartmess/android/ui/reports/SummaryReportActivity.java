@@ -98,10 +98,15 @@ public class SummaryReportActivity extends AppCompatActivity {
         tvReportTotalMeals.setText(summary.getTotalMessMeals() + " Meals");
         tvReportMessCash.setText(CurrencyUtils.format(summary.getMessCashInHand()));
 
-        String breakdown = "• Variable Meal Pool (Bazar): " + CurrencyUtils.format(summary.getTotalRawMealExpense()) + "\n"
-                + "• Shared Fixed Pool (Oil, salt, gas): " + CurrencyUtils.format(summary.getTotalSharedFoodExpense()) + "\n"
-                + "• Asset & Utility Pool (Rent, maid, Wi-Fi): " + CurrencyUtils.format(summary.getTotalUtilityAssetExpense()) + "\n"
-                + "• Total SMS Charges: " + CurrencyUtils.format(summary.getTotalSmsChargeExpense()) + "\n"
+        String breakdown = "• Billed Meal Budget: " + CurrencyUtils.format(summary.getBillingMealRate()) + " / meal\n"
+                + "• Actual Working Meal Rate: " + CurrencyUtils.format(summary.getWorkingMealRate()) + " / meal\n"
+                + "• Meals Total Cost: " + CurrencyUtils.format(summary.getTotalMealsCost()) + " (" + summary.getTotalMessMeals() + " meals @ " + CurrencyUtils.format(summary.getBillingMealRate()) + ")\n"
+                + "• Total Mess Expenses: " + CurrencyUtils.format(summary.getTotalAllExpenses()) + "\n"
+                + "  - Variable Meal Pool (Bazar): " + CurrencyUtils.format(summary.getTotalRawMealExpense()) + "\n"
+                + "  - Shared Fixed Pool (Oil, salt, gas): " + CurrencyUtils.format(summary.getTotalSharedFoodExpense()) + "\n"
+                + "  - Asset & Utility Pool (Rent, maid, Wi-Fi): " + CurrencyUtils.format(summary.getTotalUtilityAssetExpense()) + "\n"
+                + "  - Total SMS Charges: " + CurrencyUtils.format(summary.getTotalSmsChargeExpense()) + "\n"
+                + "• Budget Surplus / Savings: " + CurrencyUtils.format(summary.getBudgetSurplusDeficit()) + "\n"
                 + "• Total Mess Deposits Received: " + CurrencyUtils.format(summary.getTotalMessDeposits());
         tvPoolBreakdownText.setText(breakdown);
 

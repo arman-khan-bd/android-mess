@@ -13,7 +13,12 @@ public class CalculationModels {
         private double totalSmsChargeExpense;    // Shared SMS charges
         private double totalAllExpenses;
         private double totalMessMeals;           // Total meals consumed across all members
-        private double mealRate;                 // Dynamic meal rate = totalRawMealExpense / totalMessMeals
+        private double mealRate;                 // Billing meal rate (e.g. 70.00 Tk budget)
+        private double targetMealBudget = 70.0;  // Configured target meal budget
+        private double workingMealRate;          // Actual working meal rate = totalRawMealExpense / totalMessMeals
+        private double billingMealRate;          // Effective billed rate per meal
+        private double totalMealsCost;           // Total cost of all meals = totalMessMeals * billingMealRate
+        private double budgetSurplusDeficit;     // totalMealsCost - totalRawMealExpense
         private int activeMemberCount;
         private double totalMessDeposits;
         private double messCashInHand;           // totalMessDeposits - totalAllExpenses
@@ -45,6 +50,21 @@ public class CalculationModels {
 
         public double getMealRate() { return mealRate; }
         public void setMealRate(double mealRate) { this.mealRate = mealRate; }
+
+        public double getTargetMealBudget() { return targetMealBudget; }
+        public void setTargetMealBudget(double targetMealBudget) { this.targetMealBudget = targetMealBudget; }
+
+        public double getWorkingMealRate() { return workingMealRate; }
+        public void setWorkingMealRate(double workingMealRate) { this.workingMealRate = workingMealRate; }
+
+        public double getBillingMealRate() { return billingMealRate > 0 ? billingMealRate : mealRate; }
+        public void setBillingMealRate(double billingMealRate) { this.billingMealRate = billingMealRate; }
+
+        public double getTotalMealsCost() { return totalMealsCost; }
+        public void setTotalMealsCost(double totalMealsCost) { this.totalMealsCost = totalMealsCost; }
+
+        public double getBudgetSurplusDeficit() { return budgetSurplusDeficit; }
+        public void setBudgetSurplusDeficit(double budgetSurplusDeficit) { this.budgetSurplusDeficit = budgetSurplusDeficit; }
 
         public int getActiveMemberCount() { return activeMemberCount; }
         public void setActiveMemberCount(int activeMemberCount) { this.activeMemberCount = activeMemberCount; }

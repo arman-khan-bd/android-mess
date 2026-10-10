@@ -319,6 +319,13 @@ public class ActivityNotificationManager extends AppCompatActivity {
                 channel = "both";
             }
 
+            boolean isSmsRequested = "sms".equalsIgnoreCase(channel) || "both".equalsIgnoreCase(channel);
+            if (isSmsRequested && !com.smartmess.android.utils.PermissionHelper.hasSmsPermission(this)) {
+                com.smartmess.android.utils.PermissionHelper.requestSmsPermission(this);
+                Toast.makeText(this, "এসএমএস প্রেরণের জন্য অনুগ্রহ করে অনুমতি প্রদান করুন।", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             btnDispatchNotification.setEnabled(false);
             btnDispatchNotification.setText("Dispatching...");
 
@@ -327,62 +334,67 @@ public class ActivityNotificationManager extends AppCompatActivity {
             final String finalTitle = title;
             final String finalMessage = message;
 
-            // 1. Dispatch SMS if channel is sms or both
-            int smsSent = 0;
-            if ("sms".equalsIgnoreCase(finalChannel) || "both".equalsIgnoreCase(finalChannel)) {
-                try {
-                    User sender = userDao.getById(sessionManager.getUserId());
-                    if (sender == null) {
-                        sender = new User();
-                        sender.setId(sessionManager.getUserId());
-                        sender.setMessId(sessionManager.getMessId());
-                        sender.setName(sessionManager.getUserName());
-                        sender.setPhone(sessionManager.getUserPhone());
-                    }
+            java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+                int smsSent = 0;
+                // 1. Dispatch SMS if channel is sms or both
+                if (isSmsRequested) {
+                    try {
+                        User sender = userDao.getById(sessionManager.getUserId());
+                        if (sender == null) {
+                            sender = new User();
+                            sender.setId(sessionManager.getUserId());
+                            sender.setMessId(sessionManager.getMessId());
+                            sender.setName(sessionManager.getUserName());
+                            sender.setPhone(sessionManager.getUserPhone());
+                        }
 
-                    if (finalTargetUser != null) {
-                        boolean sent = smsCostingManager.sendSingleDueReminder(sender, finalTargetUser, finalMessage);
-                        if (sent) smsSent = 1;
-                    } else {
-                        smsSent = smsCostingManager.broadcastNoticeToAllMembers(sender, finalMessage);
+                        if (finalTargetUser != null) {
+                            boolean sent = smsCostingManager.sendSingleDueReminder(sender, finalTargetUser, finalMessage);
+                            if (sent) smsSent = 1;
+                        } else {
+                            smsSent = smsCostingManager.broadcastNoticeToAllMembers(sender, finalMessage);
+                        }
+                    } catch (Throwable smsEx) {
+                        android.util.Log.e("NotifManager", "SMS dispatch error: " + smsEx.getMessage(), smsEx);
                     }
-                } catch (Throwable smsEx) {
-                    android.util.Log.e("NotifManager", "SMS dispatch error: " + smsEx.getMessage(), smsEx);
-                    Toast.makeText(this, "এসএমএস নোটিশ: " + smsEx.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-            }
-
-            // 2. Dispatch Online Push Notification if channel is push or both
-            if ("push".equalsIgnoreCase(finalChannel) || "both".equalsIgnoreCase(finalChannel)) {
-                Long targetUserId = (finalTargetUser != null) ? finalTargetUser.getId() : null;
-                NotificationSendRequest request = new NotificationSendRequest(
-                        finalTitle, finalMessage, selectedType, finalChannel, targetUserId
-                );
 
                 final int finalSmsSent = smsSent;
-                if (apiService == null) {
-                    apiService = ApiClient.getApiService(this);
-                }
 
-                apiService.sendNotification(request).enqueue(new Callback<NotificationSendResponse>() {
-                    @Override
-                    public void onResponse(Call<NotificationSendResponse> call, Response<NotificationSendResponse> response) {
-                        saveLocalNotification(finalTitle, finalMessage, selectedType, finalChannel, finalTargetUser);
-                        showSuccessDialog(finalChannel, finalTargetUser != null ? 1 : (activeMembers != null ? activeMembers.size() : 1), finalSmsSent);
-                    }
-
-                    @Override
-                    public void onFailure(Call<NotificationSendResponse> call, Throwable t) {
-                        // Still save offline in SQLite
-                        saveLocalNotification(finalTitle, finalMessage, selectedType, finalChannel, finalTargetUser);
-                        showSuccessDialog(finalChannel, finalTargetUser != null ? 1 : (activeMembers != null ? activeMembers.size() : 1), finalSmsSent);
-                    }
-                });
-            } else {
-                // Only SMS was requested
+                // Always save locally in SQLite
                 saveLocalNotification(finalTitle, finalMessage, selectedType, finalChannel, finalTargetUser);
-                showSuccessDialog(finalChannel, finalTargetUser != null ? 1 : (activeMembers != null ? activeMembers.size() : 1), smsSent);
-            }
+
+                // 2. Dispatch Online Push Notification if channel is push or both
+                if ("push".equalsIgnoreCase(finalChannel) || "both".equalsIgnoreCase(finalChannel)) {
+                    Long targetUserId = (finalTargetUser != null) ? finalTargetUser.getId() : null;
+                    NotificationSendRequest request = new NotificationSendRequest(
+                            finalTitle, finalMessage, selectedType, finalChannel, targetUserId
+                    );
+
+                    if (apiService == null) {
+                        apiService = ApiClient.getApiService(ActivityNotificationManager.this);
+                    }
+
+                    apiService.sendNotification(request).enqueue(new Callback<NotificationSendResponse>() {
+                        @Override
+                        public void onResponse(Call<NotificationSendResponse> call, Response<NotificationSendResponse> response) {
+                            int targetCount = finalTargetUser != null ? 1 : (activeMembers != null ? activeMembers.size() : 1);
+                            boolean isSuccess = response.isSuccessful() && response.body() != null;
+                            showSuccessDialog(finalChannel, targetCount, finalSmsSent, isSuccess);
+                        }
+
+                        @Override
+                        public void onFailure(Call<NotificationSendResponse> call, Throwable t) {
+                            int targetCount = finalTargetUser != null ? 1 : (activeMembers != null ? activeMembers.size() : 1);
+                            showSuccessDialog(finalChannel, targetCount, finalSmsSent, false);
+                        }
+                    });
+                } else {
+                    // Only SMS was requested
+                    int targetCount = finalTargetUser != null ? 1 : (activeMembers != null ? activeMembers.size() : 1);
+                    showSuccessDialog(finalChannel, targetCount, finalSmsSent, true);
+                }
+            });
         } catch (Throwable t) {
             android.util.Log.e("NotifManager", "Fatal crash prevented in dispatchNotification: " + t.getMessage(), t);
             btnDispatchNotification.setEnabled(true);
@@ -411,7 +423,7 @@ public class ActivityNotificationManager extends AppCompatActivity {
         }
     }
 
-    private void showSuccessDialog(String channel, int totalTargets, int smsSent) {
+    private void showSuccessDialog(String channel, int totalTargets, int smsSent, boolean isCloudSuccess) {
         runOnUiThread(() -> {
             if (isFinishing() || (android.os.Build.VERSION.SDK_INT >= 17 && isDestroyed())) {
                 return;
@@ -431,7 +443,11 @@ public class ActivityNotificationManager extends AppCompatActivity {
                 msg += "• SMS Dispatched: " + smsSent + " delivered & ledger updated.\n";
             }
             if ("push".equalsIgnoreCase(channel) || "both".equalsIgnoreCase(channel)) {
-                msg += "• Push Notification: Broadcast to active member devices.\n";
+                if (isCloudSuccess) {
+                    msg += "• Push Notification: Broadcast to active member devices.\n";
+                } else {
+                    msg += "• Push Notification: Saved locally. (Cloud sync pending or server offline).\n";
+                }
             }
 
             try {
@@ -446,5 +462,21 @@ public class ActivityNotificationManager extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void showSuccessDialog(String channel, int totalTargets, int smsSent) {
+        showSuccessDialog(channel, totalTargets, smsSent, true);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == com.smartmess.android.utils.PermissionHelper.REQ_SMS) {
+            if (com.smartmess.android.utils.PermissionHelper.hasSmsPermission(this)) {
+                Toast.makeText(this, "এসএমএস অনুমতি প্রাপ্ত হয়েছে! পুনরায় Dispatch চাপুন।", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "এসএমএস অনুমতি প্রত্যাখ্যাত হয়েছে। শুধুমাত্র অনলাইন পুশ পাঠানো যাবে।", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

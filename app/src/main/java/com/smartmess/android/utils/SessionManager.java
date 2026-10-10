@@ -50,7 +50,15 @@ public class SessionManager {
     }
 
     public boolean isLoggedIn() {
-        return prefs.getBoolean(KEY_IS_LOGGED_IN, false);
+        if (!prefs.getBoolean(KEY_IS_LOGGED_IN, false)) {
+            return false;
+        }
+        String token = getAuthToken();
+        if (token == null || token.trim().isEmpty() || "demo_offline_token".equals(token) || "offline_session_token".equals(token)) {
+            clearSession();
+            return false;
+        }
+        return true;
     }
 
     public long getUserId() {

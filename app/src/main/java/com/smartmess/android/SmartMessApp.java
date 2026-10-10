@@ -82,14 +82,9 @@ public class SmartMessApp extends Application {
 
     private void seedInitialDataIfEmpty() {
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
-        MessDao messDao = new MessDao(helper);
-        UserDao userDao = new UserDao(helper);
         SaasPlanDao planDao = new SaasPlanDao(helper);
-        MealDao mealDao = new MealDao(helper);
-        ExpenseDao expenseDao = new ExpenseDao(helper);
-        DepositDao depositDao = new DepositDao(helper);
 
-        // Seed Plans
+        // Seed default SaaS Plans if fresh database
         if (planDao.getAllActivePlans().isEmpty()) {
             SaasPlan basic = new SaasPlan();
             basic.setName("বেসিক টিয়ার");
@@ -106,62 +101,6 @@ public class SmartMessApp extends Application {
             enterprise.setFeaturesJson("{\"max_members\": 50, \"sms_sim\": true, \"sms_cloud\": true, \"ocr_receipt\": true, \"pdf_branding\": true, \"ad_free\": true}");
             enterprise.setStatus(1);
             planDao.insertOrUpdate(enterprise);
-        }
-
-        // Seed default mess if none
-        if (messDao.getFirstMess() == null) {
-            String messUuid = UUID.randomUUID().toString();
-            Mess defaultMess = new Mess(messUuid, "গ্রিন প্যারাডাইস মেস", "MESS101", "monthly", 1, "22:00:00", 0.50);
-            defaultMess.setCreatedAt(DateTimeUtils.nowIso());
-            defaultMess.setUpdatedAt(DateTimeUtils.nowIso());
-            long messId = messDao.insertOrUpdate(defaultMess);
-
-            // Create Manager User
-            User manager = new User(UUID.randomUUID().toString(), messId, "তানভীর আহমেদ (ম্যানেজার)", "01711000001", "manager", "active");
-            manager.setPassword("123456");
-            manager.setCreatedAt(DateTimeUtils.nowIso());
-            manager.setUpdatedAt(DateTimeUtils.nowIso());
-            long managerId = userDao.insertOrUpdate(manager);
-
-            // Create Bazar Boy User
-            User assistant = new User(UUID.randomUUID().toString(), messId, "রফিকুল ইসলাম (বাজার সদস্য)", "01711000002", "assistant", "active");
-            assistant.setPassword("123456");
-            assistant.setCreatedAt(DateTimeUtils.nowIso());
-            assistant.setUpdatedAt(DateTimeUtils.nowIso());
-            long assistantId = userDao.insertOrUpdate(assistant);
-
-            // Create General Member User
-            User member = new User(UUID.randomUUID().toString(), messId, "সাব্বির হোসেন", "01711000003", "member", "active");
-            member.setPassword("123456");
-            member.setCreatedAt(DateTimeUtils.nowIso());
-            member.setUpdatedAt(DateTimeUtils.nowIso());
-            long memberId = userDao.insertOrUpdate(member);
-
-            // Seed sample deposits
-            String today = DateTimeUtils.currentDate();
-            depositDao.insertOrUpdate(new Deposit(UUID.randomUUID().toString(), messId, managerId, 3000.0, today, "প্রাথমিক জমা"));
-            depositDao.insertOrUpdate(new Deposit(UUID.randomUUID().toString(), messId, assistantId, 3000.0, today, "প্রাথমিক জমা"));
-            depositDao.insertOrUpdate(new Deposit(UUID.randomUUID().toString(), messId, memberId, 2500.0, today, "প্রাথমিক জমা"));
-
-            // Seed sample expenses (Dual Pool Demonstration)
-            // 1. Raw Meal (Fish, Meat, Veg) -> Factored strictly into meal rate
-            expenseDao.insertOrUpdate(new Expense(UUID.randomUUID().toString(), messId, assistantId, Expense.CAT_RAW_MEAL, 1250.0, today, "মাছ ও কাঁচা শাকসবজি", Expense.SPLIT_MEAL_DEPENDENT));
-            // 2. Shared Food (Oil, Salt, Gas, Onion) -> Split equally among all active members
-            expenseDao.insertOrUpdate(new Expense(UUID.randomUUID().toString(), messId, managerId, Expense.CAT_SHARED_FOOD, 600.0, today, "৫ লিটার সয়াবিন তেল ও মসলা", Expense.SPLIT_ALL_EQUAL));
-            // 3. Asset & Utility (Cook Salary, Wi-Fi, Bulbs) -> Split equally
-            expenseDao.insertOrUpdate(new Expense(UUID.randomUUID().toString(), messId, managerId, Expense.CAT_UTILITY_ASSET, 900.0, today, "ওয়াইফাই মাসিক বিল", Expense.SPLIT_ALL_EQUAL));
-
-            // Seed sample meals for today
-            mealDao.insertOrUpdate(new Meal(UUID.randomUUID().toString(), messId, managerId, today, 1.0, 1.0, 1.0, 0.0));
-            mealDao.insertOrUpdate(new Meal(UUID.randomUUID().toString(), messId, assistantId, today, 1.0, 1.0, 1.0, 0.0));
-            mealDao.insertOrUpdate(new Meal(UUID.randomUUID().toString(), messId, memberId, today, 0.5, 1.0, 1.0, 0.0));
-
-            // Default auto-login to manager for effortless out-of-the-box demo
-            SessionManager session = new SessionManager(this);
-            if (!session.isLoggedIn()) {
-                session.createSession(managerId, manager.getUuid(), manager.getName(), manager.getPhone(), manager.getRole(),
-                        messId, defaultMess.getUuid(), defaultMess.getName(), "demo_offline_token");
-            }
         }
     }
 }

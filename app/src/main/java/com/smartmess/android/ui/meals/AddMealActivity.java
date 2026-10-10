@@ -54,6 +54,12 @@ public class AddMealActivity extends AppCompatActivity {
         userDao = new UserDao(helper);
         sessionManager = new SessionManager(this);
 
+        if (!sessionManager.isManager()) {
+            Toast.makeText(this, "শুধুমাত্র মেস ম্যানেজার মিলের সংখ্যা যোগ বা পরিবর্তন করতে পারবেন।", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
         etMealDate.setText(DateTimeUtils.currentDate());
         loadMembersSpinner();
 
@@ -104,6 +110,9 @@ public class AddMealActivity extends AppCompatActivity {
         meal.setUpdatedAt(now);
 
         mealDao.insertOrUpdate(meal);
+        if (sessionManager.isPro()) {
+            com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
+        }
         Toast.makeText(this, "সদস্যের মিল সফলভাবে সংরক্ষিত হয়েছে: " + selectedMember.getName(), Toast.LENGTH_SHORT).show();
         finish();
     }

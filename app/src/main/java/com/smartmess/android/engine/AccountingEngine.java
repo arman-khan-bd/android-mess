@@ -23,6 +23,7 @@ public class AccountingEngine {
     private final MealDao mealDao;
     private final ExpenseDao expenseDao;
     private final DepositDao depositDao;
+    private final com.smartmess.android.data.local.dao.MessDao messDao;
 
     public AccountingEngine(Context context) {
         DatabaseHelper helper = DatabaseHelper.getInstance(context);
@@ -30,6 +31,7 @@ public class AccountingEngine {
         this.mealDao = new MealDao(helper);
         this.expenseDao = new ExpenseDao(helper);
         this.depositDao = new DepositDao(helper);
+        this.messDao = new com.smartmess.android.data.local.dao.MessDao(helper);
     }
 
     public CycleSummary calculateCycleSummary(long messId, String startDate, String endDate) {
@@ -40,6 +42,9 @@ public class AccountingEngine {
         List<User> activeMembers = userDao.getActiveMembersByMess(messId);
         int memberCount = activeMembers.size();
         summary.setActiveMemberCount(memberCount);
+
+        com.smartmess.android.model.Mess mess = messDao.getById(messId);
+        double targetMealBudget = (mess != null && mess.getTargetMealBudget() > 0) ? mess.getTargetMealBudget() : 70.0;
 
         // 1. Dual Expense Pools
         double rawMealTotal = expenseDao.getTotalByCategory(messId, Expense.CAT_RAW_MEAL, startDate, endDate);
@@ -54,15 +59,25 @@ public class AccountingEngine {
         summary.setTotalSmsChargeExpense(round(smsChargeTotal));
         summary.setTotalAllExpenses(round(allExpensesTotal));
 
-        // 2. Meal Counts & Dynamic Meal Rate
+        // 2. Meal Counts & Working Meal Rate vs Fixed Budget Billing Rate
         double totalMessMeals = mealDao.getTotalMessMeals(messId, startDate, endDate);
         summary.setTotalMessMeals(round(totalMessMeals));
 
-        double dynamicMealRate = 0.0;
+        double workingMealRate = 0.0;
         if (totalMessMeals > 0) {
-            dynamicMealRate = rawMealTotal / totalMessMeals;
+            workingMealRate = rawMealTotal / totalMessMeals;
         }
-        summary.setMealRate(round(dynamicMealRate));
+        summary.setWorkingMealRate(round(workingMealRate));
+        summary.setTargetMealBudget(round(targetMealBudget));
+
+        // Effective Billing Meal Rate: if target budget is configured (> 0, e.g. 70.00 Tk), bill every consumed meal at 70 Tk
+        double billingMealRate = (targetMealBudget > 0) ? targetMealBudget : workingMealRate;
+        summary.setBillingMealRate(round(billingMealRate));
+        summary.setMealRate(round(billingMealRate)); // primary displayed meal rate
+
+        double totalMealsCost = totalMessMeals * billingMealRate;
+        summary.setTotalMealsCost(round(totalMealsCost));
+        summary.setBudgetSurplusDeficit(round(totalMealsCost - rawMealTotal));
 
         // 3. Shared pool cost per member
         double sharedFoodPerMember = memberCount > 0 ? (sharedFoodTotal / memberCount) : 0.0;
@@ -80,7 +95,8 @@ public class AccountingEngine {
             double consumedMeals = mealDao.getTotalUserMeals(messId, member.getId(), startDate, endDate);
             sheet.setConsumedMeals(round(consumedMeals));
 
-            double mealCost = consumedMeals * dynamicMealRate;
+            // Bill consumed meals at the fixed 70.00 Tk budget rate
+            double mealCost = consumedMeals * billingMealRate;
             sheet.setMealCost(round(mealCost));
             sheet.setSharedFoodCost(round(sharedFoodPerMember));
             sheet.setUtilityAssetCost(round(sharedUtilityPerMember));
