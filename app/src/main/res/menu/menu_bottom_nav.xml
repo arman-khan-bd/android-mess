@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_dashboard"
-        android:icon="@drawable/ic_nav_dashboard"
-        android:title="ড্যাশবোর্ড" />
-
-    <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_nav_home"
         android:title="হোম" />
 
     <item
-        android:id="@+id/nav_help"
-        android:icon="@drawable/ic_nav_help"
-        android:title="সহায়তা" />
+        android:id="@+id/nav_bazar"
+        android:icon="@drawable/ic_nav_bazar"
+        android:title="বাজার" />
 
     <item
-        android:id="@+id/nav_cycle"
-        android:icon="@drawable/ic_nav_cycle"
-        android:title="মিল শিট" />
+        android:id="@+id/nav_meals"
+        android:icon="@drawable/ic_nav_meals"
+        android:title="মিল" />
 
     <item
-        android:id="@+id/nav_profile"
-        android:icon="@drawable/ic_nav_profile"
-        android:title="প্রোফাইল" />
+        android:id="@+id/nav_sms"
+        android:icon="@drawable/ic_nav_sms"
+        android:title="এসএমএস" />
+
+    <item
+        android:id="@+id/nav_members"
+        android:icon="@drawable/ic_nav_members"
+        android:title="সকল সদস্য" />
 </menu>

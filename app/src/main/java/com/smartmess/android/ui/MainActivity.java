@@ -176,8 +176,8 @@ public class MainActivity extends AppCompatActivity {
             currentSelectedNavId = mealTabId;
             loadFragment(new FragmentMealSheet());
         } else if (savedInstanceState == null) {
-            bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
-            currentSelectedNavId = R.id.nav_dashboard;
+            bottomNavigation.setSelectedItemId(R.id.nav_home);
+            currentSelectedNavId = R.id.nav_home;
             loadFragment(new FragmentDashboardOverview());
         }
     }
@@ -315,13 +315,21 @@ public class MainActivity extends AppCompatActivity {
                 tvTopPlanPill.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.warning_amber));
             }
 
-            // Cloud Sync Button in Header: Visible for all logged in mess members
-            boolean showSyncButton = sessionManager.isLoggedIn();
-            btnCloudSync.setVisibility(showSyncButton ? View.VISIBLE : View.GONE);
+            // Cloud Sync Button in Header: Visible for all logged in mess members, styled for paid vs free
+            boolean isPaidMess = planGateManager.isPro() ||
+                    (sessionManager.getPlanCapabilities() != null && sessionManager.getPlanCapabilities().isPro());
+            btnCloudSync.setVisibility(sessionManager.isLoggedIn() ? View.VISIBLE : View.GONE);
+            if (isPaidMess) {
+                btnCloudSync.setAlpha(1.0f);
+                btnCloudSync.setColorFilter(androidx.core.content.ContextCompat.getColor(this, R.color.primary));
+            } else {
+                btnCloudSync.setAlpha(0.6f);
+                btnCloudSync.setColorFilter(androidx.core.content.ContextCompat.getColor(this, R.color.text_muted));
+            }
 
             // User name & role in top bar
             String userName = sessionManager.getUserName();
-            if (userName == null || userName.isEmpty()) userName = "User";
+            if (userName == null || userName.trim().isEmpty()) userName = "User";
             TextView tvTopUserName = findViewById(R.id.tvTopUserName);
             TextView tvTopUserRole = findViewById(R.id.tvTopUserRole);
             if (tvTopUserName != null) {
@@ -338,12 +346,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            // Initials avatar
-            String[] parts = userName.trim().split("\\s+");
-            String initials = parts.length > 1
-                    ? ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase()
-                    : ("" + parts[0].charAt(0)).toUpperCase();
-            tvAvatarInitials.setText(initials);
+            // Initials avatar (Safe computation preventing IndexOutOfBoundsException)
+            String initials = "U";
+            if (userName != null && !userName.trim().isEmpty()) {
+                String[] parts = userName.trim().split("\\s+");
+                if (parts.length > 1 && parts[0].length() > 0 && parts[1].length() > 0) {
+                    initials = ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase(java.util.Locale.ROOT);
+                } else if (parts[0].length() > 0) {
+                    initials = ("" + parts[0].charAt(0)).toUpperCase(java.util.Locale.ROOT);
+                }
+            }
+            if (tvAvatarInitials != null) {
+                tvAvatarInitials.setText(initials);
+            }
 
             // Calculate Personal Ledger Balance
             long messId = sessionManager.getMessId();
@@ -351,21 +366,25 @@ public class MainActivity extends AppCompatActivity {
             MemberBalanceSheet sheet = accountingEngine.calculateMemberBalance(messId, userId);
 
             double balance = sheet != null ? sheet.getNetBalance() : 0.0;
-            if (balance >= 0) {
-                chipBalanceBadge.setText("+ " + CurrencyUtils.format(balance));
-                chipBalanceBadge.setBackgroundResource(R.drawable.badge_credit);
-                chipBalanceBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.credit_green));
-            } else {
-                chipBalanceBadge.setText("- " + CurrencyUtils.format(Math.abs(balance)));
-                chipBalanceBadge.setBackgroundResource(R.drawable.badge_due);
-                chipBalanceBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.due_red));
+            if (chipBalanceBadge != null) {
+                if (balance >= 0) {
+                    chipBalanceBadge.setText("+ " + CurrencyUtils.format(balance));
+                    chipBalanceBadge.setBackgroundResource(R.drawable.badge_credit);
+                    chipBalanceBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.credit_green));
+                } else {
+                    chipBalanceBadge.setText("- " + CurrencyUtils.format(Math.abs(balance)));
+                    chipBalanceBadge.setBackgroundResource(R.drawable.badge_due);
+                    chipBalanceBadge.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.due_red));
+                }
             }
 
             // Check today's meal state
             String today = DateTimeUtils.getCurrentDate();
             Meal todayMeal = mealDao.getUserMealForDate(messId, userId, today);
             boolean isMealOn = (todayMeal != null && (todayMeal.getDinnerCount() > 0 || todayMeal.getLunchCount() > 0));
-            switchQuickDinner.setChecked(isMealOn);
+            if (switchQuickDinner != null) {
+                switchQuickDinner.setChecked(isMealOn);
+            }
 
         } catch (Throwable t) {
             android.util.Log.e("MainActivity", "Error in loadHeaderData: " + t.getMessage(), t);
@@ -375,17 +394,24 @@ public class MainActivity extends AppCompatActivity {
     private void populateDrawerProfile() {
         try {
             String userName = sessionManager.getUserName();
-            if (userName == null || userName.isEmpty()) userName = "Member";
+            if (userName == null || userName.trim().isEmpty()) userName = "Member";
             tvDrawerUserName.setText(userName);
 
             String userPhone = sessionManager.getUserPhone();
             tvDrawerUserPhone.setText(userPhone != null && !userPhone.isEmpty() ? userPhone : "No phone registered");
 
-            String[] parts = userName.trim().split("\\s+");
-            String initials = parts.length > 1
-                    ? ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase()
-                    : ("" + parts[0].charAt(0)).toUpperCase();
-            tvDrawerAvatarInitials.setText(initials);
+            String initials = "M";
+            if (userName != null && !userName.trim().isEmpty()) {
+                String[] parts = userName.trim().split("\\s+");
+                if (parts.length > 1 && parts[0].length() > 0 && parts[1].length() > 0) {
+                    initials = ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase(java.util.Locale.ROOT);
+                } else if (parts[0].length() > 0) {
+                    initials = ("" + parts[0].charAt(0)).toUpperCase(java.util.Locale.ROOT);
+                }
+            }
+            if (tvDrawerAvatarInitials != null) {
+                tvDrawerAvatarInitials.setText(initials);
+            }
 
             boolean isManager = sessionManager.isManager();
             boolean isAssistant = sessionManager.isAssistant();
@@ -677,21 +703,44 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupSyncIndicator() {
         btnCloudSync.setOnClickListener(v -> {
+            boolean isPaidMess = planGateManager.isPro() ||
+                    (sessionManager.getPlanCapabilities() != null && sessionManager.getPlanCapabilities().isPro());
+
+            if (!isPaidMess) {
+                planGateManager.showUpgradeBottomSheet(
+                        getSupportFragmentManager(),
+                        "ক্লাউড সিঙ্ক ফিচার (Pro)",
+                        "ক্লাউড সিঙ্ক শুধুমাত্র পেইড / প্রো মেস অ্যাকাউন্টে উপলব্ধ। যেকোনো মেস সদস্য সিঙ্ক করতে মেস প্রো-তে আপগ্রেড করুন।"
+                );
+                return;
+            }
+
             Toast.makeText(MainActivity.this, "ক্লাউড সিঙ্ক শুরু হচ্ছে...", Toast.LENGTH_SHORT).show();
+            btnCloudSync.animate().rotationBy(360f).setDuration(800).start();
+
             syncManager.triggerTwoWaySync(new SyncManager.SyncCallback() {
                 @Override
                 public void onSyncStarted() {}
 
                 @Override
                 public void onSyncSuccess(String message) {
-                    Toast.makeText(MainActivity.this, "সিঙ্ক সম্পন্ন: " + message, Toast.LENGTH_SHORT).show();
-                    loadHeaderData();
-                    populateDrawerProfile();
+                    runOnUiThread(() -> {
+                        Toast.makeText(MainActivity.this, "সিঙ্ক সম্পন্ন: " + message, Toast.LENGTH_SHORT).show();
+                        loadHeaderData();
+                        populateDrawerProfile();
+                        updateNotificationBadge();
+                        Fragment current = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                        if (current instanceof FragmentDashboardOverview) {
+                            ((FragmentDashboardOverview) current).onResume();
+                        }
+                    });
                 }
 
                 @Override
                 public void onSyncFailed(String error) {
-                    Toast.makeText(MainActivity.this, "সিঙ্ক নোটিশ: " + error, Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() -> {
+                        Toast.makeText(MainActivity.this, "সিঙ্ক নোটিশ: " + error, Toast.LENGTH_SHORT).show();
+                    });
                 }
             });
         });
@@ -700,33 +749,33 @@ public class MainActivity extends AppCompatActivity {
     private void setupBottomNav() {
         bottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.nav_dashboard) {
-                currentSelectedNavId = R.id.nav_dashboard;
-                loadFragment(new FragmentDashboardOverview());
-                return true;
-            } else if (itemId == R.id.nav_home) {
+            if (itemId == R.id.nav_home || itemId == R.id.nav_dashboard) {
                 currentSelectedNavId = R.id.nav_home;
                 loadFragment(new FragmentDashboardOverview());
-                return true;
-            } else if (itemId == R.id.nav_help) {
-                showHelpDialog();
-                return false;
-            } else if (itemId == R.id.nav_cycle || itemId == R.id.nav_meals) {
-                currentSelectedNavId = itemId;
-                loadFragment(new FragmentMealSheet());
-                return true;
-            } else if (itemId == R.id.nav_profile || itemId == R.id.nav_members) {
-                currentSelectedNavId = itemId;
-                loadFragment(new FragmentMemberList());
                 return true;
             } else if (itemId == R.id.nav_bazar) {
                 currentSelectedNavId = R.id.nav_bazar;
                 loadFragment(new FragmentExpenseList());
                 return true;
+            } else if (itemId == R.id.nav_meals || itemId == R.id.nav_cycle) {
+                currentSelectedNavId = R.id.nav_meals;
+                loadFragment(new FragmentMealSheet());
+                return true;
+            } else if (itemId == R.id.nav_sms) {
+                currentSelectedNavId = R.id.nav_sms;
+                loadFragment(new com.smartmess.android.ui.sms.FragmentSmsHub());
+                return true;
+            } else if (itemId == R.id.nav_members || itemId == R.id.nav_profile) {
+                currentSelectedNavId = R.id.nav_members;
+                loadFragment(new FragmentMemberList());
+                return true;
             } else if (itemId == R.id.nav_notifications) {
                 currentSelectedNavId = R.id.nav_notifications;
                 loadFragment(new com.smartmess.android.ui.notifications.FragmentNotifications());
                 return true;
+            } else if (itemId == R.id.nav_help) {
+                showHelpDialog();
+                return false;
             } else if (itemId == R.id.nav_menu) {
                 if (drawerLayout != null) {
                     if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
@@ -744,11 +793,11 @@ public class MainActivity extends AppCompatActivity {
     private void showHelpDialog() {
         new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("স্মার্ট মেস গাইড ও সহায়তা")
-                .setMessage("• ড্যাশবোর্ড: এক নজরে মেসের ব্যালেন্স, মিল রেট ও খরচের হিসাব।\n"
-                        + "• কুইক অ্যাকশন: সরাসরি মিল যোগ, টাকা জমা, খরচ যোগ ও মিল ফিক্সড করুন।\n"
-                        + "• বিস্তারিত হিসাব: পূর্ণাঙ্গ মেস সামারি দেখতে 'বিস্তারিত হিসাব →' লিংকে ট্যাপ করুন।\n"
-                        + "• মিল শিট: সদস্যভিত্তিক দৈনিক মিল গণনার তালিকা দেখতে ৪ নম্বর ট্যাবে যান।\n"
-                        + "• সহায়তা: কোনো অনুসন্ধানের জন্য ডানদিকের ড্রয়ারের 'Support' ব্যবহার করুন।")
+                .setMessage("• হোম: মেসের সার্বিক আর্থিক চিত্র, মিল রেট ও সাম্প্রতিক বাজার।\n"
+                        + "• বাজার: মেসের দৈনিক কাঁচাবাজার ও খাদ্যসামগ্রীর হিসাব।\n"
+                        + "• মিল: সদস্যভিত্তিক মিল শিট ও দৈনিক মিল তালিকা।\n"
+                        + "• এসএমএস: মেস নোটিশ প্রেরণ ও বকেয়া তাগাদা এসএমএস হাব।\n"
+                        + "• সকল সদস্য: মেসের সকল সদস্যদের তালিকা ও ব্যক্তিগত হিসাব।")
                 .setPositiveButton("বুঝেছি", null)
                 .show();
     }
@@ -766,9 +815,9 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.END);
             return;
         }
-        if (currentSelectedNavId != R.id.nav_dashboard && currentSelectedNavId != R.id.nav_home) {
-            bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
-            currentSelectedNavId = R.id.nav_dashboard;
+        if (currentSelectedNavId != R.id.nav_home && currentSelectedNavId != R.id.nav_dashboard) {
+            bottomNavigation.setSelectedItemId(R.id.nav_home);
+            currentSelectedNavId = R.id.nav_home;
             loadFragment(new FragmentDashboardOverview());
             return;
         }

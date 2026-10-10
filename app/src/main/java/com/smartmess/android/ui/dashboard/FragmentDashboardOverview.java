@@ -203,30 +203,28 @@ public class FragmentDashboardOverview extends Fragment {
             });
         }
         if (btnActionBazar != null) {
-            btnActionBazar.setOnClickListener(view ->
-                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityBazarLedger.class)));
+            btnActionBazar.setOnClickListener(view -> navigateToBottomTab(R.id.nav_bazar));
         }
         if (btnActionMembers != null) {
-            btnActionMembers.setOnClickListener(view ->
-                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.members.MemberListActivity.class)));
+            btnActionMembers.setOnClickListener(view -> navigateToBottomTab(R.id.nav_members));
         }
 
         if (btnQuickAddExpense != null) {
             btnQuickAddExpense.setOnClickListener(view -> startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityAddBazar.class)));
         }
         if (btnQuickSmsDispatch != null) {
-            btnQuickSmsDispatch.setOnClickListener(view -> startActivity(new Intent(requireContext(), ActivitySmsDispatch.class)));
+            btnQuickSmsDispatch.setOnClickListener(view -> navigateToBottomTab(R.id.nav_sms));
         }
         if (btnQuickAddDeposit != null) {
             btnQuickAddDeposit.setOnClickListener(view -> startActivity(new Intent(requireContext(), com.smartmess.android.ui.deposits.AddDepositActivity.class)));
         }
 
         if (btnViewAllBazars != null) {
-            btnViewAllBazars.setOnClickListener(view -> startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityBazarLedger.class)));
+            btnViewAllBazars.setOnClickListener(view -> navigateToBottomTab(R.id.nav_bazar));
         }
 
         if (btnViewMealSheet != null) {
-            btnViewMealSheet.setOnClickListener(view -> navigateToBottomTab(R.id.nav_cycle));
+            btnViewMealSheet.setOnClickListener(view -> navigateToBottomTab(R.id.nav_meals));
         }
 
         loadAllData();
@@ -247,14 +245,26 @@ public class FragmentDashboardOverview extends Fragment {
             }
             if (nav != null) {
                 if (tabId == R.id.nav_meals || tabId == R.id.nav_cycle) {
-                    if (nav.getMenu().findItem(R.id.nav_cycle) != null) tabId = R.id.nav_cycle;
-                    else if (nav.getMenu().findItem(R.id.nav_meals) != null) tabId = R.id.nav_meals;
+                    if (nav.getMenu().findItem(R.id.nav_meals) != null) tabId = R.id.nav_meals;
+                    else if (nav.getMenu().findItem(R.id.nav_cycle) != null) tabId = R.id.nav_cycle;
                 } else if (tabId == R.id.nav_members || tabId == R.id.nav_profile) {
-                    if (nav.getMenu().findItem(R.id.nav_profile) != null) tabId = R.id.nav_profile;
-                    else if (nav.getMenu().findItem(R.id.nav_members) != null) tabId = R.id.nav_members;
+                    if (nav.getMenu().findItem(R.id.nav_members) != null) tabId = R.id.nav_members;
+                    else if (nav.getMenu().findItem(R.id.nav_profile) != null) tabId = R.id.nav_profile;
                 } else if (tabId == R.id.nav_bazar) {
-                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityBazarLedger.class));
-                    return;
+                    if (nav.getMenu().findItem(R.id.nav_bazar) != null) tabId = R.id.nav_bazar;
+                    else {
+                        startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityBazarLedger.class));
+                        return;
+                    }
+                } else if (tabId == R.id.nav_sms) {
+                    if (nav.getMenu().findItem(R.id.nav_sms) != null) tabId = R.id.nav_sms;
+                    else {
+                        startActivity(new Intent(requireContext(), ActivitySmsDispatch.class));
+                        return;
+                    }
+                } else if (tabId == R.id.nav_home || tabId == R.id.nav_dashboard) {
+                    if (nav.getMenu().findItem(R.id.nav_home) != null) tabId = R.id.nav_home;
+                    else if (nav.getMenu().findItem(R.id.nav_dashboard) != null) tabId = R.id.nav_dashboard;
                 }
                 if (nav.getMenu().findItem(tabId) != null) {
                     nav.setSelectedItemId(tabId);

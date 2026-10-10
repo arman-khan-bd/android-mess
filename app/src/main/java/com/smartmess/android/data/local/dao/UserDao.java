@@ -19,18 +19,36 @@ public class UserDao {
     }
 
     public long insertOrUpdate(User user) {
+        if (user == null) return 0;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
+
         if (user.getId() > 0) {
             values.put(UserEntry.COL_ID, user.getId());
+        } else {
+            User existing = null;
+            if (user.getPhone() != null && !user.getPhone().trim().isEmpty()) {
+                existing = getByPhone(user.getPhone().trim());
+            }
+            if (existing == null && user.getUuid() != null && !user.getUuid().trim().isEmpty()) {
+                existing = getByUuid(user.getUuid().trim());
+            }
+            if (existing != null && existing.getId() > 0) {
+                values.put(UserEntry.COL_ID, existing.getId());
+                user.setId(existing.getId());
+            }
         }
-        values.put(UserEntry.COL_UUID, user.getUuid());
-        values.put(UserEntry.COL_MESS_ID, user.getMessId());
-        values.put(UserEntry.COL_NAME, user.getName());
-        values.put(UserEntry.COL_PHONE, user.getPhone());
+
+        String uuid = (user.getUuid() != null && !user.getUuid().trim().isEmpty())
+                ? user.getUuid().trim() : java.util.UUID.randomUUID().toString();
+        values.put(UserEntry.COL_UUID, uuid);
+        values.put(UserEntry.COL_MESS_ID, user.getMessId() > 0 ? user.getMessId() : 1);
+        values.put(UserEntry.COL_NAME, (user.getName() != null && !user.getName().trim().isEmpty())
+                ? user.getName().trim() : "Member");
+        values.put(UserEntry.COL_PHONE, user.getPhone() != null ? user.getPhone().trim() : "");
         values.put(UserEntry.COL_PASSWORD, user.getPassword());
-        values.put(UserEntry.COL_ROLE, user.getRole());
-        values.put(UserEntry.COL_STATUS, user.getStatus());
+        values.put(UserEntry.COL_ROLE, user.getRole() != null ? user.getRole() : "member");
+        values.put(UserEntry.COL_STATUS, user.getStatus() != null ? user.getStatus() : "active");
         values.put(UserEntry.COL_AVATAR_URL, user.getAvatarUrl());
         values.put(UserEntry.COL_CREATED_AT, user.getCreatedAt());
         values.put(UserEntry.COL_UPDATED_AT, user.getUpdatedAt());

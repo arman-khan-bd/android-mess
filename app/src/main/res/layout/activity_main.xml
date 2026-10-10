@@ -15,29 +15,29 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- TOP HEADER MATCHING MOCKUP: ≡ | User Name & Role | Chat | Avatar -->
+        <!-- TOP HEADER: Hamburger | Name/Role | Meal Toggle | Sync Button | Notification Bell | Avatar -->
         <LinearLayout
             android:id="@+id/topStatusBar"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="62dp"
             android:background="@color/surface"
-            android:elevation="1dp"
+            android:elevation="2dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="14dp">
+            android:paddingHorizontal="10dp">
 
             <!-- Hamburger Menu Button ≡ -->
             <FrameLayout
                 android:id="@+id/btnMenu"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_lucide_menu"
                     app:tint="@color/text_primary" />
@@ -47,7 +47,8 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -59,7 +60,7 @@
                     android:maxLines="1"
                     android:text="মেস মেম্বার"
                     android:textColor="@color/text_primary"
-                    android:textSize="17sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -67,51 +68,101 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
-                    android:text="Manager"
+                    android:text="Member"
                     android:textColor="@color/coral_primary"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Notification Chat Bubble Button with Badge (Dark slate button + white chat icon) -->
+            <!-- Meal ON/OFF Toggle Switch in Navbar -->
+            <LinearLayout
+                android:id="@+id/layoutMealToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/bg_white_rounded_card"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="1dp">
+
+                <TextView
+                    android:id="@+id/tvMealToggleLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="মিল"
+                    android:textColor="@color/text_primary"
+                    android:textSize="11sp" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchQuickDinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleX="0.75"
+                    android:scaleY="0.75"
+                    app:useMaterialThemeColors="true" />
+            </LinearLayout>
+
+            <!-- Cloud Sync Button in Navbar (Enabled for any user in paid mess account) -->
+            <FrameLayout
+                android:id="@+id/btnCloudSyncContainer"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/bg_stepper_circle"
+                android:backgroundTint="#F1F5F9">
+
+                <ImageButton
+                    android:id="@+id/btnCloudSync"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Cloud Sync"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_lucide_refresh"
+                    app:tint="@color/primary" />
+            </FrameLayout>
+
+            <!-- Notification Bell Icon Button with Badge in Navbar (Replaces message icon) -->
             <FrameLayout
                 android:id="@+id/btnNotificationCenter"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:layout_marginEnd="10dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="6dp"
                 android:background="@drawable/bg_stepper_circle"
-                android:backgroundTint="#0F172A"
+                android:backgroundTint="#F1F5F9"
                 android:clickable="true"
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:id="@+id/ivNotificationIcon"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_chat_bubble"
-                    app:tint="@android:color/white" />
+                    android:src="@drawable/ic_lucide_bell"
+                    app:tint="@color/text_primary" />
 
                 <TextView
                     android:id="@+id/tvNotificationBadge"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:layout_gravity="top|end"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="2dp"
                     android:background="@drawable/badge_due"
                     android:gravity="center"
                     android:text="1"
                     android:textColor="@android:color/white"
-                    android:textSize="9sp"
+                    android:textSize="8sp"
                     android:textStyle="bold"
                     android:visibility="gone" />
             </FrameLayout>
 
-            <!-- Profile Avatar Button (Cartoon avatar matching mockup) -->
+            <!-- Profile Avatar Button -->
             <FrameLayout
                 android:id="@+id/btnOpenProfileDrawer"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
                 android:background="@drawable/bg_circle_avatar"
                 android:backgroundTint="#FEE2E2"
                 android:clickable="true"
@@ -131,7 +182,7 @@
                     android:gravity="center"
                     android:text="মে"
                     android:textColor="@color/coral_primary"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     android:visibility="gone" />
             </FrameLayout>
@@ -140,11 +191,6 @@
             <TextView android:id="@+id/tvTopMessName" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
             <TextView android:id="@+id/tvTopPlanPill" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
             <TextView android:id="@+id/chipBalanceBadge" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
-            <LinearLayout android:id="@+id/layoutMealToggle" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone">
-                <TextView android:id="@+id/tvMealToggleLabel" android:layout_width="0dp" android:layout_height="0dp" />
-                <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchQuickDinner" android:layout_width="0dp" android:layout_height="0dp" />
-            </LinearLayout>
-            <ImageButton android:id="@+id/btnCloudSync" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
 
         </LinearLayout>
 
@@ -155,7 +201,7 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <!-- 5-TAB COMPACT BOTTOM NAVIGATION BAR MATCHING MOCKUP (UNLABELED WITH ACTIVE CORAL ACCENT) -->
+        <!-- 5-TAB COMPACT BOTTOM NAVIGATION BAR: Home | Bazar | Meals | SMS | All Members -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
@@ -164,8 +210,8 @@
             app:elevation="8dp"
             app:itemIconTint="@color/selector_nav_tint"
             app:itemTextColor="@color/selector_nav_tint"
-            app:itemIconSize="24dp"
-            app:labelVisibilityMode="unlabeled"
+            app:itemIconSize="20dp"
+            app:labelVisibilityMode="labeled"
             app:menu="@menu/menu_bottom_nav" />
 
     </LinearLayout>

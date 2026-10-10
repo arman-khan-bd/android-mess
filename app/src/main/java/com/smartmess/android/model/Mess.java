@@ -1,18 +1,45 @@
 package com.smartmess.android.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Mess {
+    @SerializedName("id")
     private long id;
+
+    @SerializedName("uuid")
     private String uuid;
+
+    @SerializedName("name")
     private String name;
+
+    @SerializedName(value = "inviteCode", alternate = {"invite_code"})
     private String inviteCode;
+
+    @SerializedName(value = "billingCycle", alternate = {"billing_cycle"})
     private String billingCycle; // 'monthly', 'weekly', 'custom'
+
+    @SerializedName(value = "cycleStartDay", alternate = {"cycle_start_day"})
     private int cycleStartDay;
+
+    @SerializedName(value = "mealCutoffTime", alternate = {"meal_cutoff_time"})
     private String mealCutoffTime; // e.g. "22:00:00"
+
+    @SerializedName(value = "perSmsCost", alternate = {"per_sms_cost"})
     private double perSmsCost;
+
+    @SerializedName(value = "targetMealBudget", alternate = {"target_meal_budget"})
     private double targetMealBudget = 70.0;
+
+    @SerializedName(value = "currentPlanId", alternate = {"current_plan_id"})
     private Long currentPlanId;
+
+    @SerializedName(value = "planExpiresAt", alternate = {"plan_expires_at"})
     private String planExpiresAt;
+
+    @SerializedName(value = "createdAt", alternate = {"created_at"})
     private String createdAt;
+
+    @SerializedName(value = "updatedAt", alternate = {"updated_at"})
     private String updatedAt;
 
     public Mess() {}

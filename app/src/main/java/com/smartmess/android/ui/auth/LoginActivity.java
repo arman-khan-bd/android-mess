@@ -80,61 +80,90 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     LoginResponse resp = apiClient.login(phone, password);
                     runOnUiThread(() -> {
-                        if (resp != null && resp.isSuccess() && resp.getUser() != null) {
-                            pbLogin.setVisibility(View.GONE);
-                            btnLogin.setEnabled(true);
+                        try {
+                            if (resp != null && resp.isSuccess() && resp.getUser() != null) {
+                                pbLogin.setVisibility(View.GONE);
+                                btnLogin.setEnabled(true);
 
-                            User u = resp.getUser();
-                            Mess m = resp.getMess();
-                            long messId = m != null ? messDao.insertOrUpdate(m) : 1;
-                            u.setMessId(messId);
-                            u.setPassword(password);
-                            long userId = userDao.insertOrUpdate(u);
+                                User u = resp.getUser();
+                                Mess m = resp.getMess();
+                                long messId = m != null ? messDao.insertOrUpdate(m) : 1;
+                                u.setMessId(messId);
+                                u.setPassword(password);
+                                long userId = userDao.insertOrUpdate(u);
 
-                            sessionManager.createSession(
-                                    userId,
-                                    u.getUuid(),
-                                    u.getName(),
-                                    u.getPhone(),
-                                    u.getRole(),
-                                    messId,
-                                    m != null ? m.getUuid() : "",
-                                    m != null ? m.getName() : "Smart Mess",
-                                    resp.getToken()
-                            );
-                            if (m != null && m.getInviteCode() != null) {
-                                sessionManager.setInviteCode(m.getInviteCode());
+                                String uUuid = u.getUuid() != null ? u.getUuid() : java.util.UUID.randomUUID().toString();
+                                String uName = u.getName() != null && !u.getName().trim().isEmpty() ? u.getName().trim() : "Member";
+                                String uPhone = u.getPhone() != null && !u.getPhone().trim().isEmpty() ? u.getPhone().trim() : phone;
+                                String uRole = u.getRole() != null ? u.getRole() : "member";
+                                String mUuid = (m != null && m.getUuid() != null) ? m.getUuid() : "";
+                                String mName = (m != null && m.getName() != null) ? m.getName() : "Smart Mess";
+                                String token = resp.getToken() != null ? resp.getToken() : "session_token";
+
+                                sessionManager.createSession(
+                                        userId,
+                                        uUuid,
+                                        uName,
+                                        uPhone,
+                                        uRole,
+                                        messId,
+                                        mUuid,
+                                        mName,
+                                        token
+                                );
+                                if (m != null && m.getInviteCode() != null) {
+                                    sessionManager.setInviteCode(m.getInviteCode());
+                                }
+
+                                if (resp.getPlanCapabilities() != null) {
+                                    sessionManager.updatePlanCapabilities(resp.getPlanCapabilities());
+                                }
+
+                                // Trigger cloud sync in background safely
+                                try {
+                                    com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
+                                } catch (Throwable t) {
+                                    android.util.Log.e("LoginActivity", "Sync trigger notice: " + t.getMessage());
+                                }
+
+                                Toast.makeText(LoginActivity.this, "লগইন সফল হয়েছে!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(LoginActivity.this, com.smartmess.android.ui.MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                // Check local SQLite credentials as fallback
+                                if (!attemptLocalOfflineLogin(phone, password, false)) {
+                                    pbLogin.setVisibility(View.GONE);
+                                    btnLogin.setEnabled(true);
+                                    String errMsg = (resp != null && resp.getMessage() != null)
+                                            ? resp.getMessage()
+                                            : "মোবাইল নম্বর বা পাসওয়ার্ড ভুল হয়েছে।";
+                                    Toast.makeText(LoginActivity.this, errMsg, Toast.LENGTH_LONG).show();
+                                }
                             }
-
-                            if (resp.getPlanCapabilities() != null) {
-                                sessionManager.updatePlanCapabilities(resp.getPlanCapabilities());
-                            }
-
-                            // Trigger cloud sync to pull latest mess meals, bazar & expenses
-                            com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
-
-                            Toast.makeText(LoginActivity.this, "লগইন সফল হয়েছে!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(LoginActivity.this, com.smartmess.android.ui.MainActivity.class));
-                            finish();
-                        } else {
-                            // Check local SQLite credentials as fallback
+                        } catch (Throwable t) {
+                            android.util.Log.e("LoginActivity", "Error handling login response: " + t.getMessage(), t);
                             if (!attemptLocalOfflineLogin(phone, password, false)) {
                                 pbLogin.setVisibility(View.GONE);
                                 btnLogin.setEnabled(true);
-                                String errMsg = (resp != null && resp.getMessage() != null)
-                                        ? resp.getMessage()
-                                        : "মোবাইল নম্বর বা পাসওয়ার্ড ভুল হয়েছে।";
-                                Toast.makeText(LoginActivity.this, errMsg, Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, "লগইনে সমস্যা হয়েছে: " + t.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     });
                 } catch (Exception e) {
                     runOnUiThread(() -> {
-                        // Network/server failure: fallback to local SQLite offline login
-                        if (!attemptLocalOfflineLogin(phone, password, true)) {
+                        try {
+                            // Network/server failure: fallback to local SQLite offline login
+                            if (!attemptLocalOfflineLogin(phone, password, true)) {
+                                pbLogin.setVisibility(View.GONE);
+                                btnLogin.setEnabled(true);
+                                Toast.makeText(LoginActivity.this, "লগইন ব্যর্থ হয়েছে: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Throwable t) {
                             pbLogin.setVisibility(View.GONE);
                             btnLogin.setEnabled(true);
-                            Toast.makeText(LoginActivity.this, "লগইন ব্যর্থ হয়েছে: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "সংযোগ ব্যর্থ হয়েছে। আবার চেষ্টা করুন।", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -150,39 +179,45 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean attemptLocalOfflineLogin(String phone, String password, boolean isOfflineMode) {
-        User localUser = userDao.getByPhone(phone);
-        if (localUser != null && (localUser.getPassword() == null || localUser.getPassword().equals(password))) {
-            Mess mess = messDao.getById(localUser.getMessId());
-            String messName = mess != null ? mess.getName() : "My Mess";
-            String messUuid = mess != null ? mess.getUuid() : "";
+        try {
+            User localUser = userDao.getByPhone(phone);
+            if (localUser != null && (localUser.getPassword() == null || localUser.getPassword().equals(password))) {
+                Mess mess = messDao.getById(localUser.getMessId());
+                String messName = mess != null && mess.getName() != null ? mess.getName() : "My Mess";
+                String messUuid = mess != null && mess.getUuid() != null ? mess.getUuid() : "";
 
-            // Retain existing token if present
-            String existingToken = sessionManager.getAuthToken();
-            String tokenToUse = (existingToken != null && !existingToken.trim().isEmpty())
-                    ? existingToken : "offline_session_token";
+                // Retain existing token if present
+                String existingToken = sessionManager.getAuthToken();
+                String tokenToUse = (existingToken != null && !existingToken.trim().isEmpty())
+                        ? existingToken : "offline_session_token";
 
-            sessionManager.createSession(
-                    localUser.getId(),
-                    localUser.getUuid(),
-                    localUser.getName(),
-                    localUser.getPhone(),
-                    localUser.getRole(),
-                    localUser.getMessId(),
-                    messUuid,
-                    messName,
-                    tokenToUse
-            );
-            if (mess != null && mess.getInviteCode() != null) {
-                sessionManager.setInviteCode(mess.getInviteCode());
+                sessionManager.createSession(
+                        localUser.getId(),
+                        localUser.getUuid() != null ? localUser.getUuid() : "",
+                        localUser.getName() != null ? localUser.getName() : "Member",
+                        localUser.getPhone() != null ? localUser.getPhone() : phone,
+                        localUser.getRole() != null ? localUser.getRole() : "member",
+                        localUser.getMessId(),
+                        messUuid,
+                        messName,
+                        tokenToUse
+                );
+                if (mess != null && mess.getInviteCode() != null) {
+                    sessionManager.setInviteCode(mess.getInviteCode());
+                }
+
+                pbLogin.setVisibility(View.GONE);
+                if (isOfflineMode) {
+                    Toast.makeText(this, "অফলাইন মোডে লগইন করা হয়েছে।", Toast.LENGTH_SHORT).show();
+                }
+                Intent intent = new Intent(LoginActivity.this, com.smartmess.android.ui.MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                return true;
             }
-
-            pbLogin.setVisibility(View.GONE);
-            if (isOfflineMode) {
-                Toast.makeText(this, "অফলাইন মোডে লগইন করা হয়েছে।", Toast.LENGTH_SHORT).show();
-            }
-            startActivity(new Intent(LoginActivity.this, com.smartmess.android.ui.MainActivity.class));
-            finish();
-            return true;
+        } catch (Throwable t) {
+            android.util.Log.e("LoginActivity", "Offline login error: " + t.getMessage(), t);
         }
         return false;
     }

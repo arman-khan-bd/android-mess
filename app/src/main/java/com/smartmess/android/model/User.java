@@ -1,5 +1,7 @@
 package com.smartmess.android.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User {
     public static final String ROLE_MANAGER = "manager";
     public static final String ROLE_ASSISTANT = "assistant";
@@ -9,16 +11,37 @@ public class User {
     public static final String STATUS_ON_LEAVE = "on_leave";
     public static final String STATUS_LEFT = "left";
 
+    @SerializedName("id")
     private long id;
+
+    @SerializedName("uuid")
     private String uuid;
+
+    @SerializedName(value = "messId", alternate = {"mess_id"})
     private long messId;
+
+    @SerializedName("name")
     private String name;
+
+    @SerializedName("phone")
     private String phone;
+
+    @SerializedName("password")
     private String password;
+
+    @SerializedName("role")
     private String role; // 'manager', 'assistant', 'member'
+
+    @SerializedName("status")
     private String status; // 'active', 'on_leave', 'left'
+
+    @SerializedName(value = "avatarUrl", alternate = {"avatar_url"})
     private String avatarUrl;
+
+    @SerializedName(value = "createdAt", alternate = {"created_at"})
     private String createdAt;
+
+    @SerializedName(value = "updatedAt", alternate = {"updated_at"})
     private String updatedAt;
 
     public User() {}

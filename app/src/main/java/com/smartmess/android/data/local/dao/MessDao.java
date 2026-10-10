@@ -16,16 +16,34 @@ public class MessDao {
     }
 
     public long insertOrUpdate(Mess mess) {
+        if (mess == null) return 0;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(MessEntry.COL_UUID, mess.getUuid());
-        values.put(MessEntry.COL_NAME, mess.getName());
-        values.put(MessEntry.COL_INVITE_CODE, mess.getInviteCode());
-        values.put(MessEntry.COL_BILLING_CYCLE, mess.getBillingCycle());
-        values.put(MessEntry.COL_CYCLE_START_DAY, mess.getCycleStartDay());
-        values.put(MessEntry.COL_MEAL_CUTOFF_TIME, mess.getMealCutoffTime());
-        values.put(MessEntry.COL_PER_SMS_COST, mess.getPerSmsCost());
-        values.put(MessEntry.COL_TARGET_MEAL_BUDGET, mess.getTargetMealBudget());
+
+        if (mess.getId() > 0) {
+            values.put(MessEntry.COL_ID, mess.getId());
+        } else if (mess.getUuid() != null && !mess.getUuid().trim().isEmpty()) {
+            Mess existing = getByUuid(mess.getUuid().trim());
+            if (existing != null && existing.getId() > 0) {
+                values.put(MessEntry.COL_ID, existing.getId());
+                mess.setId(existing.getId());
+            }
+        }
+
+        String uuid = (mess.getUuid() != null && !mess.getUuid().trim().isEmpty())
+                ? mess.getUuid().trim() : java.util.UUID.randomUUID().toString();
+        values.put(MessEntry.COL_UUID, uuid);
+        values.put(MessEntry.COL_NAME, (mess.getName() != null && !mess.getName().trim().isEmpty())
+                ? mess.getName().trim() : "Smart Mess");
+        String inviteCode = (mess.getInviteCode() != null && !mess.getInviteCode().trim().isEmpty())
+                ? mess.getInviteCode().trim()
+                : ("MESS-" + (mess.getId() > 0 ? mess.getId() : (System.currentTimeMillis() % 100000)));
+        values.put(MessEntry.COL_INVITE_CODE, inviteCode);
+        values.put(MessEntry.COL_BILLING_CYCLE, mess.getBillingCycle() != null ? mess.getBillingCycle() : "monthly");
+        values.put(MessEntry.COL_CYCLE_START_DAY, mess.getCycleStartDay() > 0 ? mess.getCycleStartDay() : 1);
+        values.put(MessEntry.COL_MEAL_CUTOFF_TIME, mess.getMealCutoffTime() != null ? mess.getMealCutoffTime() : "22:00:00");
+        values.put(MessEntry.COL_PER_SMS_COST, mess.getPerSmsCost() > 0 ? mess.getPerSmsCost() : 0.50);
+        values.put(MessEntry.COL_TARGET_MEAL_BUDGET, mess.getTargetMealBudget() > 0 ? mess.getTargetMealBudget() : 70.0);
         values.put(MessEntry.COL_CURRENT_PLAN_ID, mess.getCurrentPlanId());
         values.put(MessEntry.COL_PLAN_EXPIRES_AT, mess.getPlanExpiresAt());
         values.put(MessEntry.COL_CREATED_AT, mess.getCreatedAt());

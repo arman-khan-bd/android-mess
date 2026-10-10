@@ -190,7 +190,7 @@ public class FileDownloadHelper {
 
                     mainHandler.post(() -> {
                         progressDialog.dismiss();
-                        Toast.makeText(activity, "ডাউনলোড ফোল্ডারে সংরক্ষিত: " + fileName, Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity, "ফোনের ডাউনলোড ফোল্ডারে সংরক্ষিত হয়েছে: " + fileName, Toast.LENGTH_LONG).show();
                         if (savedUri != null) {
                             openFile(activity, savedUri, mimeType);
                             if (callback != null) callback.onSuccess(savedUri, fileName, mimeType);
@@ -231,6 +231,7 @@ public class FileDownloadHelper {
 
     /**
      * Android 10+ (API 29+) MediaStore API implementation
+     * Saves directly into public Downloads folder so it appears immediately in file manager & Downloads app.
      */
     private static Uri saveViaMediaStore(Context context, ResponseBody body, String fileName,
                                          String mimeType, long totalBytes, ProgressListener listener) throws IOException {
@@ -238,7 +239,8 @@ public class FileDownloadHelper {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
         values.put(MediaStore.Downloads.MIME_TYPE, mimeType);
-        values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/SmartMess");
+        // Save directly to the public phone storage Downloads folder
+        values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
         values.put(MediaStore.Downloads.IS_PENDING, 1);
 
         Uri uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
@@ -272,27 +274,18 @@ public class FileDownloadHelper {
     }
 
     /**
-     * Android 9 and below (API 21-28) File Stream implementation using FileProvider
+     * Android 9 and below (API 21-28) File Stream implementation
+     * Saves directly into public phone storage Downloads folder and registers with MediaScanner & DownloadManager.
      */
     private static Uri saveViaFileStream(Context context, ResponseBody body, String fileName,
                                          String mimeType, long totalBytes, ProgressListener listener) throws IOException {
-        boolean hasWritePermission = androidx.core.content.ContextCompat.checkSelfPermission(
-                context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == android.content.pm.PackageManager.PERMISSION_GRANTED;
+        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        if (!downloadsDir.exists()) {
+            downloadsDir.mkdirs();
+        }
 
-        File destFile;
-        if (hasWritePermission && Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            File smartMessDir = new File(dir, "SmartMess");
-            if (!smartMessDir.exists()) {
-                smartMessDir.mkdirs();
-            }
-            if (smartMessDir.canWrite()) {
-                destFile = new File(smartMessDir, fileName);
-            } else {
-                destFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName);
-            }
-        } else {
-            // Safe fallback without storage permission denials on API 21-28
+        File destFile = new File(downloadsDir, fileName);
+        if (!destFile.getParentFile().canWrite()) {
             destFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName);
         }
 
@@ -313,6 +306,32 @@ public class FileDownloadHelper {
             }
             os.flush();
         }
+
+        // Notify MediaScanner so the system file manager immediately detects the file
+        try {
+            android.media.MediaScannerConnection.scanFile(
+                    context,
+                    new String[]{ destFile.getAbsolutePath() },
+                    new String[]{ mimeType },
+                    null
+            );
+        } catch (Throwable ignored) {}
+
+        // Add completed download to the Android system DownloadManager
+        try {
+            android.app.DownloadManager dm = (android.app.DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+            if (dm != null) {
+                dm.addCompletedDownload(
+                        fileName,
+                        "SmartMess Statement",
+                        true,
+                        mimeType,
+                        destFile.getAbsolutePath(),
+                        destFile.length(),
+                        true
+                );
+            }
+        } catch (Throwable ignored) {}
 
         return FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", destFile);
     }
