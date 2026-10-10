@@ -15,113 +15,71 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- INLINE LIGHTWEIGHT TOP STATUS BAR (Zero-Sticky Big Banner) -->
+        <!-- TOP HEADER MATCHING MOCKUP: ≡ | User Name & Role | Chat | Avatar -->
         <LinearLayout
             android:id="@+id/topStatusBar"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="64dp"
             android:background="@color/surface"
-            android:elevation="2dp"
+            android:elevation="1dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="12dp">
+            android:paddingHorizontal="14dp">
 
-            <!-- Mess Name & Plan Tier Pill -->
+            <!-- Hamburger Menu Button ≡ -->
+            <FrameLayout
+                android:id="@+id/btnMenu"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_dropdown_card"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lucide_menu"
+                    app:tint="@color/text_primary" />
+            </FrameLayout>
+
+            <!-- User Name and Role -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
                 android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tvTopMessName"
+                    android:id="@+id/tvTopUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:fontFamily="sans-serif-medium"
                     android:maxLines="1"
-                    android:text="স্মার্ট মেস"
+                    android:text="মেস মেম্বার"
                     android:textColor="@color/text_primary"
-                    android:textSize="15sp"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvTopPlanPill"
+                    android:id="@+id/tvTopUserRole"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:background="@drawable/badge_credit"
-                    android:paddingHorizontal="6dp"
-                    android:paddingVertical="2dp"
-                    android:text="প্রো"
-                    android:textColor="@color/primary_dark"
-                    android:textSize="10sp"
+                    android:layout_marginTop="1dp"
+                    android:text="Manager"
+                    android:textColor="@color/coral_primary"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Real-Time Personal Balance Badge Chip -->
-            <TextView
-                android:id="@+id/chipBalanceBadge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
-                android:background="@drawable/badge_credit"
-                android:fontFamily="sans-serif-medium"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:text="৳ 0.00"
-                android:textColor="@color/credit_green"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
-            <!-- Meal Quick-Toggle Switch (Today's Meals: ON/OFF) -->
-            <LinearLayout
-                android:id="@+id/layoutMealToggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvMealToggleLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:text="মিল"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switchQuickDinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleX="0.75"
-                    android:scaleY="0.75"
-                    app:useMaterialThemeColors="true" />
-            </LinearLayout>
-
-            <!-- Cloud Sync Icon/Button (Pro + Manager Only) -->
-            <ImageButton
-                android:id="@+id/btnCloudSync"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:layout_marginEnd="4dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Cloud Sync"
-                android:padding="6dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_lucide_refresh"
-                app:tint="@color/primary" />
-
-            <!-- In-App Notification Center Bell with Badge -->
+            <!-- Notification Chat Bubble Button with Badge -->
             <FrameLayout
                 android:id="@+id/btnNotificationCenter"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:layout_marginEnd="6dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/bg_stepper_circle"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -129,9 +87,8 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:contentDescription="Notifications"
-                    android:src="@drawable/ic_lucide_bell"
-                    app:tint="@color/text_secondary" />
+                    android:src="@drawable/ic_chat_bubble"
+                    app:tint="@color/text_primary" />
 
                 <TextView
                     android:id="@+id/tvNotificationBadge"
@@ -149,12 +106,13 @@
                     android:visibility="gone" />
             </FrameLayout>
 
-            <!-- Profile Avatar Button (Tapping opens Right Drawer) -->
+            <!-- Profile Avatar Button -->
             <FrameLayout
                 android:id="@+id/btnOpenProfileDrawer"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:background="@drawable/bg_circle_avatar"
+                android:backgroundTint="#FEE2E2"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -162,13 +120,22 @@
                     android:id="@+id/tvAvatarInitials"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fontFamily="sans-serif-medium"
                     android:gravity="center"
-                    android:text="আখ"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp"
+                    android:text="মে"
+                    android:textColor="@color/coral_primary"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
             </FrameLayout>
+
+            <!-- Backwards-compatibility stubs retained with GONE visibility -->
+            <TextView android:id="@+id/tvTopMessName" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+            <TextView android:id="@+id/tvTopPlanPill" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+            <TextView android:id="@+id/chipBalanceBadge" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+            <LinearLayout android:id="@+id/layoutMealToggle" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone">
+                <TextView android:id="@+id/tvMealToggleLabel" android:layout_width="0dp" android:layout_height="0dp" />
+                <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchQuickDinner" android:layout_width="0dp" android:layout_height="0dp" />
+            </LinearLayout>
+            <ImageButton android:id="@+id/btnCloudSync" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
 
         </LinearLayout>
 

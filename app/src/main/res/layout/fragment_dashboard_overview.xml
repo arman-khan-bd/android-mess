@@ -13,348 +13,772 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <!-- Real-time Meal Rate Exceeding Budget Alert Banner -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardBudgetWarning"
+        <!-- SUB-HEADER: Date Pill, Running Status, and Detailed Report Link -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:visibility="gone"
-            app:cardBackgroundColor="@color/due_red_bg"
-            app:strokeColor="#FCA5A5"
-            app:strokeWidth="1dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp">
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
+            <!-- Date Pill (🗓 July 26) -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:id="@+id/layoutDatePill"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_dark_pill"
                 android:gravity="center_vertical"
-                android:padding="12dp">
+                android:orientation="horizontal"
+                android:paddingStart="12dp"
+                android:paddingEnd="14dp">
 
                 <ImageView
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:src="@drawable/ic_lucide_alert_circle"
-                    app:tint="@color/due_red" />
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="@android:color/white" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/tvDashboardDate"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvBudgetWarningTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="মিল বাজেট সতর্কতা"
-                        android:textColor="#991B1B"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvBudgetWarningText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="সতর্কতা: বর্তমান মিল রেট আপনার বাজেট অতিক্রম করেছে"
-                        android:textColor="#B91C1C"
-                        android:textSize="12sp" />
-                </LinearLayout>
+                    android:layout_marginStart="6dp"
+                    android:text="July 26"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <!-- Stat Cards Grid (Live Meal Rate & Mess Cash in Hand) -->
+            <!-- Status Pill (• Running) -->
+            <LinearLayout
+                android:id="@+id/layoutStatusPill"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_mint_pill"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingEnd="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="• Running"
+                    android:textColor="#10B981"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <!-- Link: বিস্তারিত হিসাব -> -->
+            <TextView
+                android:id="@+id/btnDetailedReportLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:padding="4dp"
+                android:text="বিস্তারিত হিসাব →"
+                android:textColor="@color/coral_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- ASYMMETRICAL TOP STAT CARDS (Left Big Card + Right Stacked Cards) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <!-- Card 1: Live Meal Rate -->
+            <!-- LEFT LARGE CARD: Our Mess & Balance (Warm Cream tone) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                style="@style/SmartCardView">
+                app:cardBackgroundColor="#FFF8F0"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#FDE8D7"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="10dp">
+                    android:padding="16dp">
+
+                    <!-- Shield Logo Circle/Square -->
+                    <FrameLayout
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:background="@drawable/bg_pill_selected"
+                        android:backgroundTint="@color/coral_primary">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_shield_logo" />
+                    </FrameLayout>
 
                     <TextView
+                        android:id="@+id/tvDashboardMessName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif"
-                        android:text="বর্তমান মিল রেট"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvLiveMealRate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="৳0.00"
-                        android:textColor="@color/primary_dark"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvTotalMessMeals"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:fontFamily="sans-serif"
-                        android:text="০.০ টি মিল গণনা"
-                        android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
-
-                    <TextView
-                        android:id="@+id/tvTargetBudgetBadge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:fontFamily="sans-serif"
-                        android:text="বাজেট: ৳৭০.০০"
-                        android:textColor="@color/text_muted"
-                        android:textSize="10sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Card 2: Mess Cash in Hand -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                style="@style/SmartCardView">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif"
-                        android:text="মেসের ক্যাশ তহবিল"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="11sp"
+                        android:layout_marginTop="12dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Our Mess"
+                        android:textColor="#334155"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvCashInHand"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="৳0.00"
-                        android:textColor="@color/credit_green"
-                        android:textSize="18sp"
+                        android:layout_marginTop="16dp"
+                        android:text="250.00 ৳"
+                        android:textColor="@color/text_primary"
+                        android:textSize="22sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tvActiveMembers"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:fontFamily="sans-serif"
-                        android:text="০ জন সক্রিয় সদস্য"
-                        android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
+                        android:text="মেস ব্যালেন্স"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:minHeight="14dp" />
+
+                    <!-- Sub-card button: সকল মেম্বার এর হিসাব -->
+                    <LinearLayout
+                        android:id="@+id/btnAllMembersSummary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_white_rounded_card"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="9dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_lucide_users"
+                            app:tint="@color/coral_primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="সকল মেম্বার এর হিসাব"
+                            android:textColor="#334155"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
                 </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- RIGHT COLUMN: 2 Stacked Cards (Meal Rate Card & Total Cost Card) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!-- CARD 1: মেসের মিল রেট (Soft Lavender / Blue) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    app:cardBackgroundColor="#EDF5FF"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#DBEAFE"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <FrameLayout
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:background="@drawable/bg_stepper_circle"
+                                android:backgroundTint="#DBEAFE">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_calculator"
+                                    app:tint="#2563EB" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="মেসের মিল রেট"
+                                android:textColor="#334155"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvLiveMealRate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="90.91 ৳"
+                            android:textColor="@color/text_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:text="মিল রেট"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="11sp" />
+
+                        <!-- Bottom 2 Mini Boxes -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="3dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_white_rounded_card"
+                                android:orientation="vertical"
+                                android:padding="6dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="মোট মিল"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/tvTotalMessMeals"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="11.00"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="3dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_white_rounded_card"
+                                android:orientation="vertical"
+                                android:padding="6dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="আজকের মিল"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/tvTodayMessMeals"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="10.00"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- CARD 2: মেসের মোট খরচ (Soft Mint Green) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#ECFDF5"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#D1FAE5"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="14dp">
+
+                        <FrameLayout
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/bg_stepper_circle"
+                            android:backgroundTint="#D1FAE5">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_deposit"
+                                app:tint="#059669" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvMessTotalCost"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1250.00 ৳"
+                                android:textColor="@color/text_primary"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="মেসের মোট খরচ"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
         </LinearLayout>
 
-        <!-- Dual Expense Pool Allocation Card -->
+        <!-- PERSONAL HERO CARD: আমার হিসাব (Rich Indigo/Purple Theme) -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            style="@style/SmartCardView">
+            android:layout_marginTop="12dp"
+            app:cardBackgroundColor="#5C67F6"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="2dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="12dp">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="18dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="খরচের খাতসমূহ"
-                    android:textColor="@color/text_primary"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:text="বাজার খরচ এবং অন্যান্য নিয়মিত খরচের হিসাব"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp" />
-
-                <!-- 3 Pool Columns -->
+                <!-- Left Info Section -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:text="আমার হিসাব"
+                        android:textColor="#E0E7FF"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvMyPersonalBalance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="704.55 ৳"
+                        android:textColor="@android:color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="আমার ব্যালেন্স"
+                        android:textColor="#C7D2FE"
+                        android:textSize="12sp" />
+
+                    <!-- Two Translucent Pills: জমা & খরচ -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tvMyDepositPill"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:text="বাজার খরচ"
-                            android:textColor="@color/primary"
+                            android:background="@drawable/bg_translucent_hero_pill"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="5dp"
+                            android:text="জমা 1250.00৳"
+                            android:textColor="@android:color/white"
                             android:textSize="11sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/tvRawMealCost"
+                            android:id="@+id/tvMyExpensePill"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="৳0.00"
-                            android:textColor="@color/text_primary"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:text="মশলা ও গ্যাস"
-                            android:textColor="@color/accent"
+                            android:layout_marginStart="6dp"
+                            android:background="@drawable/bg_translucent_hero_pill"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="5dp"
+                            android:text="খরচ 545.45৳"
+                            android:textColor="@android:color/white"
                             android:textSize="11sp"
                             android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvSharedFoodCost"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="৳0.00"
-                            android:textColor="@color/text_primary"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:text="ভাড়া ও অন্যান্য"
-                            android:textColor="@color/warning_amber"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvUtilityCost"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="৳0.00"
-                            android:textColor="@color/text_primary"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
                 </LinearLayout>
 
+                <!-- Right Circular Ring Chart for Personal Meals -->
+                <FrameLayout
+                    android:layout_width="82dp"
+                    android:layout_height="82dp"
+                    android:layout_marginStart="12dp">
+
+                    <ProgressBar
+                        android:id="@+id/progressMealRing"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progress="65"
+                        android:progressDrawable="@drawable/circular_progress_drawable" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvMyTotalMeals"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="6.00"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="মোট মিল"
+                            android:textColor="#E0E7FF"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+                </FrameLayout>
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Quick Operation Launcher Buttons -->
+        <!-- QUICK ACTIONS: কুইক অ্যাকশন -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="6dp"
-            android:fontFamily="sans-serif"
-            android:text="দ্রুত কাজ"
-            android:textColor="@color/text_secondary"
-            android:textSize="11sp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="12dp"
+            android:text="কুইক অ্যাকশন"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
-        <LinearLayout
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:scrollbars="none">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnQuickAddExpense"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="+ বাজার যোগ"
-                android:textSize="11sp"
-                app:icon="@drawable/ic_lucide_cart"
-                app:iconSize="16dp"
-                style="@style/SmartButton" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnQuickAddDeposit"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginHorizontal="4dp"
-                android:layout_weight="1"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="+ টাকা জমা"
-                android:textSize="11sp"
-                app:icon="@drawable/ic_deposit"
-                app:iconSize="16dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                <!-- 1. মিল যুক্ত -->
+                <LinearLayout
+                    android:id="@+id/btnActionAddMeal"
+                    android:layout_width="74dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnQuickSmsDispatch"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="4dp"
-                android:layout_weight="1"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="বকেয়া এসএমএস"
-                android:textSize="11sp"
-                app:icon="@drawable/ic_lucide_message_square"
-                app:iconSize="16dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
-        </LinearLayout>
+                    <FrameLayout
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:background="@drawable/bg_stepper_circle"
+                        android:backgroundTint="#F3E8FF">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_meal"
+                            app:tint="#7C3AED" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="মিল যুক্ত"
+                        android:textColor="#334155"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- 2. টাকা জমা -->
+                <LinearLayout
+                    android:id="@+id/btnActionAddDeposit"
+                    android:layout_width="74dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:background="@drawable/bg_stepper_circle"
+                        android:backgroundTint="#DCFCE7">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_deposit"
+                            app:tint="#16A34A" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="টাকা জমা"
+                        android:textColor="#334155"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- 3. খরচ যুক্ত -->
+                <LinearLayout
+                    android:id="@+id/btnActionAddExpense"
+                    android:layout_width="74dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:background="@drawable/bg_stepper_circle"
+                        android:backgroundTint="#FEE2E2">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_expense"
+                            app:tint="#DC2626" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="খরচ যুক্ত"
+                        android:textColor="#334155"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- 4. মিল রিকুয়েস্ট -->
+                <LinearLayout
+                    android:id="@+id/btnActionMealRequest"
+                    android:layout_width="74dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:background="@drawable/bg_stepper_circle"
+                        android:backgroundTint="#FEF9C3">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lucide_utensils"
+                            app:tint="#D97706" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="মিল রিকুয়েস্ট"
+                        android:textColor="#334155"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- 5. বাজার সদাই -->
+                <LinearLayout
+                    android:id="@+id/btnActionBazar"
+                    android:layout_width="74dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:background="@drawable/bg_stepper_circle"
+                        android:backgroundTint="#E0F2FE">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lucide_cart"
+                            app:tint="#0284C7" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="বাজার সদাই"
+                        android:textColor="#334155"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- 6. মেম্বার তালিকা -->
+                <LinearLayout
+                    android:id="@+id/btnActionMembers"
+                    android:layout_width="74dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:background="@drawable/bg_stepper_circle"
+                        android:backgroundTint="#CCFBF1">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lucide_users"
+                            app:tint="#0D9488" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="সদস্য তালিকা"
+                        android:textColor="#334155"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <!-- Hidden legacy views retained for backwards-compatibility -->
+        <TextView android:id="@+id/tvActiveMembers" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+        <TextView android:id="@+id/tvRawMealCost" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+        <TextView android:id="@+id/tvSharedFoodCost" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+        <TextView android:id="@+id/tvUtilityCost" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnQuickAddExpense" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnQuickAddDeposit" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnQuickSmsDispatch" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+        <TextView android:id="@+id/tvTargetBudgetBadge" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+        <com.google.android.material.card.MaterialCardView android:id="@+id/cardBudgetWarning" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone">
+            <TextView android:id="@+id/tvBudgetWarningText" android:layout_width="0dp" android:layout_height="0dp" />
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- ============================================== -->
         <!-- POINT 5: COMPACT HOME FEED (ACTIVITY STREAMS) -->

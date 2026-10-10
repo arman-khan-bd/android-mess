@@ -254,6 +254,19 @@ public class MainActivity extends AppCompatActivity {
         drawerItemHandover = findViewById(R.id.drawerItemHandover);
         drawerItemSignOut = findViewById(R.id.drawerItemSignOut);
 
+        View btnMenu = findViewById(R.id.btnMenu);
+        if (btnMenu != null) {
+            btnMenu.setOnClickListener(v -> {
+                if (drawerLayout != null) {
+                    if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                        drawerLayout.closeDrawer(GravityCompat.END);
+                    } else {
+                        drawerLayout.openDrawer(GravityCompat.END);
+                    }
+                }
+            });
+        }
+
         if (btnNotificationCenter != null) {
             btnNotificationCenter.setOnClickListener(v ->
                     startActivity(new Intent(MainActivity.this, com.smartmess.android.ui.notifications.ActivityNotificationCenter.class)));
@@ -301,9 +314,26 @@ public class MainActivity extends AppCompatActivity {
             boolean showSyncButton = sessionManager.isLoggedIn();
             btnCloudSync.setVisibility(showSyncButton ? View.VISIBLE : View.GONE);
 
-            // Initials avatar
+            // User name & role in top bar
             String userName = sessionManager.getUserName();
             if (userName == null || userName.isEmpty()) userName = "User";
+            TextView tvTopUserName = findViewById(R.id.tvTopUserName);
+            TextView tvTopUserRole = findViewById(R.id.tvTopUserRole);
+            if (tvTopUserName != null) {
+                tvTopUserName.setText(userName);
+            }
+            if (tvTopUserRole != null) {
+                String role = sessionManager.getUserRole();
+                if ("manager".equalsIgnoreCase(role)) {
+                    tvTopUserRole.setText("Manager");
+                } else if ("assistant".equalsIgnoreCase(role)) {
+                    tvTopUserRole.setText("Assistant");
+                } else {
+                    tvTopUserRole.setText("Member");
+                }
+            }
+
+            // Initials avatar
             String[] parts = userName.trim().split("\\s+");
             String initials = parts.length > 1
                     ? ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase()

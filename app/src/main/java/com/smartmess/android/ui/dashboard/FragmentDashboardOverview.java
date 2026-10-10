@@ -55,6 +55,29 @@ public class FragmentDashboardOverview extends Fragment {
     private MaterialButton btnQuickSmsDispatch;
     private MaterialButton btnQuickAddDeposit;
 
+    // Mockup Views (3. ড্যাশবোর্ডে বিস্তারিত)
+    private TextView tvDashboardDate;
+    private TextView btnDetailedReportLink;
+    private TextView tvDashboardMessName;
+    private View btnAllMembersSummary;
+    private TextView tvTodayMessMeals;
+    private TextView tvMessTotalCost;
+
+    // Personal Hero Card Views (আমার হিসাব)
+    private TextView tvMyPersonalBalance;
+    private TextView tvMyDepositPill;
+    private TextView tvMyExpensePill;
+    private TextView tvMyTotalMeals;
+    private android.widget.ProgressBar progressMealRing;
+
+    // Quick Action Buttons
+    private View btnActionAddMeal;
+    private View btnActionAddDeposit;
+    private View btnActionAddExpense;
+    private View btnActionMealRequest;
+    private View btnActionBazar;
+    private View btnActionMembers;
+
     // Point 5: Recent Bazars Activity Stream
     private TextView btnViewAllBazars;
     private TextView tvEmptyRecentBazars;
@@ -92,6 +115,28 @@ public class FragmentDashboardOverview extends Fragment {
         messDao = new MessDao(dbHelper);
         sessionManager = new SessionManager(requireContext());
 
+        // Mockup header, cards, and quick action views
+        tvDashboardDate = v.findViewById(R.id.tvDashboardDate);
+        btnDetailedReportLink = v.findViewById(R.id.btnDetailedReportLink);
+        tvDashboardMessName = v.findViewById(R.id.tvDashboardMessName);
+        btnAllMembersSummary = v.findViewById(R.id.btnAllMembersSummary);
+        tvTodayMessMeals = v.findViewById(R.id.tvTodayMessMeals);
+        tvMessTotalCost = v.findViewById(R.id.tvMessTotalCost);
+
+        tvMyPersonalBalance = v.findViewById(R.id.tvMyPersonalBalance);
+        tvMyDepositPill = v.findViewById(R.id.tvMyDepositPill);
+        tvMyExpensePill = v.findViewById(R.id.tvMyExpensePill);
+        tvMyTotalMeals = v.findViewById(R.id.tvMyTotalMeals);
+        progressMealRing = v.findViewById(R.id.progressMealRing);
+
+        btnActionAddMeal = v.findViewById(R.id.btnActionAddMeal);
+        btnActionAddDeposit = v.findViewById(R.id.btnActionAddDeposit);
+        btnActionAddExpense = v.findViewById(R.id.btnActionAddExpense);
+        btnActionMealRequest = v.findViewById(R.id.btnActionMealRequest);
+        btnActionBazar = v.findViewById(R.id.btnActionBazar);
+        btnActionMembers = v.findViewById(R.id.btnActionMembers);
+
+        // Core metric views
         tvLiveMealRate = v.findViewById(R.id.tvLiveMealRate);
         tvTotalMessMeals = v.findViewById(R.id.tvTotalMessMeals);
         tvCashInHand = v.findViewById(R.id.tvCashInHand);
@@ -103,7 +148,7 @@ public class FragmentDashboardOverview extends Fragment {
         btnQuickSmsDispatch = v.findViewById(R.id.btnQuickSmsDispatch);
         btnQuickAddDeposit = v.findViewById(R.id.btnQuickAddDeposit);
 
-        // Point 16: Meal Budget Warning Views
+        // Meal Budget Warning Views
         cardBudgetWarning = v.findViewById(R.id.cardBudgetWarning);
         tvBudgetWarningText = v.findViewById(R.id.tvBudgetWarningText);
         tvTargetBudgetBadge = v.findViewById(R.id.tvTargetBudgetBadge);
@@ -113,12 +158,12 @@ public class FragmentDashboardOverview extends Fragment {
                     startActivity(new Intent(requireContext(), com.smartmess.android.ui.settings.SettingsActivity.class)));
         }
 
-        // Point 5: Recent Bazars Views
+        // Recent Bazars Views
         btnViewAllBazars = v.findViewById(R.id.btnViewAllBazars);
         tvEmptyRecentBazars = v.findViewById(R.id.tvEmptyRecentBazars);
         layoutRecentBazarsContainer = v.findViewById(R.id.layoutRecentBazarsContainer);
 
-        // Point 5: Meal Snapshot Views
+        // Meal Snapshot Views
         btnViewMealSheet = v.findViewById(R.id.btnViewMealSheet);
         tvSnapshotBfCount = v.findViewById(R.id.tvSnapshotBfCount);
         tvSnapshotLunchCount = v.findViewById(R.id.tvSnapshotLunchCount);
@@ -127,18 +172,59 @@ public class FragmentDashboardOverview extends Fragment {
         layoutAvatarStack = v.findViewById(R.id.layoutAvatarStack);
         tvDinerCountSummary = v.findViewById(R.id.tvDinerCountSummary);
 
-        btnQuickAddExpense.setOnClickListener(view -> startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityAddBazar.class)));
-        btnQuickSmsDispatch.setOnClickListener(view -> startActivity(new Intent(requireContext(), ActivitySmsDispatch.class)));
+        // Click Listeners
+        if (btnDetailedReportLink != null) {
+            btnDetailedReportLink.setOnClickListener(view ->
+                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.reports.SummaryReportActivity.class)));
+        }
+        if (btnAllMembersSummary != null) {
+            btnAllMembersSummary.setOnClickListener(view ->
+                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.reports.SummaryReportActivity.class)));
+        }
+
+        // Quick action circular buttons
+        if (btnActionAddMeal != null) {
+            btnActionAddMeal.setOnClickListener(view ->
+                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.meals.AddMealActivity.class)));
+        }
+        if (btnActionAddDeposit != null) {
+            btnActionAddDeposit.setOnClickListener(view ->
+                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.deposits.AddDepositActivity.class)));
+        }
+        if (btnActionAddExpense != null) {
+            btnActionAddExpense.setOnClickListener(view ->
+                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityAddExpense.class)));
+        }
+        if (btnActionMealRequest != null) {
+            btnActionMealRequest.setOnClickListener(view -> {
+                Intent intent = new Intent(requireContext(), com.smartmess.android.ui.meals.AddMealActivity.class);
+                intent.putExtra("open_request_tab", true);
+                startActivity(intent);
+            });
+        }
+        if (btnActionBazar != null) {
+            btnActionBazar.setOnClickListener(view ->
+                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityBazarLedger.class)));
+        }
+        if (btnActionMembers != null) {
+            btnActionMembers.setOnClickListener(view ->
+                    startActivity(new Intent(requireContext(), com.smartmess.android.ui.members.MemberListActivity.class)));
+        }
+
+        if (btnQuickAddExpense != null) {
+            btnQuickAddExpense.setOnClickListener(view -> startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityAddBazar.class)));
+        }
+        if (btnQuickSmsDispatch != null) {
+            btnQuickSmsDispatch.setOnClickListener(view -> startActivity(new Intent(requireContext(), ActivitySmsDispatch.class)));
+        }
         if (btnQuickAddDeposit != null) {
             btnQuickAddDeposit.setOnClickListener(view -> startActivity(new Intent(requireContext(), com.smartmess.android.ui.deposits.AddDepositActivity.class)));
         }
 
-        // View All Bazars navigation to interactive ledger table
         if (btnViewAllBazars != null) {
             btnViewAllBazars.setOnClickListener(view -> startActivity(new Intent(requireContext(), com.smartmess.android.ui.expenses.ActivityBazarLedger.class)));
         }
 
-        // View Meal Sheet navigation
         if (btnViewMealSheet != null) {
             btnViewMealSheet.setOnClickListener(view -> navigateToBottomTab(R.id.nav_meals));
         }
@@ -178,17 +264,82 @@ public class FragmentDashboardOverview extends Fragment {
             CycleSummary summary = accountingEngine.calculateCurrentCycleSummary(messId);
             if (summary == null) return;
 
-            tvLiveMealRate.setText(CurrencyUtils.format(summary.getLiveMealRate()));
-            tvTotalMessMeals.setText(String.format(Locale.US, "%.1f টি মিল গণনা", summary.getTotalMeals()));
-            tvCashInHand.setText(CurrencyUtils.format(summary.getCashInHand()));
-            tvActiveMembers.setText(summary.getActiveMemberCount() + " জন সক্রিয় সদস্য");
+            // Date Pill e.g. July 26
+            if (tvDashboardDate != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("MMMM d", Locale.US);
+                tvDashboardDate.setText(sdf.format(new Date()));
+            }
 
-            tvRawMealCost.setText(CurrencyUtils.format(summary.getRawMealCost()));
-            tvSharedFoodCost.setText(CurrencyUtils.format(summary.getSharedFoodCost()));
-            tvUtilityCost.setText(CurrencyUtils.format(summary.getUtilityCost()));
-
-            // Point 16: Real-time Meal Budget Engine Check
             com.smartmess.android.model.Mess mess = messDao.getById(messId);
+            if (tvDashboardMessName != null) {
+                String mName = (mess != null && mess.getName() != null && !mess.getName().isEmpty()) ? mess.getName() : "Our Mess";
+                tvDashboardMessName.setText(mName);
+            }
+
+            if (tvLiveMealRate != null) {
+                tvLiveMealRate.setText(String.format(Locale.US, "%.2f ৳", summary.getLiveMealRate()));
+            }
+            if (tvTotalMessMeals != null) {
+                tvTotalMessMeals.setText(String.format(Locale.US, "%.2f", summary.getTotalMeals()));
+            }
+            if (tvCashInHand != null) {
+                tvCashInHand.setText(String.format(Locale.US, "%.2f ৳", summary.getCashInHand()));
+            }
+            if (tvMessTotalCost != null) {
+                tvMessTotalCost.setText(String.format(Locale.US, "%.2f ৳", summary.getTotalAllExpenses()));
+            }
+
+            // Today's Mess Meals count
+            if (tvTodayMessMeals != null) {
+                String todayIso = DateTimeUtils.currentDate();
+                List<Meal> todayMeals = mealDao.getMealsForDate(messId, todayIso);
+                double todayCount = 0.0;
+                if (todayMeals != null) {
+                    for (Meal m : todayMeals) {
+                        todayCount += m.getTotalMeals();
+                    }
+                }
+                tvTodayMessMeals.setText(String.format(Locale.US, "%.2f", todayCount));
+            }
+
+            // Personal Balance & Hero Card (আমার হিসাব)
+            long currentUserId = sessionManager.getUserId();
+            com.smartmess.android.engine.CalculationModels.MemberBalanceSheet sheet =
+                    accountingEngine.calculateMemberBalance(messId, currentUserId);
+
+            if (sheet != null) {
+                if (tvMyPersonalBalance != null) {
+                    tvMyPersonalBalance.setText(String.format(Locale.US, "%.2f ৳", sheet.getNetBalance()));
+                }
+                if (tvMyDepositPill != null) {
+                    tvMyDepositPill.setText("জমা " + String.format(Locale.US, "%.2f৳", sheet.getTotalDeposit()));
+                }
+                if (tvMyExpensePill != null) {
+                    tvMyExpensePill.setText("খরচ " + String.format(Locale.US, "%.2f৳", sheet.getTotalCost()));
+                }
+                if (tvMyTotalMeals != null) {
+                    tvMyTotalMeals.setText(String.format(Locale.US, "%.2f", sheet.getConsumedMeals()));
+                }
+                if (progressMealRing != null) {
+                    int prog = (int) Math.min(100, Math.max(15, (sheet.getConsumedMeals() / Math.max(1.0, summary.getTotalMeals())) * 100));
+                    progressMealRing.setProgress(prog);
+                }
+            }
+
+            if (tvActiveMembers != null) {
+                tvActiveMembers.setText(summary.getActiveMemberCount() + " জন সক্রিয় সদস্য");
+            }
+            if (tvRawMealCost != null) {
+                tvRawMealCost.setText(CurrencyUtils.format(summary.getRawMealCost()));
+            }
+            if (tvSharedFoodCost != null) {
+                tvSharedFoodCost.setText(CurrencyUtils.format(summary.getSharedFoodCost()));
+            }
+            if (tvUtilityCost != null) {
+                tvUtilityCost.setText(CurrencyUtils.format(summary.getUtilityCost()));
+            }
+
+            // Real-time Meal Budget Engine Check
             double targetBudget = (mess != null) ? mess.getTargetMealBudget() : 70.00;
             double liveMealRate = summary.getLiveMealRate();
 
