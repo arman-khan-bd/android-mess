@@ -227,6 +227,12 @@ public class FragmentDashboardOverview extends Fragment {
             btnViewMealSheet.setOnClickListener(view -> navigateToBottomTab(R.id.nav_meals));
         }
 
+        View cardHomeEcommerceStore = v.findViewById(R.id.cardHomeEcommerceStore);
+        if (cardHomeEcommerceStore != null) {
+            cardHomeEcommerceStore.setOnClickListener(view ->
+                    startActivity(new Intent(requireContext(), com.smartmess.android.ecommerce.ActivityEcommerceStore.class)));
+        }
+
         loadAllData();
         return v;
     }

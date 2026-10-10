@@ -1,11 +1,14 @@
 package com.smartmess.android.ui.support;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +41,8 @@ public class ActivityTicketChat extends AppCompatActivity {
     private String ticketSubject;
     private String ticketStatus;
 
+    private ImageButton btnBackChat;
+    private ImageButton btnRefreshChat;
     private TextView tvTicketNumber;
     private TextView tvTicketStatus;
     private TextView tvTicketSubject;
@@ -47,6 +52,17 @@ public class ActivityTicketChat extends AppCompatActivity {
 
     private ChatAdapter adapter;
     private final List<TicketMessageDto> messageList = new ArrayList<>();
+
+    private final Handler pollHandler = new Handler(Looper.getMainLooper());
+    private final Runnable pollRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!isFinishing() && (android.os.Build.VERSION.SDK_INT < 17 || !isDestroyed())) {
+                loadMessagesSilently();
+                pollHandler.postDelayed(this, 15000); // Poll every 15s for live replies
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,18 +82,47 @@ public class ActivityTicketChat extends AppCompatActivity {
     }
 
     private void initViews() {
+        btnBackChat = findViewById(R.id.btnBackChat);
+        btnRefreshChat = findViewById(R.id.btnRefreshChat);
         tvTicketNumber = findViewById(R.id.tvTicketNumber);
         tvTicketStatus = findViewById(R.id.tvTicketStatus);
         tvTicketSubject = findViewById(R.id.tvTicketSubject);
         rvMessages = findViewById(R.id.rvMessages);
         etMessageInput = findViewById(R.id.etMessageInput);
         btnSendMessage = findViewById(R.id.btnSendMessage);
+
+        if (btnBackChat != null) {
+            btnBackChat.setOnClickListener(v -> finish());
+        }
+
+        if (btnRefreshChat != null) {
+            btnRefreshChat.setOnClickListener(v -> {
+                btnRefreshChat.animate().rotationBy(360f).setDuration(600).start();
+                loadMessages();
+                Toast.makeText(ActivityTicketChat.this, "নতুন বার্তা চেক করা হচ্ছে...", Toast.LENGTH_SHORT).show();
+            });
+        }
     }
 
     private void setupHeader() {
         if (ticketNumber != null) tvTicketNumber.setText(ticketNumber);
         if (ticketSubject != null) tvTicketSubject.setText(ticketSubject);
-        if (ticketStatus != null) tvTicketStatus.setText(ticketStatus.toUpperCase());
+        if (ticketStatus != null) updateStatusPill(ticketStatus);
+    }
+
+    private void updateStatusPill(String status) {
+        if (tvTicketStatus == null || status == null) return;
+        tvTicketStatus.setText(status.toUpperCase());
+        if ("closed".equalsIgnoreCase(status) || "resolved".equalsIgnoreCase(status)) {
+            tvTicketStatus.setBackgroundResource(R.drawable.badge_credit);
+            tvTicketStatus.setTextColor(ContextCompat.getColor(this, R.color.credit_green));
+        } else if ("answered".equalsIgnoreCase(status)) {
+            tvTicketStatus.setBackgroundResource(R.drawable.badge_credit);
+            tvTicketStatus.setTextColor(ContextCompat.getColor(this, R.color.primary));
+        } else {
+            tvTicketStatus.setBackgroundResource(R.drawable.badge_due);
+            tvTicketStatus.setTextColor(ContextCompat.getColor(this, R.color.warning_amber));
+        }
     }
 
     private void setupRecyclerView() {
@@ -89,12 +134,26 @@ public class ActivityTicketChat extends AppCompatActivity {
     }
 
     private void setupSendButton() {
-        btnSendMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMessage();
-            }
-        });
+        btnSendMessage.setOnClickListener(v -> sendMessage());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        pollHandler.removeCallbacks(pollRunnable);
+        pollHandler.postDelayed(pollRunnable, 15000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pollHandler.removeCallbacks(pollRunnable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        pollHandler.removeCallbacks(pollRunnable);
     }
 
     private void loadMessages() {
@@ -102,10 +161,12 @@ public class ActivityTicketChat extends AppCompatActivity {
         apiService.getTicketMessages(ticketId).enqueue(new Callback<TicketDetailResponse>() {
             @Override
             public void onResponse(Call<TicketDetailResponse> call, Response<TicketDetailResponse> response) {
+                if (isFinishing()) return;
+
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getTicket() != null) {
                         ticketStatus = response.body().getTicket().getStatus();
-                        tvTicketStatus.setText(ticketStatus.toUpperCase());
+                        updateStatusPill(ticketStatus);
                     }
                     if (response.body().getMessages() != null) {
                         messageList.clear();
@@ -120,8 +181,38 @@ public class ActivityTicketChat extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TicketDetailResponse> call, Throwable t) {
+                if (isFinishing()) return;
                 Toast.makeText(ActivityTicketChat.this, "অফলাইন: নতুন উত্তর লোড করা যায়নি", Toast.LENGTH_SHORT).show();
             }
+        });
+    }
+
+    private void loadMessagesSilently() {
+        ApiService apiService = ApiClient.getApiService(this);
+        apiService.getTicketMessages(ticketId).enqueue(new Callback<TicketDetailResponse>() {
+            @Override
+            public void onResponse(Call<TicketDetailResponse> call, Response<TicketDetailResponse> response) {
+                if (isFinishing()) return;
+
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getTicket() != null) {
+                        ticketStatus = response.body().getTicket().getStatus();
+                        updateStatusPill(ticketStatus);
+                    }
+                    if (response.body().getMessages() != null) {
+                        int oldSize = messageList.size();
+                        messageList.clear();
+                        messageList.addAll(response.body().getMessages());
+                        adapter.notifyDataSetChanged();
+                        if (messageList.size() > oldSize) {
+                            rvMessages.smoothScrollToPosition(messageList.size() - 1);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TicketDetailResponse> call, Throwable t) {}
         });
     }
 

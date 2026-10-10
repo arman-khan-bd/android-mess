@@ -144,7 +144,14 @@ public class ApiClient {
                         requestBuilder.header("X-Mess-UUID", messUuid);
                     }
 
+                    try {
+                        android.content.pm.PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+                        requestBuilder.header("X-App-Version-Code", String.valueOf(pInfo.versionCode));
+                        requestBuilder.header("X-App-Version-Name", pInfo.versionName != null ? pInfo.versionName : "1.0.0");
+                    } catch (Exception ignored) {}
+
                     return chain.proceed(requestBuilder.build());
+
                 }
             });
 

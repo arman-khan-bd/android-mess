@@ -26,6 +26,12 @@ public class SyncPayload {
     @SerializedName("sms_logs")
     private List<SmsLog> smsLogs = new ArrayList<>();
 
+    @SerializedName("current_plan_id")
+    private Long currentPlanId;
+
+    @SerializedName("plan_tier")
+    private String planTier;
+
     public SyncPayload() {}
 
     public SyncPayload(String messUuid, List<Deposit> deposits, List<Expense> expenses, List<Meal> meals, List<SmsLog> smsLogs) {
@@ -51,7 +57,14 @@ public class SyncPayload {
     public List<SmsLog> getSmsLogs() { return smsLogs; }
     public void setSmsLogs(List<SmsLog> smsLogs) { this.smsLogs = smsLogs; }
 
+    public Long getCurrentPlanId() { return currentPlanId; }
+    public void setCurrentPlanId(Long currentPlanId) { this.currentPlanId = currentPlanId; }
+
+    public String getPlanTier() { return planTier; }
+    public void setPlanTier(String planTier) { this.planTier = planTier; }
+
     public int totalRecordCount() {
         return deposits.size() + expenses.size() + meals.size() + smsLogs.size();
     }
 }
+

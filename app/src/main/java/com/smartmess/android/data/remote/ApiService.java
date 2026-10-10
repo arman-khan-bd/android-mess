@@ -83,4 +83,27 @@ public interface ApiService {
 
     @POST("notifications/read")
     Call<java.util.Map<String, Object>> markNotificationsRead(@Body java.util.Map<String, Object> body);
+
+    // Member Management & Online Provisioning
+    @POST("members")
+    Call<com.smartmess.android.data.remote.dto.CreateMemberResponse> addMember(@Body com.smartmess.android.data.remote.dto.CreateMemberRequest request);
+
+    // E-Commerce Store & Order Management Gateway
+    @GET("ecommerce/products")
+    Call<com.smartmess.android.data.remote.dto.EcommerceResponse> getEcommerceProducts(
+            @Query("category") String category,
+            @Query("search") String search
+    );
+
+    @POST("ecommerce/orders")
+    Call<com.google.gson.JsonObject> createEcommerceOrder(
+            @Body com.smartmess.android.data.remote.dto.CreateOrderRequest request
+    );
+
+    @GET("ecommerce/my-orders")
+    Call<com.google.gson.JsonObject> getMyEcommerceOrders(
+            @Query("phone") String phone,
+            @Query("mess_id") Long messId
+    );
 }
+

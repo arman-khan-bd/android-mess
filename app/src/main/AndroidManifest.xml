@@ -205,6 +205,24 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- E-Commerce Store & Order Management Activities -->
+        <activity
+            android:name=".ecommerce.ActivityEcommerceStore"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ecommerce.ActivityProductDetails"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ecommerce.ActivityEcommerceCheckout"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ecommerce.ActivityEcommerceOrders"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Network Change Receiver for Auto Sync on Reconnection -->
         <receiver
             android:name=".data.sync.NetworkChangeReceiver"

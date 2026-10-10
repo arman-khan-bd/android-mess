@@ -61,6 +61,35 @@ public class SyncManager {
         getInstance(context).triggerSync(callback);
     }
 
+    private java.util.concurrent.ScheduledExecutorService scheduledExecutor;
+
+    public static void startAutoSyncTimer(Context context) {
+        getInstance(context).initAutoSyncTimer();
+    }
+
+    public synchronized void initAutoSyncTimer() {
+        if (scheduledExecutor == null || scheduledExecutor.isShutdown()) {
+            scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+            scheduledExecutor.scheduleWithFixedDelay(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (sessionManager.isLoggedIn() && isNetworkAvailable()) {
+                            Log.d(TAG, "Executing 1-minute auto sync routine...");
+                            triggerSync(null);
+                        }
+                    } catch (Throwable t) {
+                        Log.e(TAG, "Error in auto-sync runnable: " + t.getMessage());
+                    }
+                }
+            }, 60, 60, java.util.concurrent.TimeUnit.SECONDS);
+        }
+    }
+
+    public void triggerTwoWaySync(SyncCallback callback) {
+        triggerSync(callback);
+    }
+
     public SyncManager(Context context) {
         this.context = context.getApplicationContext();
         this.apiService = ApiClient.getApiService(this.context);
@@ -69,6 +98,7 @@ public class SyncManager {
         this.executor = Executors.newSingleThreadExecutor();
         this.mainHandler = new Handler(Looper.getMainLooper());
     }
+
 
     /**
      * Executes two-way background sync on a background thread.

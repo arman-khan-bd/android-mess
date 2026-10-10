@@ -60,6 +60,12 @@ public class FragmentExpenseList extends Fragment {
                     "Access lifetime expense ledgers, multi-category splits, and voucher attachments with SmartMess Pro.");
         });
 
+        View cardBazarEcommerceStore = v.findViewById(R.id.cardBazarEcommerceStore);
+        if (cardBazarEcommerceStore != null) {
+            cardBazarEcommerceStore.setOnClickListener(view ->
+                    startActivity(new Intent(requireContext(), com.smartmess.android.ecommerce.ActivityEcommerceStore.class)));
+        }
+
         loadExpenses();
         return v;
     }

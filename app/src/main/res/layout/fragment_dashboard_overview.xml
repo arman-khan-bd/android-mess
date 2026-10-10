@@ -550,7 +550,7 @@
                 <!-- 1. মিল যোগ -->
                 <LinearLayout
                     android:id="@+id/btnActionAddMeal"
-                    android:layout_width="74dp"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
@@ -558,14 +558,14 @@
                     android:orientation="vertical">
 
                     <FrameLayout
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
                         android:background="@drawable/bg_stepper_circle"
                         android:backgroundTint="#F3E8FF">
 
                         <ImageView
-                            android:layout_width="26dp"
-                            android:layout_height="26dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_steaming_bowl" />
                     </FrameLayout>
@@ -573,12 +573,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="5dp"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="মিল যোগ..."
+                        android:text="মিল যোগ"
                         android:textColor="#334155"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -653,10 +653,10 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- 4. মিল ফিক্সড -->
+                <!-- 4. মিল ফিক্সড / রিকোয়েস্ট -->
                 <LinearLayout
                     android:id="@+id/btnActionMealRequest"
-                    android:layout_width="74dp"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
@@ -664,14 +664,14 @@
                     android:orientation="vertical">
 
                     <FrameLayout
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
                         android:background="@drawable/bg_stepper_circle"
                         android:backgroundTint="#FEF9C3">
 
                         <ImageView
-                            android:layout_width="26dp"
-                            android:layout_height="26dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_cutlery_plate" />
                     </FrameLayout>
@@ -679,12 +679,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="5dp"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="মিল ফিক্সড..."
+                        android:text="মিল ফিক্সড"
                         android:textColor="#334155"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -775,6 +775,162 @@
         <TextView android:id="@+id/tvTargetBudgetBadge" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
         <com.google.android.material.card.MaterialCardView android:id="@+id/cardBudgetWarning" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone">
             <TextView android:id="@+id/tvBudgetWarningText" android:layout_width="0dp" android:layout_height="0dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ============================================== -->
+        <!-- E-COMMERCE WHOLESALE GROCERY STORE CARD -->
+        <!-- ============================================== -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardHomeEcommerceStore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            app:cardBackgroundColor="#0F172A"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="2dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingTop="16dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Store Icon / Badge -->
+                    <FrameLayout
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:background="@drawable/bg_stepper_circle"
+                        android:backgroundTint="#059669">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lucide_cart"
+                            app:tint="@android:color/white" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="মেস ই-কমার্স বাজার"
+                                android:textColor="@android:color/white"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:background="#10B981"
+                                android:paddingLeft="6dp"
+                                android:paddingTop="1dp"
+                                android:paddingRight="6dp"
+                                android:paddingBottom="1dp"
+                                android:text="পাইকারি রেট"
+                                android:textColor="@android:color/white"
+                                android:textSize="9sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="চাল, তেল, ডাল ও নিত্যপণ্য সরাসরি মেসে ডেলিভারি"
+                            android:textColor="#94A3B8"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <!-- Order Button / Arrow -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_mint_pill"
+                        android:paddingLeft="12dp"
+                        android:paddingTop="6dp"
+                        android:paddingRight="12dp"
+                        android:paddingBottom="6dp"
+                        android:text="অর্ডার করুন →"
+                        android:textColor="#10B981"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Value Props Pills -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_dark_pill"
+                        android:paddingLeft="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingRight="8dp"
+                        android:paddingBottom="3dp"
+                        android:text="✓ ফ্রি হোম ডেলিভারি"
+                        android:textColor="#34D399"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:background="@drawable/bg_dark_pill"
+                        android:paddingLeft="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingRight="8dp"
+                        android:paddingBottom="3dp"
+                        android:text="✓ ক্যাশ অন ডেলিভারি"
+                        android:textColor="#E2E8F0"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:background="@drawable/bg_dark_pill"
+                        android:paddingLeft="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingRight="8dp"
+                        android:paddingBottom="3dp"
+                        android:text="✓ পাইকারি মিল রেট"
+                        android:textColor="#E2E8F0"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- ============================================== -->

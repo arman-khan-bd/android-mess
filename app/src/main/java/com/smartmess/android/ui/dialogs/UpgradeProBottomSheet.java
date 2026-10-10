@@ -378,7 +378,12 @@ public class UpgradeProBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void executePlanCheckout(SaasPlan plan, String paymentChannel, BottomSheetDialog dialog) {
-        CheckoutRequest req = new CheckoutRequest(plan.getId(), paymentChannel);
+        CheckoutRequest req = new CheckoutRequest(
+                plan.getId(),
+                paymentChannel,
+                sessionManager.getMessId(),
+                sessionManager.getMessUuid()
+        );
 
         apiService.checkoutPlan(req).enqueue(new Callback<CheckoutResponse>() {
             @Override
@@ -418,6 +423,9 @@ public class UpgradeProBottomSheet extends BottomSheetDialogFragment {
         sessionManager.updatePlanCapabilities(PlanCapabilities.createFree());
         sessionManager.broadcastCapabilitiesUpdated(requireContext());
         Toast.makeText(requireContext(), "মেস সফলভাবে বেসিক প্ল্যানে পরিবর্তিত হয়েছে।", Toast.LENGTH_SHORT).show();
+        try {
+            com.smartmess.android.data.sync.SyncManager.getInstance(requireContext().getApplicationContext()).triggerTwoWaySync(null);
+        } catch (Exception ignored) {}
         dismissAllowingStateLoss();
     }
 
@@ -437,6 +445,9 @@ public class UpgradeProBottomSheet extends BottomSheetDialogFragment {
 
         sessionManager.broadcastCapabilitiesUpdated(requireContext());
         Toast.makeText(requireContext(), "🎉 সফলভাবে আপগ্রেড করা হয়েছে: " + plan.getName() + "!", Toast.LENGTH_LONG).show();
+        try {
+            com.smartmess.android.data.sync.SyncManager.getInstance(requireContext().getApplicationContext()).triggerTwoWaySync(null);
+        } catch (Exception ignored) {}
     }
 
     private void applyLocalFallbackUpgrade(SaasPlan plan) {
@@ -450,7 +461,11 @@ public class UpgradeProBottomSheet extends BottomSheetDialogFragment {
         sessionManager.updatePlanCapabilities(PlanCapabilities.createPro("2027-10-09T23:59:59Z"));
         sessionManager.broadcastCapabilitiesUpdated(requireContext());
         Toast.makeText(requireContext(), "🎉 " + plan.getName() + " activated instantly! Pro features unlocked.", Toast.LENGTH_LONG).show();
+        try {
+            com.smartmess.android.data.sync.SyncManager.getInstance(requireContext().getApplicationContext()).triggerTwoWaySync(null);
+        } catch (Exception ignored) {}
     }
+
 
     private List<SaasPlan> getInitialDefaultPlans() {
         List<SaasPlan> list = new ArrayList<>();

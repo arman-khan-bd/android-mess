@@ -246,6 +246,9 @@ public class ActivityNotificationManager extends AppCompatActivity {
         });
 
         chipGroupTemplates.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == View.NO_ID) {
+                return;
+            }
             if (checkedId == R.id.chipTemplateDue) {
                 selectedType = NotificationCenterHelper.TYPE_BUDGET;
                 etNotifTitle.setText("Due Payment Reminder");

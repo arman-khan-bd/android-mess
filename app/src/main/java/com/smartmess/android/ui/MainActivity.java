@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvDrawerPlanPill;
     private View drawerItemProfile;
     private View drawerItemPlans;
+    private View drawerItemEcommerce;
     private View drawerItemSms;
     private View drawerItemStatements;
     private View drawerItemVacation;
@@ -97,6 +98,35 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private final android.os.Handler autoSyncHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private final Runnable autoSyncRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isFinishing() || (android.os.Build.VERSION.SDK_INT >= 17 && isDestroyed())) {
+                return;
+            }
+            if (sessionManager != null && sessionManager.isLoggedIn() && com.smartmess.android.utils.NetworkUtils.isNetworkAvailable(MainActivity.this)) {
+                syncManager.triggerTwoWaySync(new SyncManager.SyncCallback() {
+                    @Override
+                    public void onSyncStarted() {}
+
+                    @Override
+                    public void onSyncSuccess(String message) {
+                        runOnUiThread(() -> {
+                            loadHeaderData();
+                            populateDrawerProfile();
+                            updateNotificationBadge();
+                        });
+                    }
+
+                    @Override
+                    public void onSyncFailed(String error) {}
+                });
+            }
+            autoSyncHandler.postDelayed(this, 60000);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +146,9 @@ public class MainActivity extends AppCompatActivity {
         setupSyncIndicator();
         setupDrawerActions();
 
+        // 1-minute background auto sync routine
+        SyncManager.startAutoSyncTimer(this);
+
         // Check remote kill-switch, maintenance mode, and force updates
         try {
             com.smartmess.android.engine.RemoteConfigManager.checkRemoteConfig(this, null);
@@ -125,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             com.smartmess.android.notification.NotificationScheduler.scheduleDailyReminder(this, null);
         } catch (Throwable ignored) {}
+
 
         // Auto-sync mess data on startup if network is available
         if (com.smartmess.android.utils.NetworkUtils.isNetworkAvailable(this) && sessionManager.isLoggedIn()) {
@@ -224,7 +258,24 @@ public class MainActivity extends AppCompatActivity {
             com.smartmess.android.utils.BatteryOptimizationHelper.promptOnceIfNeeded(this);
             com.smartmess.android.notification.PushNotificationSyncWorker.runImmediateSync(this);
         } catch (Throwable ignored) {}
+
+        // Schedule recurring 1-minute auto sync
+        autoSyncHandler.removeCallbacks(autoSyncRunnable);
+        autoSyncHandler.postDelayed(autoSyncRunnable, 60000);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        autoSyncHandler.removeCallbacks(autoSyncRunnable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        autoSyncHandler.removeCallbacks(autoSyncRunnable);
+    }
+
 
     private void initViews() {
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -247,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
         tvDrawerPlanPill = findViewById(R.id.tvDrawerPlanPill);
         drawerItemProfile = findViewById(R.id.drawerItemProfile);
         drawerItemPlans = findViewById(R.id.drawerItemPlans);
+        drawerItemEcommerce = findViewById(R.id.drawerItemEcommerce);
         drawerItemSms = findViewById(R.id.drawerItemSms);
         drawerItemStatements = findViewById(R.id.drawerItemStatements);
         drawerItemVacation = findViewById(R.id.drawerItemVacation);
@@ -450,6 +502,13 @@ public class MainActivity extends AppCompatActivity {
                 closeDrawer();
                 planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "SmartMess SaaS Plans",
                         "Upgrade to Pro for unlimited members, branded monthly audit reports, bulk SMS dispatcher, and cloud backup.");
+            });
+        }
+
+        if (drawerItemEcommerce != null) {
+            drawerItemEcommerce.setOnClickListener(v -> {
+                closeDrawer();
+                startActivity(new Intent(MainActivity.this, com.smartmess.android.ecommerce.ActivityEcommerceStore.class));
             });
         }
 

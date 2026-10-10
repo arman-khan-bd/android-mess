@@ -72,30 +72,45 @@ public class RemoteConfigManager {
             return;
         }
 
-        // 2. Force Update
+        // 2. Force Update & Version Threshold Check
         int currentVersionCode = 1;
+        String currentVersionName = "1.0.0";
         try {
             PackageInfo pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
             currentVersionCode = pInfo.versionCode;
+            if (pInfo.versionName != null) currentVersionName = pInfo.versionName;
         } catch (Exception ignored) {}
 
-        if (config.isForceUpdate() && currentVersionCode < config.getMinVersionCode()) {
+        int minVersionCode = config.getMinVersionCode() > 0 ? config.getMinVersionCode() : 1;
+        boolean isBelowThreshold = currentVersionCode < minVersionCode;
+        boolean forceRequested = config.isForceUpdate() || isBelowThreshold;
+
+        if (forceRequested) {
+            String url = (config.getUpdateUrl() != null && !config.getUpdateUrl().trim().isEmpty())
+                    ? config.getUpdateUrl() : "https://mess.e-bd.shop/download";
+
+            String message = "আপনার বর্তমান অ্যাপ সংস্করণ (v" + currentVersionName + ", কোড: " + currentVersionCode +
+                    ") সার্ভারের নূন্যতম সংস্করণ (কোড: " + minVersionCode + ") থেকে পুরোনো।\n\nসর্বশেষ ফিচার ও নিরবচ্ছিন্ন সিঙ্কের জন্য অ্যাপটি আপডেট করার পরামর্শ দেওয়া হচ্ছে।";
+
             new AlertDialog.Builder(activity)
-                    .setTitle("নতুন আপডেট প্রয়োজন")
-                    .setMessage("স্মার্ট মেস অ্যাপ ব্যবহার চালিয়ে যেতে নতুন আপডেট প্রয়োজন। দয়া করে সর্বশেষ সংস্করণটি ডাউনলোড করুন।")
-                    .setCancelable(false)
-                    .setPositiveButton("আপডেট ডাউনলোড করুন", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String url = config.getUpdateUrl() != null ? config.getUpdateUrl() : "https://mess.e-bd.shop/download";
+                    .setTitle("⚠️ অ্যাপ আপডেট সতর্কতা")
+                    .setMessage(message)
+                    .setCancelable(true)
+                    .setPositiveButton("আপডেট ডাউনলোড করুন", (dialog, which) -> {
+                        try {
                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                             activity.startActivity(browserIntent);
-                            activity.finishAffinity();
+                        } catch (Exception e) {
+                            Toast.makeText(activity, "ব্রাউজার খোলা সম্ভব হয়নি: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
+                    })
+                    .setNegativeButton("বন্ধ করুন", (dialog, which) -> {
+                        dialog.dismiss();
                     })
                     .show();
             return;
         }
+
 
         // 3. Broadcast Announcement
         if (config.getBroadcastAnnouncement() != null && !config.getBroadcastAnnouncement().trim().isEmpty()) {

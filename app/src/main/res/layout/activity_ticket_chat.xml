@@ -6,65 +6,118 @@
     android:background="@color/background"
     android:orientation="vertical">
 
-    <!-- Top Ticket Info Bar -->
-    <LinearLayout
+    <!-- Top Action Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarTicketChat"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/surface"
-        android:elevation="2dp"
-        android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp">
+        android:elevation="3dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvTicketNumber"
+            <ImageButton
+                android:id="@+id/btnBackChat"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="ফিরে যান"
+                android:src="@drawable/ic_back"
+                app:tint="@color/text_primary" />
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:fontFamily="monospace"
-                android:text="টিকিট-২০২৬-৯৮১২"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="ইউনিফাইড সাপোর্ট ডেস্ক ও লাইভ চ্যাট"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvTicketNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:text="TKT-2026-XXXX"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvTicketStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edittext"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="2dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/badge_credit"
+                android:fontFamily="sans-serif-medium"
+                android:paddingLeft="8dp"
+                android:paddingTop="3dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="3dp"
                 android:text="চলমান"
-                android:textColor="@color/primary"
-                android:textSize="11sp"
+                android:textColor="@color/primary_dark"
+                android:textSize="10sp"
                 android:textStyle="bold" />
+
+            <!-- Refresh Button to get new messages -->
+            <ImageButton
+                android:id="@+id/btnRefreshChat"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="নতুন বার্তা রিফ্রেশ করুন"
+                android:padding="8dp"
+                android:src="@drawable/ic_lucide_refresh"
+                app:tint="@color/primary" />
         </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Ticket Subject Sub-Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        android:elevation="1dp"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/tvTicketSubject"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="বিকাশের মাধ্যমে স্ট্যান্ডার্ড প্ল্যানে আপগ্রেড করতে সহায়তা চাই"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="সাপোর্ট টিকিটের বিষয়..."
             android:textColor="@color/text_primary"
-            android:textSize="15sp"
+            android:textSize="13sp"
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Message RecyclerView -->
+    <!-- Messages Chat Recycler View -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMessages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:clipToPadding="false"
-        android:paddingVertical="8dp" />
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
 
     <!-- Bottom Input Bar -->
     <LinearLayout
@@ -82,8 +135,9 @@
             android:layout_height="48dp"
             android:layout_weight="1"
             android:background="@drawable/rounded_edittext"
-            android:hint="আপনার বার্তা লিখুন..."
-            android:paddingHorizontal="14dp"
+            android:hint="এখানে আপনার বার্তা লিখুন..."
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
             android:textSize="14sp" />
 
         <com.google.android.material.button.MaterialButton
@@ -91,6 +145,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
+            android:backgroundTint="@color/primary"
             android:text="পাঠান"
             android:textAllCaps="false"
             android:textSize="14sp"

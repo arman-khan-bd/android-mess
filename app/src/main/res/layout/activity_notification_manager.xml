@@ -61,8 +61,10 @@
                 android:layout_marginEnd="12dp"
                 android:background="@drawable/badge_credit"
                 android:fontFamily="sans-serif-medium"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="3dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="ম্যানেজার"
                 android:textColor="@color/primary_dark"
                 android:textSize="10sp"
@@ -197,7 +199,8 @@
                     android:layout_height="44dp"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/bg_stat_card"
-                    android:paddingHorizontal="12dp" />
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp" />
             </LinearLayout>
 
             <!-- DISPATCH CHANNEL SELECTION -->
@@ -417,8 +420,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:background="@drawable/badge_credit"
-                        android:paddingHorizontal="6dp"
-                        android:paddingVertical="2dp"
+                        android:paddingLeft="6dp"
+                        android:paddingRight="6dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
                         android:text="🔔 পুশ"
                         android:textColor="@color/primary_dark"
                         android:textSize="9sp"

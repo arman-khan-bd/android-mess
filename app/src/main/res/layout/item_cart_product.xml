@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_ticket_item"
+    android:layout_marginBottom="8dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <!-- Thumbnail -->
+    <ImageView
+        android:id="@+id/ivCartItemThumb"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="#F1F5F9"
+        android:scaleType="centerCrop" />
+
+    <!-- Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvCartItemTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="প্রিমিয়াম মিনিকেট চাল (৫০ কেজি)"
+            android:textColor="@color/text_primary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvCartItemUnitPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="৳৩,৪৫০ / বস্তা"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tvCartItemSubtotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="মোট: ৳৩,৪৫০"
+            android:textColor="@color/primary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Quantity Controls (- QTY +) -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnMinusQty"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/bg_dark_pill"
+            android:src="@drawable/ic_close"
+            app:tint="@android:color/white"
+            android:contentDescription="Decrease" />
+
+        <TextView
+            android:id="@+id/tvCartItemQty"
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btnPlusQty"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/bg_mint_pill"
+            android:src="@drawable/ic_menu"
+            app:tint="#10B981"
+            android:contentDescription="Increase" />
+    </LinearLayout>
+
+</LinearLayout>

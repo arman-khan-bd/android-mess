@@ -157,8 +157,27 @@ public class DatabaseManager {
             smsCursor.close();
         }
 
-        return new SyncPayload(messUuid, pendingDeposits, pendingExpenses, pendingMeals, pendingSms);
+        SyncPayload payload = new SyncPayload(messUuid, pendingDeposits, pendingExpenses, pendingMeals, pendingSms);
+        try {
+            long messId = sessionManager.getMessId();
+            if (messId > 0) {
+                Mess currentMess = new com.smartmess.android.data.local.dao.MessDao(dbHelper).getById(messId);
+                if (currentMess != null && currentMess.getCurrentPlanId() > 1) {
+                    payload.setCurrentPlanId(currentMess.getCurrentPlanId());
+                    payload.setPlanTier("pro");
+                } else if (sessionManager.isPro()) {
+                    payload.setCurrentPlanId(2L);
+                    payload.setPlanTier("pro");
+                }
+            } else if (sessionManager.isPro()) {
+                payload.setCurrentPlanId(2L);
+                payload.setPlanTier("pro");
+            }
+        } catch (Exception ignored) {}
+
+        return payload;
     }
+
 
     /**
      * Updates sync_status = 1 for confirmed synced UUIDs.
