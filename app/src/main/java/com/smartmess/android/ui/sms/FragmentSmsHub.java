@@ -121,10 +121,15 @@ public class FragmentSmsHub extends Fragment {
                     TextView tvStatus = itemView.findViewById(R.id.tvSmsDeliveryStatus);
 
                     String recipient = log.getRecipientPhone();
-                    if (log.getTargetName() != null && !log.getTargetName().trim().isEmpty()) {
-                        recipient = log.getTargetName().trim() + " (" + recipient + ")";
+                    String targetName = log.getTargetName();
+                    if (targetName != null && !targetName.trim().isEmpty()) {
+                        if (recipient != null && !recipient.trim().isEmpty()) {
+                            recipient = targetName.trim() + " (" + recipient + ")";
+                        } else {
+                            recipient = targetName.trim();
+                        }
                     }
-                    tvRecipient.setText(recipient != null ? recipient : "সদস্য");
+                    tvRecipient.setText(recipient != null && !recipient.trim().isEmpty() ? recipient : "সদস্য");
 
                     tvCost.setText(CurrencyUtils.format(log.getCostApplied()));
                     tvSnippet.setText(log.getMessageContent() != null ? log.getMessageContent() : "এসএমএস বিজ্ঞপ্তি");

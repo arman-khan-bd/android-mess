@@ -56,6 +56,9 @@ public class SmsLog {
     public String getTargetUserName() { return targetUserName; }
     public void setTargetUserName(String targetUserName) { this.targetUserName = targetUserName; }
 
+    public String getTargetName() { return targetUserName; }
+    public void setTargetName(String targetName) { this.targetUserName = targetName; }
+
     public String getMessageContent() { return messageContent; }
     public void setMessageContent(String messageContent) { this.messageContent = messageContent; }
 
