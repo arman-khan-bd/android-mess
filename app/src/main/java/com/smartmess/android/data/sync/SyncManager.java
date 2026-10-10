@@ -76,7 +76,7 @@ public class SyncManager {
                     try {
                         if (sessionManager.isLoggedIn() && isNetworkAvailable()) {
                             Log.d(TAG, "Executing 1-minute auto sync routine...");
-                            triggerSync(null);
+                            triggerSync((SyncCallback) null);
                         }
                     } catch (Throwable t) {
                         Log.e(TAG, "Error in auto-sync runnable: " + t.getMessage());
@@ -212,9 +212,6 @@ public class SyncManager {
         });
     }
 
-    public void triggerTwoWaySync(SyncCallback callback) {
-        triggerSync(callback);
-    }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
