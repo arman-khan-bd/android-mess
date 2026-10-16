@@ -122,6 +122,7 @@ public class LoginActivity extends AppCompatActivity {
                                 // Trigger cloud sync in background safely
                                 try {
                                     com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
+                                    com.smartmess.android.notification.FirebaseMessagingHelper.init(getApplicationContext());
                                 } catch (Throwable t) {
                                     android.util.Log.e("LoginActivity", "Sync trigger notice: " + t.getMessage());
                                 }

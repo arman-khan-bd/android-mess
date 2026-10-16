@@ -66,7 +66,7 @@ public class PlanCapabilities implements Serializable {
         capabilities.put("unlimited_members", false);
         capabilities.put("max_members", 6);
         capabilities.put("pdf_export", false);
-        capabilities.put("bulk_sms", false);
+        capabilities.put("bulk_sms", true);
         capabilities.put("ocr_scanner", false);
         capabilities.put("full_history", false);
         capabilities.put("priority_support", false);

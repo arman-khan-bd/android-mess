@@ -159,6 +159,16 @@ public class MainActivity extends AppCompatActivity {
             com.smartmess.android.notification.NotificationScheduler.scheduleDailyReminder(this, null);
         } catch (Throwable ignored) {}
 
+        // Initialize Firebase Messaging subscriptions and request notification permission on Android 13+
+        try {
+            com.smartmess.android.notification.FirebaseMessagingHelper.init(this);
+            if (android.os.Build.VERSION.SDK_INT >= 33) {
+                if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 109);
+                }
+            }
+        } catch (Throwable ignored) {}
+
 
         // Auto-sync mess data on startup if network is available
         if (com.smartmess.android.utils.NetworkUtils.isNetworkAvailable(this) && sessionManager.isLoggedIn()) {
@@ -263,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             com.smartmess.android.utils.BatteryOptimizationHelper.promptOnceIfNeeded(this);
             com.smartmess.android.notification.PushNotificationSyncWorker.runImmediateSync(this);
+            com.smartmess.android.notification.FirebaseMessagingHelper.init(this);
             com.smartmess.android.notification.FirebaseMessagingHelper.addListener(realtimeNotifListener);
         } catch (Throwable ignored) {}
 

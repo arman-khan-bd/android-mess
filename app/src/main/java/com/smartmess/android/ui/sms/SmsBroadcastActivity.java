@@ -219,12 +219,6 @@ public class SmsBroadcastActivity extends AppCompatActivity {
     }
 
     private void dispatchBroadcast() {
-        if (!planGateManager.canUseBulkSms()) {
-            planGateManager.showUpgradeBottomSheet(getSupportFragmentManager(), "Bulk SMS Dispatcher",
-                    "Bulk due reminders and automated ledger debits are a Pro subscription feature.");
-            return;
-        }
-
         if (!PermissionHelper.hasSmsPermission(this)) {
             PermissionHelper.requestSmsPermission(this);
             return;

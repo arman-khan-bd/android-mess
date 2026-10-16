@@ -1,14 +1,21 @@
 package com.smartmess.android.notification;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.smartmess.android.data.remote.ApiConfig;
 import com.smartmess.android.model.AppNotification;
 import com.smartmess.android.utils.SessionManager;
 
+import org.json.JSONObject;
+
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,17 +46,57 @@ public class FirebaseMessagingHelper {
             updateSubscriptions(messId, userId);
         }
 
-        // Fetch and log current FCM registration token
+        // Fetch and register current FCM registration token
         try {
             FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult() != null) {
                     String token = task.getResult();
                     Log.i(TAG, "FCM Device Token: " + token);
+                    registerTokenWithBackend(context, token);
                 }
             });
         } catch (Throwable t) {
             Log.w(TAG, "Error fetching FCM token: " + t.getMessage());
         }
+    }
+
+    public static void registerTokenWithBackend(Context context, String token) {
+        if (context == null || token == null || token.trim().isEmpty()) return;
+        new Thread(() -> {
+            try {
+                SessionManager sm = new SessionManager(context);
+                String authToken = sm.getAuthToken();
+                if (authToken == null || authToken.trim().isEmpty() || "offline_session_token".equals(authToken)) {
+                    return;
+                }
+
+                String baseUrl = ApiConfig.getBaseUrl();
+                URL url = new URL(baseUrl.replaceAll("/+$", "") + "/notifications/register-token");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Authorization", "Bearer " + authToken);
+                conn.setDoOutput(true);
+                conn.setConnectTimeout(6000);
+                conn.setReadTimeout(6000);
+
+                JSONObject payload = new JSONObject();
+                payload.put("token", token);
+                payload.put("platform", "android");
+                payload.put("device_brand", Build.MANUFACTURER);
+                payload.put("device_model", Build.MODEL);
+
+                try (OutputStream os = conn.getOutputStream()) {
+                    os.write(payload.toString().getBytes("UTF-8"));
+                }
+                int code = conn.getResponseCode();
+                Log.d(TAG, "registerTokenWithBackend status code: " + code);
+                conn.disconnect();
+            } catch (Throwable t) {
+                Log.d(TAG, "registerTokenWithBackend failed: " + t.getMessage());
+            }
+        }).start();
     }
 
     public static void updateSubscriptions(long messId, long userId) {

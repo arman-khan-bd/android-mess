@@ -17,11 +17,6 @@ import com.smartmess.android.utils.SessionManager;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Core Firebase Cloud Messaging service for SmartMess Android.
- * Handles incoming push notifications, background/foreground message processing,
- * offline SQLite persistence, and heads-up system tray alerts.
- */
 public class SmartMessFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "SmartMessFCM";
@@ -38,6 +33,7 @@ public class SmartMessFirebaseMessagingService extends FirebaseMessagingService 
                         sessionManager.getMessId(),
                         sessionManager.getUserId()
                 );
+                FirebaseMessagingHelper.registerTokenWithBackend(this, token);
             }
         } catch (Throwable t) {
             Log.e(TAG, "Error in onNewToken: " + t.getMessage(), t);
@@ -133,15 +129,33 @@ public class SmartMessFirebaseMessagingService extends FirebaseMessagingService 
             long rowId = notificationDao.insert(notif);
             notif.setId(rowId);
 
-            // 1. Show Heads-Up Android Tray Notification with sound & vibration
-            PushNotificationManager.showSystemNotification(this, rowId, title, message, type, channel);
+            // 1. Show Heads-Up Android Tray Notification with sound & vibration (skip tray popup only if self is sender)
+            boolean isSelfSender = false;
+            String senderUserIdStr = data.get("sender_user_id");
+            if (senderUserIdStr != null && !senderUserIdStr.isEmpty()) {
+                try {
+                    long senderId = Long.parseLong(senderUserIdStr);
+                    if (senderId > 0 && senderId == currentUserId) {
+                        isSelfSender = true;
+                    }
+                } catch (NumberFormatException ignored) {}
+            }
+
+            if (!isSelfSender) {
+                PushNotificationManager.showSystemNotification(this, rowId, title, message, type, channel);
+            }
 
             // 2. Handle Member Joined Event data
             if ("role".equalsIgnoreCase(type) || "member_joined".equalsIgnoreCase(data.get("event"))) {
                 handleMemberJoinedPayload(data, dbHelper);
             }
 
-            // 3. Notify all actively visible UI screens (ActivityNotificationCenter, FragmentNotifications, MainActivity)
+            // 3. Trigger immediate sync when bazar or expense is created by others
+            if ("bazar".equalsIgnoreCase(type) || "expense".equalsIgnoreCase(type) || "meal".equalsIgnoreCase(type)) {
+                PushNotificationSyncWorker.runImmediateSync(this);
+            }
+
+            // 4. Notify all actively visible UI screens (ActivityNotificationCenter, FragmentNotifications, MainActivity)
             FirebaseMessagingHelper.notifyListeners(notif);
 
         } catch (Throwable t) {

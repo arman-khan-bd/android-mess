@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -36,6 +37,14 @@ public class PushNotificationManager {
             NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             if (nm == null) return;
 
+            Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+
+            long[] vibrationPattern = new long[]{0, 300, 200, 300};
+
             // 1. General Notices & Announcements Channel
             NotificationChannel noticeChannel = new NotificationChannel(
                     CHANNEL_NOTICES,
@@ -46,6 +55,10 @@ public class PushNotificationManager {
             noticeChannel.enableLights(true);
             noticeChannel.setLightColor(Color.parseColor("#10B981"));
             noticeChannel.enableVibration(true);
+            noticeChannel.setVibrationPattern(vibrationPattern);
+            noticeChannel.setSound(soundUri, audioAttributes);
+            noticeChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
+            noticeChannel.setBypassDnd(true);
             noticeChannel.setShowBadge(true);
             nm.createNotificationChannel(noticeChannel);
 
@@ -59,6 +72,10 @@ public class PushNotificationManager {
             dueChannel.enableLights(true);
             dueChannel.setLightColor(Color.parseColor("#EF4444"));
             dueChannel.enableVibration(true);
+            dueChannel.setVibrationPattern(vibrationPattern);
+            dueChannel.setSound(soundUri, audioAttributes);
+            dueChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
+            dueChannel.setBypassDnd(true);
             dueChannel.setShowBadge(true);
             nm.createNotificationChannel(dueChannel);
 
@@ -72,6 +89,11 @@ public class PushNotificationManager {
             mealChannel.enableLights(true);
             mealChannel.setLightColor(Color.parseColor("#F59E0B"));
             mealChannel.enableVibration(true);
+            mealChannel.setVibrationPattern(vibrationPattern);
+            mealChannel.setSound(soundUri, audioAttributes);
+            mealChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
+            mealChannel.setBypassDnd(true);
+            mealChannel.setShowBadge(true);
             nm.createNotificationChannel(mealChannel);
         }
     }
@@ -107,6 +129,8 @@ public class PushNotificationManager {
 
         String subText = "both".equalsIgnoreCase(channelType) ? "Push + SMS" : ("sms".equalsIgnoreCase(channelType) ? "SMS" : "Push Notice");
 
+        long[] vibration = new long[]{0, 300, 200, 300};
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.drawable.ic_lucide_bell)
                 .setContentTitle(title)
@@ -115,8 +139,11 @@ public class PushNotificationManager {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setSound(soundUri)
-                .setVibrate(new long[]{0, 250, 150, 250})
+                .setVibrate(vibration)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setFullScreenIntent(pendingIntent, false)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
 

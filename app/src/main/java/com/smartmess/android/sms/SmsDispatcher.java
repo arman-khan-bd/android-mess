@@ -81,14 +81,18 @@ public class SmsDispatcher {
     }
 
     public static boolean sendSms(Context context, int subscriptionId, String phoneNumber, String message) {
-        String cleanedPhone = phoneNumber.replaceAll("[\\s\\-\\(\\)]", "");
+        if (phoneNumber == null || message == null || message.trim().isEmpty()) {
+            return false;
+        }
+
+        String cleanedPhone = phoneNumber.replaceAll("[^0-9+]", "");
         if (cleanedPhone.isEmpty()) {
             return false;
         }
 
         try {
             SmsManager smsManager = null;
-            if (subscriptionId > 0) {
+            if (subscriptionId >= 0) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && context != null) {
                     try {
                         SmsManager sysManager = context.getSystemService(SmsManager.class);
@@ -119,16 +123,37 @@ public class SmsDispatcher {
                 return false;
             }
 
-            if (message.length() > 160) {
-                ArrayList<String> parts = smsManager.divideMessage(message);
+            ArrayList<String> parts = null;
+            try {
+                parts = smsManager.divideMessage(message);
+            } catch (Throwable ignored) {}
+
+            if (parts != null && parts.size() > 1) {
                 smsManager.sendMultipartTextMessage(cleanedPhone, null, parts, null, null);
             } else {
-                smsManager.sendTextMessage(cleanedPhone, null, message, null, null);
+                String textToSend = (parts != null && !parts.isEmpty()) ? parts.get(0) : message;
+                smsManager.sendTextMessage(cleanedPhone, null, textToSend, null, null);
             }
-            Log.d(TAG, "SMS dispatched successfully to " + cleanedPhone);
+            Log.d(TAG, "SMS dispatched successfully via SIM to " + cleanedPhone);
             return true;
         } catch (Throwable e) {
-            Log.e(TAG, "Failed sending SMS to " + cleanedPhone + ": " + e.getMessage(), e);
+            Log.e(TAG, "Primary SMS dispatch failed: " + e.getMessage() + ", retrying with default SmsManager...", e);
+            try {
+                SmsManager defManager = SmsManager.getDefault();
+                if (defManager != null) {
+                    ArrayList<String> parts = defManager.divideMessage(message);
+                    if (parts != null && parts.size() > 1) {
+                        defManager.sendMultipartTextMessage(cleanedPhone, null, parts, null, null);
+                    } else {
+                        String textToSend = (parts != null && !parts.isEmpty()) ? parts.get(0) : message;
+                        defManager.sendTextMessage(cleanedPhone, null, textToSend, null, null);
+                    }
+                    Log.d(TAG, "SMS dispatched successfully via default fallback to " + cleanedPhone);
+                    return true;
+                }
+            } catch (Throwable fallbackErr) {
+                Log.e(TAG, "Default SmsManager fallback also failed: " + fallbackErr.getMessage(), fallbackErr);
+            }
             return false;
         }
     }
