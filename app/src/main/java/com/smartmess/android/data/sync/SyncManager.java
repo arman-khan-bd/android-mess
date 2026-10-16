@@ -133,6 +133,40 @@ public class SyncManager {
                     // ==========================================
                     SyncPayload payload = databaseManager.getUnsyncedRecords();
                     if (payload != null && payload.totalRecordCount() > 0) {
+                        // 1.0. Check and upload any pending local voucher photos to cloud before pushing
+                        if (payload.getExpenses() != null) {
+                            for (com.smartmess.android.model.Expense exp : payload.getExpenses()) {
+                                String vPath = exp.getVoucherImageUrl();
+                                if (vPath != null && !vPath.trim().isEmpty()) {
+                                    String cleanPath = vPath.trim();
+                                    if (cleanPath.startsWith("file://")) {
+                                        cleanPath = cleanPath.substring(7);
+                                    }
+                                    java.io.File vFile = new java.io.File(cleanPath);
+                                    if (vFile.exists() && vFile.isFile() && vFile.length() > 0) {
+                                        try {
+                                            Log.i(TAG, "Uploading pending voucher photo: " + vFile.getName() + " (" + (vFile.length() / 1024) + " KB)...");
+                                            okhttp3.RequestBody fileBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("image/*"), vFile);
+                                            okhttp3.MultipartBody.Part part = okhttp3.MultipartBody.Part.createFormData("voucher_image", vFile.getName(), fileBody);
+                                            Response<com.smartmess.android.data.remote.dto.UploadResponse> upRes = apiService.uploadVoucher(part).execute();
+                                            if (upRes.isSuccessful() && upRes.body() != null && upRes.body().isSuccess()) {
+                                                String cloudUrl = upRes.body().getEffectiveUrl();
+                                                if (cloudUrl != null && !cloudUrl.isEmpty()) {
+                                                    Log.i(TAG, "Voucher uploaded successfully. Cloud URL: " + cloudUrl);
+                                                    exp.setVoucherImageUrl(cloudUrl);
+                                                    databaseManager.updateExpenseVoucherUrl(exp.getUuid(), cloudUrl);
+                                                }
+                                            } else {
+                                                Log.w(TAG, "Voucher upload HTTP failed: " + upRes.code());
+                                            }
+                                        } catch (Throwable upEx) {
+                                            Log.w(TAG, "Error uploading voucher before push: " + upEx.getMessage());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         Log.i(TAG, "Pushing " + payload.totalRecordCount() + " pending records to server...");
                         try {
                             Response<SyncPushResponse> pushResponse = apiService.pushData(payload).execute();

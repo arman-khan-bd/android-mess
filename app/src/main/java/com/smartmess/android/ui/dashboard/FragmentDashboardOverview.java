@@ -478,12 +478,8 @@ public class FragmentDashboardOverview extends Fragment {
                     tvVoucherTag.setVisibility(View.VISIBLE);
                     ivThumbnail.setPadding(0, 0, 0, 0);
                     ivThumbnail.setImageTintList(null);
-                    Glide.with(this)
-                            .load(voucherUrl.trim())
-                            .placeholder(R.drawable.ic_lucide_cart)
-                            .error(R.drawable.ic_lucide_cart)
-                            .centerCrop()
-                            .into(ivThumbnail);
+                    com.smartmess.android.utils.ImageLoaderHelper.loadVoucher(requireContext(), voucherUrl, ivThumbnail);
+                    tvVoucherTag.setOnClickListener(v -> com.smartmess.android.utils.ImageLoaderHelper.showVoucherDialog(requireContext(), expense, voucherUrl));
                 } else {
                     tvVoucherTag.setVisibility(View.GONE);
                     ivThumbnail.setImageResource(R.drawable.ic_lucide_cart);

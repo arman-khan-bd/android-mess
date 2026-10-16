@@ -266,14 +266,14 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnTplNotice"
+                    android:id="@+id/btnTplMoneyRequest"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:layout_marginEnd="6dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="📢 নোটিশ"
+                    android:text="💰 মানি রিকোয়েস্ট"
                     android:textSize="11sp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -284,7 +284,18 @@
                     android:layout_marginEnd="6dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="💰 বকেয়া তাগাদা"
+                    android:text="💳 বকেয়া তাগাদা"
+                    android:textSize="11sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTplMeeting"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="6dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="👥 জরুরি মিটিং"
                     android:textSize="11sp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -310,16 +321,50 @@
                     android:textSize="11sp" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTplClean"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="6dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="🧹 মেস পরিচ্ছন্নতা"
+                    android:textSize="11sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTplFeast"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="6dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="🍗 বিশেষ ভোজ"
+                    android:textSize="11sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTplNotice"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="6dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="📢 সাধারণ নোটিশ"
+                    android:textSize="11sp" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnTplAlert"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="⚠️ জরুরি"
+                    android:text="⚠️ জরুরি সতর্কবার্তা"
                     android:textSize="11sp" />
             </LinearLayout>
         </HorizontalScrollView>
+
 
         <!-- 5. TITLE INPUT -->
         <TextView

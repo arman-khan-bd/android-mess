@@ -32,6 +32,8 @@ public class FragmentSmsHub extends Fragment {
     private TextView tvPerSmsCostBadge;
     private TextView tvSmsSummarySubtitle;
     private View cardActionDueReminder;
+    private View cardActionMeeting;
+    private View cardActionMoneyRequest;
     private View cardActionBroadcast;
     private View cardActionBulkDispatch;
     private TextView tvSmsHistoryCount;
@@ -57,6 +59,8 @@ public class FragmentSmsHub extends Fragment {
         tvPerSmsCostBadge = v.findViewById(R.id.tvPerSmsCostBadge);
         tvSmsSummarySubtitle = v.findViewById(R.id.tvSmsSummarySubtitle);
         cardActionDueReminder = v.findViewById(R.id.cardActionDueReminder);
+        cardActionMeeting = v.findViewById(R.id.cardActionMeeting);
+        cardActionMoneyRequest = v.findViewById(R.id.cardActionMoneyRequest);
         cardActionBroadcast = v.findViewById(R.id.cardActionBroadcast);
         cardActionBulkDispatch = v.findViewById(R.id.cardActionBulkDispatch);
         tvSmsHistoryCount = v.findViewById(R.id.tvSmsHistoryCount);
@@ -65,6 +69,22 @@ public class FragmentSmsHub extends Fragment {
 
         cardActionDueReminder.setOnClickListener(view ->
                 startActivity(new Intent(requireContext(), DueReminderActivity.class)));
+
+        if (cardActionMeeting != null) {
+            cardActionMeeting.setOnClickListener(view -> {
+                Intent intent = new Intent(requireContext(), SmsBroadcastActivity.class);
+                intent.putExtra(SmsBroadcastActivity.EXTRA_TEMPLATE_TYPE, "meeting");
+                startActivity(intent);
+            });
+        }
+
+        if (cardActionMoneyRequest != null) {
+            cardActionMoneyRequest.setOnClickListener(view -> {
+                Intent intent = new Intent(requireContext(), SmsBroadcastActivity.class);
+                intent.putExtra(SmsBroadcastActivity.EXTRA_TEMPLATE_TYPE, "money_request");
+                startActivity(intent);
+            });
+        }
 
         cardActionBroadcast.setOnClickListener(view ->
                 startActivity(new Intent(requireContext(), SmsBroadcastActivity.class)));

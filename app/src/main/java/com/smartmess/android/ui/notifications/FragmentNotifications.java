@@ -115,8 +115,10 @@ public class FragmentNotifications extends Fragment {
         if (btnFragOpenDispatcher != null) {
             btnFragOpenDispatcher.setOnClickListener(v -> {
                 try {
-                    SendNotificationBottomSheet sheet = SendNotificationBottomSheet.newInstance();
-                    sheet.show(getParentFragmentManager(), SendNotificationBottomSheet.TAG);
+                    if (isAdded() && getParentFragmentManager() != null && !getParentFragmentManager().isStateSaved()) {
+                        SendNotificationBottomSheet sheet = SendNotificationBottomSheet.newInstance();
+                        sheet.show(getParentFragmentManager(), SendNotificationBottomSheet.TAG);
+                    }
                 } catch (Throwable t) {
                     android.util.Log.e("FragmentNotifications", "Error showing SendNotificationBottomSheet: " + t.getMessage(), t);
                 }

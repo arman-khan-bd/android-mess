@@ -65,10 +65,13 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
             }
         }
 
-        if (expense.getVoucherImageUrl() != null && !expense.getVoucherImageUrl().isEmpty()) {
+        if (expense.getVoucherImageUrl() != null && !expense.getVoucherImageUrl().trim().isEmpty()) {
             holder.tvVoucherIndicator.setVisibility(View.VISIBLE);
+            holder.tvVoucherIndicator.setOnClickListener(v ->
+                    com.smartmess.android.utils.ImageLoaderHelper.showVoucherDialog(holder.itemView.getContext(), expense, expense.getVoucherImageUrl()));
         } else {
             holder.tvVoucherIndicator.setVisibility(View.GONE);
+            holder.tvVoucherIndicator.setOnClickListener(null);
         }
     }
 

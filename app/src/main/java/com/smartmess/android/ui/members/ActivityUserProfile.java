@@ -278,11 +278,7 @@ public class ActivityUserProfile extends AppCompatActivity {
         }
 
         // Avatar loading
-        if (targetUser.getAvatarUrl() != null && !targetUser.getAvatarUrl().trim().isEmpty()) {
-            Glide.with(this).load(targetUser.getAvatarUrl()).circleCrop().into(ivProfileAvatar);
-        } else {
-            ivProfileAvatar.setImageResource(R.drawable.ic_member);
-        }
+        com.smartmess.android.utils.ImageLoaderHelper.loadAvatar(this, targetUser.getAvatarUrl(), ivProfileAvatar);
 
         // Permissions for Manager UI
         if (isManager) {
@@ -704,7 +700,7 @@ public class ActivityUserProfile extends AppCompatActivity {
                             if (targetUserId == sessionManager.getUserId()) {
                                 sessionManager.setAvatarUrl(avatarUrl);
                             }
-                            Glide.with(ActivityUserProfile.this).load(avatarUrl).circleCrop().into(ivProfileAvatar);
+                            com.smartmess.android.utils.ImageLoaderHelper.loadAvatar(ActivityUserProfile.this, avatarUrl, ivProfileAvatar);
                             Toast.makeText(ActivityUserProfile.this, "প্রোফাইল ছবি সফলভাবে আপডেট হয়েছে!", Toast.LENGTH_SHORT).show();
                         });
                     } else {

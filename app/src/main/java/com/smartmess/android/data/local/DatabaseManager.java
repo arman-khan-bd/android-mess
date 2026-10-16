@@ -396,4 +396,19 @@ public class DatabaseManager {
             db.endTransaction();
         }
     }
+
+    /**
+     * Updates an expense record's voucher_image_url in SQLite with the uploaded cloud URL.
+     */
+    public void updateExpenseVoucherUrl(String uuid, String cloudVoucherUrl) {
+        if (uuid == null || cloudVoucherUrl == null) return;
+        try {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(ExpenseEntry.COL_VOUCHER_IMAGE_URL, cloudVoucherUrl);
+            db.update(ExpenseEntry.TABLE_NAME, values, ExpenseEntry.COL_UUID + " = ?", new String[]{uuid});
+        } catch (Exception e) {
+            android.util.Log.e("DatabaseManager", "Error updating expense voucher URL: " + e.getMessage());
+        }
+    }
 }

@@ -564,9 +564,11 @@ public class MainActivity extends AppCompatActivity {
             drawerItemNotifManager.setOnClickListener(v -> {
                 closeDrawer();
                 try {
-                    com.smartmess.android.ui.notifications.SendNotificationBottomSheet sheet =
-                            com.smartmess.android.ui.notifications.SendNotificationBottomSheet.newInstance();
-                    sheet.show(getSupportFragmentManager(), com.smartmess.android.ui.notifications.SendNotificationBottomSheet.TAG);
+                    if (!isFinishing() && !getSupportFragmentManager().isStateSaved()) {
+                        com.smartmess.android.ui.notifications.SendNotificationBottomSheet sheet =
+                                com.smartmess.android.ui.notifications.SendNotificationBottomSheet.newInstance();
+                        sheet.show(getSupportFragmentManager(), com.smartmess.android.ui.notifications.SendNotificationBottomSheet.TAG);
+                    }
                 } catch (Throwable t) {
                     android.util.Log.e("MainActivity", "Error showing SendNotificationBottomSheet: " + t.getMessage(), t);
                 }

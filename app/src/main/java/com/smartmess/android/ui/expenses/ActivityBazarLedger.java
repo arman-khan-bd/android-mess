@@ -321,35 +321,6 @@ public class ActivityBazarLedger extends AppCompatActivity {
     }
 
     private void showVoucherPreviewDialog(Expense expense, String voucherUrl) {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_voucher_preview, null, false);
-        if (dialogView == null) {
-            // Fallback: simple dialog
-            ImageView iv = new ImageView(this);
-            iv.setAdjustViewBounds(true);
-            Glide.with(this).load(voucherUrl).into(iv);
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle(expense.getTitle() + " (৳" + expense.getAmount() + ")")
-                    .setView(iv)
-                    .setPositiveButton("বন্ধ করুন", null)
-                    .show();
-            return;
-        }
-
-        ImageView ivPreview = dialogView.findViewById(R.id.ivFullVoucher);
-        TextView tvTitle = dialogView.findViewById(R.id.tvVoucherTitle);
-        TextView tvDetails = dialogView.findViewById(R.id.tvVoucherDetails);
-
-        if (tvTitle != null) tvTitle.setText(expense.getTitle());
-        if (tvDetails != null) {
-            tvDetails.setText("Amount: " + CurrencyUtils.format(expense.getAmount()) + " • Date: " + expense.getExpenseDate());
-        }
-        if (ivPreview != null) {
-            Glide.with(this).load(voucherUrl).into(ivPreview);
-        }
-
-        new MaterialAlertDialogBuilder(this)
-                .setView(dialogView)
-                .setPositiveButton("বন্ধ করুন", null)
-                .show();
+        com.smartmess.android.utils.ImageLoaderHelper.showVoucherDialog(this, expense, voucherUrl);
     }
 }

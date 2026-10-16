@@ -72,10 +72,14 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
     private MaterialButton btnSelectSim;
     private TextView tvSelectedSimLabel;
 
-    private MaterialButton btnTplNotice;
+    private MaterialButton btnTplMoneyRequest;
     private MaterialButton btnTplDue;
+    private MaterialButton btnTplMeeting;
     private MaterialButton btnTplMeal;
     private MaterialButton btnTplBazar;
+    private MaterialButton btnTplClean;
+    private MaterialButton btnTplFeast;
+    private MaterialButton btnTplNotice;
     private MaterialButton btnTplAlert;
 
     private EditText etTitle;
@@ -105,18 +109,26 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
         return new SendNotificationBottomSheet();
     }
 
+    @Override
+    public int getTheme() {
+        return R.style.CustomBottomSheetDialogTheme;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         try {
-            return inflater.inflate(R.layout.bottom_sheet_send_notification, container, false);
+            android.content.Context ctx = getContext() != null ? getContext() : requireActivity();
+            android.view.ContextThemeWrapper themeWrapper = new android.view.ContextThemeWrapper(ctx, R.style.CustomBottomSheetDialogTheme);
+            return LayoutInflater.from(themeWrapper).inflate(R.layout.bottom_sheet_send_notification, container, false);
         } catch (Throwable t) {
-            android.util.Log.e(TAG, "Fatal inflation error in SendNotificationBottomSheet: " + t.getMessage(), t);
-            if (getContext() != null) {
-                android.view.ContextThemeWrapper themeWrapper = new android.view.ContextThemeWrapper(getContext(), R.style.Theme_SmartMess);
-                return LayoutInflater.from(themeWrapper).inflate(R.layout.bottom_sheet_send_notification, container, false);
+            android.util.Log.e(TAG, "Themed inflation error: " + t.getMessage(), t);
+            try {
+                return inflater.inflate(R.layout.bottom_sheet_send_notification, container, false);
+            } catch (Throwable t2) {
+                android.util.Log.e(TAG, "Fatal fallback error: " + t2.getMessage(), t2);
+                return new android.widget.FrameLayout(requireContext());
             }
-            throw t;
         }
     }
 
@@ -164,10 +176,14 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
         btnSelectSim = view.findViewById(R.id.btnSheetSelectSim);
         tvSelectedSimLabel = view.findViewById(R.id.tvSheetSelectedSimLabel);
 
-        btnTplNotice = view.findViewById(R.id.btnTplNotice);
+        btnTplMoneyRequest = view.findViewById(R.id.btnTplMoneyRequest);
         btnTplDue = view.findViewById(R.id.btnTplDue);
+        btnTplMeeting = view.findViewById(R.id.btnTplMeeting);
         btnTplMeal = view.findViewById(R.id.btnTplMeal);
         btnTplBazar = view.findViewById(R.id.btnTplBazar);
+        btnTplClean = view.findViewById(R.id.btnTplClean);
+        btnTplFeast = view.findViewById(R.id.btnTplFeast);
+        btnTplNotice = view.findViewById(R.id.btnTplNotice);
         btnTplAlert = view.findViewById(R.id.btnTplAlert);
 
         etTitle = view.findViewById(R.id.etSheetTitle);
@@ -181,6 +197,7 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
             btnDismiss.setOnClickListener(v -> dismiss());
         }
     }
+
 
     private void loadMembers() {
         try {
@@ -314,11 +331,11 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
         }
 
         // Templates
-        if (btnTplNotice != null) {
-            btnTplNotice.setOnClickListener(v -> {
-                selectedType = NotificationCenterHelper.TYPE_NOTICE;
-                etTitle.setText("জরুরি মেস বিজ্ঞপ্তি");
-                etMessage.setText("মেস ব্যবস্থাপনা থেকে বিশেষ বিজ্ঞপ্তি: মেসের নোটিশ বোর্ডে দেওয়া গুরুত্বপূর্ণ নির্দেশনাটি সকলে লক্ষ্য করুন।");
+        if (btnTplMoneyRequest != null) {
+            btnTplMoneyRequest.setOnClickListener(v -> {
+                selectedType = NotificationCenterHelper.TYPE_BUDGET;
+                etTitle.setText("মেস ফান্ডে টাকা জমার অনুরোধ");
+                etMessage.setText("সকল মেস সদস্যের দৃষ্টি আকর্ষণ করা যাচ্ছে: মেসের চলতি বাজার ও অন্যান্য খরচ সচল রাখতে মেস ফান্ডে দ্রুত টাকা জমা দেওয়ার জন্য বিনীত অনুরোধ করা হচ্ছে।");
             });
         }
 
@@ -330,11 +347,19 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
             });
         }
 
+        if (btnTplMeeting != null) {
+            btnTplMeeting.setOnClickListener(v -> {
+                selectedType = NotificationCenterHelper.TYPE_NOTICE;
+                etTitle.setText("জরুরি মেস মিটিং সংক্রান্ত নোটিশ");
+                etMessage.setText("সকল মেস সদস্যদের অবগতির জন্য জানানো যাচ্ছে: আজ রাত ১০:০০ টায় মেসের ডাইনিং রুমে এক জরুরি সাধারণ সভা (মিটিং) অনুষ্ঠিত হবে। সকলের যথাসময়ে উপস্থিতি একান্ত কাম্য।");
+            });
+        }
+
         if (btnTplMeal != null) {
             btnTplMeal.setOnClickListener(v -> {
                 selectedType = "meal";
                 etTitle.setText("আগামীকালের মিল নিশ্চিতকরণ");
-                etMessage.setText("অনুগ্রহ করে রাত ১০:০০ টার পূর্বে আপনার আগামীকালের সকাল, দুপুর ও রাতের মিল স্ট্যাটাস অ্যাপে চেক ও লক করুন।");
+                etMessage.setText("অনুগ্রহ করে রাত ১০:০০ টার পূর্বে আপনার আগামীকালের সকাল, দুপুর ও রাতের মিল স্ট্যাটাস অ্যাপে চেক ও লক করুন। সময় পার হলে কোনো পরিবর্তন গ্রহণযোগ্য নয়।");
             });
         }
 
@@ -342,15 +367,39 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
             btnTplBazar.setOnClickListener(v -> {
                 selectedType = "bazar";
                 etTitle.setText("বাজারের দায়িত্ব বণ্টন");
-                etMessage.setText("মেস বিজ্ঞপ্তি: আগামীকাল সকালের বাজার দায়িত্ব আপনার উপর ন্যস্ত করা হয়েছে। সময়মতো বাজারে যাওয়ার জন্য প্রস্তুত থাকুন।");
+                etMessage.setText("মেস বিজ্ঞপ্তি: আগামীকাল সকালের মেস বাজার করার দায়িত্ব আপনার উপর ন্যস্ত করা হয়েছে। সময়মতো বাজার সম্পন্ন করে ভাউচার জমা দেওয়ার জন্য অনুরোধ করা হলো।");
+            });
+        }
+
+        if (btnTplClean != null) {
+            btnTplClean.setOnClickListener(v -> {
+                selectedType = NotificationCenterHelper.TYPE_NOTICE;
+                etTitle.setText("মেস পরিষ্কার-পরিচ্ছন্নতার নোটিশ");
+                etMessage.setText("মেস পরিচ্ছন্ন রাখা আমাদের সকলের দায়িত্ব। অনুগ্রহ করে নিজের রুম ও ডাইনিং স্পেস পরিচ্ছন্ন রাখুন এবং নির্দিষ্ট স্থানে ময়লা ফেলুন।");
+            });
+        }
+
+        if (btnTplFeast != null) {
+            btnTplFeast.setOnClickListener(v -> {
+                selectedType = NotificationCenterHelper.TYPE_NOTICE;
+                etTitle.setText("মেস বিশেষ ভোজ / ফিস্ট নোটিশ");
+                etMessage.setText("মেসের সকল সদস্যের অবগতির জন্য জানানো যাচ্ছে: আগামী শুক্রবার বিশেষ ভোজ (ফিস্ট) আয়োজন করা হবে। মিল সংক্রান্ত আপডেট ও এন্ট্রি নিশ্চিত করুন।");
+            });
+        }
+
+        if (btnTplNotice != null) {
+            btnTplNotice.setOnClickListener(v -> {
+                selectedType = NotificationCenterHelper.TYPE_NOTICE;
+                etTitle.setText("সাধারণ মেস নোটিশ");
+                etMessage.setText("মেস ব্যবস্থাপনা থেকে বিশেষ বিজ্ঞপ্তি: মেসের নোটিশ বোর্ডে দেওয়া গুরুত্বপূর্ণ নির্দেশনাটি সকলে লক্ষ্য করুন।");
             });
         }
 
         if (btnTplAlert != null) {
             btnTplAlert.setOnClickListener(v -> {
                 selectedType = "emergency";
-                etTitle.setText("জরুরি সতর্কতা");
-                etMessage.setText("সকল মেস সদস্যের দৃষ্টি আকর্ষণ করা যাচ্ছে: অতি জরুরি মেস প্রয়োজনে এখনই অ্যাপে যুক্ত হোন অথবা ম্যানেজারের সাথে যোগাযোগ করুন।");
+                etTitle.setText("জরুরি মেস সতর্কতা ও নোটিশ");
+                etMessage.setText("জরুরি বিজ্ঞপ্তি: অতি জরুরি মেস প্রয়োজনে এখনই অ্যাপে যুক্ত হোন অথবা সরাসরি মেস ম্যানেজারের সাথে যোগাযোগ করুন।");
             });
         }
 
@@ -384,12 +433,15 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
     private void updateCostEstimate() {
         if (tvCostEstimate == null || rgChannel == null) return;
 
+        android.content.Context ctx = getContext();
+        if (ctx == null) return;
+
         int channelId = rgChannel.getCheckedRadioButtonId();
         boolean isSms = (channelId == R.id.rbSheetChannelSms || channelId == R.id.rbSheetChannelBoth);
 
         if (!isSms) {
             tvCostEstimate.setText("খরচ: ৳০.০০ (অনলাইন পুশ সম্পূর্ণ ফ্রি)");
-            tvCostEstimate.setTextColor(ContextCompat.getColor(requireContext(), R.color.credit_green));
+            tvCostEstimate.setTextColor(ContextCompat.getColor(ctx, R.color.credit_green));
         } else {
             boolean isSingle = (rgAudience != null && rgAudience.getCheckedRadioButtonId() == R.id.rbSheetSingle);
             int count = isSingle ? 1 : Math.max(1, activeMembers != null ? activeMembers.size() : 1);
@@ -398,11 +450,18 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
                     "আনুমানিক খরচ: ৳%.2f (%d জন সদস্য @ ৳%.2f/এসএমএস • মেস খতিয়ান থেকে কর্তিত)",
                     total, count, perSmsCost);
             tvCostEstimate.setText(label);
-            tvCostEstimate.setTextColor(ContextCompat.getColor(requireContext(), R.color.warning_amber));
+            tvCostEstimate.setTextColor(ContextCompat.getColor(ctx, R.color.warning_amber));
         }
     }
 
     private void dispatchNotification() {
+        android.content.Context ctx = getContext() != null ? getContext().getApplicationContext() : null;
+        if (ctx == null && getActivity() != null) {
+            ctx = getActivity().getApplicationContext();
+        }
+        if (ctx == null) return;
+        final android.content.Context appContext = ctx;
+
         try {
             String title = etTitle.getText() != null ? etTitle.getText().toString().trim() : "";
             String message = etMessage.getText() != null ? etMessage.getText().toString().trim() : "";
@@ -423,14 +482,14 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
             User targetUser = null;
             if (isSingle) {
                 if (activeMembers == null || activeMembers.isEmpty()) {
-                    Toast.makeText(requireContext(), "কোনো সদস্য পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(appContext, "কোনো সদস্য পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 int idx = spinnerMember.getSelectedItemPosition();
                 if (idx >= 0 && idx < activeMembers.size()) {
                     targetUser = activeMembers.get(idx);
                 } else {
-                    Toast.makeText(requireContext(), "দয়া করে প্রাপক সদস্য নির্বাচন করুন", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(appContext, "দয়া করে প্রাপক সদস্য নির্বাচন করুন", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -440,11 +499,12 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
             if (channelId == R.id.rbSheetChannelSms) channel = "sms";
             else if (channelId == R.id.rbSheetChannelBoth) channel = "both";
 
-            // If SMS is involved, check SMS permission
+            // If SMS is involved, check SMS permission safely
             if ("sms".equalsIgnoreCase(channel) || "both".equalsIgnoreCase(channel)) {
-                if (!PermissionHelper.hasSmsPermission(requireActivity())) {
-                    PermissionHelper.requestSmsPermission(requireActivity());
-                    Toast.makeText(requireContext(), "এসএমএস পাঠানোর জন্য SMS অনুমতি প্রয়োজন", Toast.LENGTH_LONG).show();
+                android.app.Activity act = getActivity();
+                if (act != null && !PermissionHelper.hasSmsPermission(act)) {
+                    PermissionHelper.requestSmsPermission(act);
+                    Toast.makeText(appContext, "এসএমএস পাঠানোর জন্য SMS অনুমতি প্রয়োজন", Toast.LENGTH_LONG).show();
                     return;
                 }
             }
@@ -520,8 +580,9 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
                 }
 
                 final int finalSmsCount = smsSent;
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
+                android.app.Activity hostActivity = getActivity();
+                if (hostActivity != null) {
+                    hostActivity.runOnUiThread(() -> {
                         String successMsg;
                         if ("sms".equalsIgnoreCase(finalChannel)) {
                             successMsg = "সিম থেকে " + finalSmsCount + "টি এসএমএস সফলভাবে পাঠানো হয়েছে!";
@@ -530,8 +591,10 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
                         } else {
                             successMsg = "অনলাইন পুশ নোটিফিকেশন সফলভাবে পাঠানো হয়েছে!";
                         }
-                        Toast.makeText(requireContext(), successMsg, Toast.LENGTH_LONG).show();
-                        dismissAllowingStateLoss();
+                        Toast.makeText(appContext, successMsg, Toast.LENGTH_LONG).show();
+                        try {
+                            dismissAllowingStateLoss();
+                        } catch (Throwable ignored) {}
                     });
                 }
             });
@@ -542,7 +605,8 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
                 btnDispatch.setEnabled(true);
                 btnDispatch.setText("🚀 নোটিফিকেশন পাঠান");
             }
-            Toast.makeText(requireContext(), "নোটিফিকেশন পাঠানো যায়নি: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(appContext, "নোটিফিকেশন পাঠানো যায়নি: " + t.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 }
+

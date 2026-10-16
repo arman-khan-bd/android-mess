@@ -20,9 +20,9 @@ import com.smartmess.android.utils.CurrencyUtils;
 import com.smartmess.android.utils.PermissionHelper;
 import com.smartmess.android.utils.SessionManager;
 
-import java.util.List;
-
 public class SmsBroadcastActivity extends AppCompatActivity {
+
+    public static final String EXTRA_TEMPLATE_TYPE = "EXTRA_TEMPLATE_TYPE";
 
     private TextView tvActiveMemberCount;
     private TextView tvTotalBroadcastCost;
@@ -33,6 +33,13 @@ public class SmsBroadcastActivity extends AppCompatActivity {
     private MaterialButton btnBroadcastSelectSim;
     private List<com.smartmess.android.sms.SmsDispatcher.SimCardInfo> availableSims = new java.util.ArrayList<>();
     private int selectedSubscriptionId = -1;
+
+    private MaterialButton btnTplSmsMeeting;
+    private MaterialButton btnTplSmsMoney;
+    private MaterialButton btnTplSmsDue;
+    private MaterialButton btnTplSmsMeal;
+    private MaterialButton btnTplSmsBazar;
+    private MaterialButton btnTplSmsNotice;
 
     private UserDao userDao;
     private MessDao messDao;
@@ -54,6 +61,13 @@ public class SmsBroadcastActivity extends AppCompatActivity {
         tvBroadcastSimLabel = findViewById(R.id.tvBroadcastSimLabel);
         btnBroadcastSelectSim = findViewById(R.id.btnBroadcastSelectSim);
 
+        btnTplSmsMeeting = findViewById(R.id.btnTplSmsMeeting);
+        btnTplSmsMoney = findViewById(R.id.btnTplSmsMoney);
+        btnTplSmsDue = findViewById(R.id.btnTplSmsDue);
+        btnTplSmsMeal = findViewById(R.id.btnTplSmsMeal);
+        btnTplSmsBazar = findViewById(R.id.btnTplSmsBazar);
+        btnTplSmsNotice = findViewById(R.id.btnTplSmsNotice);
+
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
         userDao = new UserDao(helper);
         messDao = new MessDao(helper);
@@ -63,11 +77,54 @@ public class SmsBroadcastActivity extends AppCompatActivity {
 
         loadBroadcastInfo();
         loadSims();
+        setupTemplateButtons();
+
+        // Check if opened with a pre-requested template
+        String incomingTemplate = getIntent().getStringExtra(EXTRA_TEMPLATE_TYPE);
+        if (incomingTemplate != null && !incomingTemplate.isEmpty()) {
+            applyTemplate(incomingTemplate);
+        }
 
         if (btnBroadcastSelectSim != null) {
             btnBroadcastSelectSim.setOnClickListener(v -> showSimSelectorDialog());
         }
         btnDispatchBroadcast.setOnClickListener(v -> dispatchBroadcast());
+    }
+
+    private void setupTemplateButtons() {
+        if (btnTplSmsMeeting != null) btnTplSmsMeeting.setOnClickListener(v -> applyTemplate("meeting"));
+        if (btnTplSmsMoney != null) btnTplSmsMoney.setOnClickListener(v -> applyTemplate("money_request"));
+        if (btnTplSmsDue != null) btnTplSmsDue.setOnClickListener(v -> applyTemplate("due"));
+        if (btnTplSmsMeal != null) btnTplSmsMeal.setOnClickListener(v -> applyTemplate("meal"));
+        if (btnTplSmsBazar != null) btnTplSmsBazar.setOnClickListener(v -> applyTemplate("bazar"));
+        if (btnTplSmsNotice != null) btnTplSmsNotice.setOnClickListener(v -> applyTemplate("notice"));
+    }
+
+    private void applyTemplate(String type) {
+        String messName = sessionManager.getMessName();
+        if (messName == null || messName.isEmpty()) messName = "SmartMess";
+
+        String text;
+        if ("meeting".equalsIgnoreCase(type)) {
+            text = "মেস মিটিং নোটিশ: আগামী [তারিখ/সময়] মেসের সকল সদস্যের উপস্থিতিতে জরুরি সাধারণ সভা অনুষ্ঠিত হবে। সবার উপস্থিতি বাধ্যতামূলক। - " + messName;
+        } else if ("money_request".equalsIgnoreCase(type)) {
+            text = "মানি রিকোয়েস্ট: মেসের চলতি মাসের মিল ও বাজার পরিচালনার জন্য নির্ধারিত অগ্রিম টাকা দ্রুত জমা দেওয়ার অনুরোধ করা হচ্ছে। - " + messName;
+        } else if ("due".equalsIgnoreCase(type)) {
+            text = "বকেয়া তাগাদা: মেসের চলতি হিসাব অনুযায়ী আপনার বকেয়া টাকা দ্রুত পরিশোধের জন্য অনুরোধ জানানো হচ্ছে। বিস্তারিত দেখতে অ্যাপ চেক করুন। - " + messName;
+        } else if ("meal".equalsIgnoreCase(type)) {
+            text = "মিল বন্ধ/লক নোটিশ: প্রতিদিন রাত ১০টার মধ্যে পরের দিনের মিল অন/অফ নিশ্চিত করুন। নির্ধারিত সময়ের পর পরিবর্তন গ্রহণযোগ্য নয়। - " + messName;
+        } else if ("bazar".equalsIgnoreCase(type)) {
+            text = "বাজার ডিউটি নোটিশ: মেসের শিডিউল অনুযায়ী আগামীকালের বাজার করার দায়িত্ব যাদের রয়েছে তারা যথাসময়ে প্রস্তুতি নিন। - " + messName;
+        } else {
+            text = "জরুরি মেস নোটিশ: মেসের নিয়ম ও পরিচ্ছন্নতা বজায় রাখতে সকল সদস্যের আন্তরিক সহযোগিতা কামনা করা হচ্ছে। - " + messName;
+        }
+
+        if (etBroadcastMessage != null) {
+            etBroadcastMessage.setText(text);
+            etBroadcastMessage.setSelection(text.length());
+            etBroadcastMessage.requestFocus();
+            Toast.makeText(this, "টেমপ্লেট লোড করা হয়েছে", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loadSims() {

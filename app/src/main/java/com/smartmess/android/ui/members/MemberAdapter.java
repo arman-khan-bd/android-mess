@@ -55,11 +55,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         }
 
         // Avatar
-        if (member.getAvatarUrl() != null && !member.getAvatarUrl().trim().isEmpty()) {
-            Glide.with(context).load(member.getAvatarUrl()).circleCrop().into(holder.ivItemMemberAvatar);
-        } else {
-            holder.ivItemMemberAvatar.setImageResource(R.drawable.ic_member);
-        }
+        com.smartmess.android.utils.ImageLoaderHelper.loadAvatar(context, member.getAvatarUrl(), holder.ivItemMemberAvatar);
 
         // Role Badge
         if (member.isManager()) {
