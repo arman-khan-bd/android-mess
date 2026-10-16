@@ -248,6 +248,12 @@ public class MainActivity extends AppCompatActivity {
         } catch (Throwable ignored) {}
     }
 
+    private final com.smartmess.android.notification.FirebaseMessagingHelper.NotificationListener realtimeNotifListener =
+            notification -> runOnUiThread(() -> {
+                updateNotificationBadge();
+                loadHeaderData();
+            });
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -257,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             com.smartmess.android.utils.BatteryOptimizationHelper.promptOnceIfNeeded(this);
             com.smartmess.android.notification.PushNotificationSyncWorker.runImmediateSync(this);
+            com.smartmess.android.notification.FirebaseMessagingHelper.addListener(realtimeNotifListener);
         } catch (Throwable ignored) {}
 
         // Schedule recurring 1-minute auto sync
@@ -268,6 +275,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         autoSyncHandler.removeCallbacks(autoSyncRunnable);
+        try {
+            com.smartmess.android.notification.FirebaseMessagingHelper.removeListener(realtimeNotifListener);
+        } catch (Throwable ignored) {}
     }
 
     @Override
@@ -351,29 +361,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private final com.smartmess.android.notification.FirebaseMessagingHelper.NotificationListener realtimeNotifListener =
-            notification -> runOnUiThread(() -> {
-                updateNotificationBadge();
-                loadHeaderData();
-            });
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadHeaderData();
-        updateNotificationBadge();
-        try {
-            com.smartmess.android.notification.FirebaseMessagingHelper.addListener(realtimeNotifListener);
-        } catch (Throwable ignored) {}
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        try {
-            com.smartmess.android.notification.FirebaseMessagingHelper.removeListener(realtimeNotifListener);
-        } catch (Throwable ignored) {}
-    }
 
     private void loadHeaderData() {
         try {

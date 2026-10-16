@@ -165,7 +165,7 @@ public class SmartMessFirebaseMessagingService extends FirebaseMessagingService 
                     newUser.setRole(data.get("user_role") != null ? data.get("user_role") : "member");
                     newUser.setAvatarUrl(data.get("avatar_url"));
                     newUser.setStatus("active");
-                    userDao.insert(newUser);
+                    userDao.insertOrUpdate(newUser);
                 }
             }
 

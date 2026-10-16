@@ -43,6 +43,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     @Override
     public void onBindViewHolder(@NonNull MemberViewHolder holder, int position) {
         User member = members.get(position);
+        boolean isManager = sessionManager.isManager();
         holder.tvMemberName.setText(member.getName());
 
         // Phone number visible to all mess members
