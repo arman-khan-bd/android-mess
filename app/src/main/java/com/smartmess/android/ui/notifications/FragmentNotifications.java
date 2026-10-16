@@ -80,11 +80,29 @@ public class FragmentNotifications extends Fragment {
         return view;
     }
 
+    private final com.smartmess.android.realtime.PusherRealtimeManager.NotificationListener realtimeListener =
+            notification -> {
+                if (isAdded() && getActivity() != null) {
+                    getActivity().runOnUiThread(this::loadNotifications);
+                }
+            };
+
     @Override
     public void onResume() {
         super.onResume();
         loadNotifications();
         updateBatteryPromptCard();
+        try {
+            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(requireContext()).addListener(realtimeListener);
+        } catch (Throwable ignored) {}
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(requireContext()).removeListener(realtimeListener);
+        } catch (Throwable ignored) {}
     }
 
     private void initViews(View view) {
@@ -107,10 +125,9 @@ public class FragmentNotifications extends Fragment {
         adapter = new NotificationRowAdapter();
         rvFragNotifications.setAdapter(adapter);
 
-        // Manager Controls
-        boolean isManager = sessionManager.isManager() || sessionManager.isAssistant();
+        // Dispatch Controls (Available for all mess members)
         if (cardFragManagerDispatch != null) {
-            cardFragManagerDispatch.setVisibility(isManager ? View.VISIBLE : View.GONE);
+            cardFragManagerDispatch.setVisibility(View.VISIBLE);
         }
         if (btnFragOpenDispatcher != null) {
             btnFragOpenDispatcher.setOnClickListener(v -> {

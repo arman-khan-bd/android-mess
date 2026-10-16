@@ -140,6 +140,16 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:id="@+id/tvProfileEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="member@smartmess.com"
+                        android:textColor="@color/text_muted"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
+
+                    <TextView
                         android:id="@+id/tvJoinedDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -147,6 +157,78 @@
                         android:text="যুক্ত হয়েছেন অক্টোবর ২০২৬"
                         android:textColor="@color/text_muted"
                         android:textSize="11sp" />
+
+                    <!-- Quick Action Buttons: Call, Email, Facebook -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCallMember"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="38dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:paddingHorizontal="6dp"
+                            android:text="কল"
+                            android:textColor="@color/credit_green"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="8dp"
+                            app:icon="@drawable/ic_phone_call"
+                            app:iconSize="13dp"
+                            app:iconTint="@color/credit_green"
+                            app:strokeColor="@color/credit_green"
+                            app:strokeWidth="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnEmailMember"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="38dp"
+                            android:layout_weight="1"
+                            android:layout_marginHorizontal="4dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:paddingHorizontal="6dp"
+                            android:text="ইমেইল"
+                            android:textColor="@color/primary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="8dp"
+                            app:icon="@drawable/ic_email_outline"
+                            app:iconSize="13dp"
+                            app:iconTint="@color/primary"
+                            app:strokeColor="@color/primary"
+                            app:strokeWidth="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnFacebookMember"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="38dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:paddingHorizontal="6dp"
+                            android:text="ফেসবুক"
+                            android:textColor="#1877F2"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="8dp"
+                            app:icon="@drawable/ic_facebook_logo"
+                            app:iconSize="13dp"
+                            app:iconTint="#1877F2"
+                            app:strokeColor="#1877F2"
+                            app:strokeWidth="1dp" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"

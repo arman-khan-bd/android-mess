@@ -27,14 +27,17 @@ public class SessionManager {
     private static final String KEY_USER_AVATAR = "user_avatar_url";
     private static final String KEY_INVITE_CODE = "invite_code";
 
+    private final Context context;
     private final SharedPreferences prefs;
 
     public SessionManager(Context context) {
-        this.prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        this.context = context != null ? context.getApplicationContext() : null;
+        this.prefs = context != null ? context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE) : null;
     }
 
     public void createSession(long userId, String userUuid, String name, String phone, String role,
                               long messId, String messUuid, String messName, String token) {
+        if (prefs == null) return;
         prefs.edit()
                 .putBoolean(KEY_IS_LOGGED_IN, true)
                 .putLong(KEY_USER_ID, userId)
@@ -47,6 +50,12 @@ public class SessionManager {
                 .putString(KEY_MESS_NAME, messName)
                 .putString(KEY_AUTH_TOKEN, token)
                 .apply();
+
+        if (context != null) {
+            try {
+                com.smartmess.android.realtime.PusherRealtimeManager.getInstance(context).updateSubscription();
+            } catch (Throwable ignored) {}
+        }
     }
 
     public boolean isLoggedIn() {
@@ -219,6 +228,13 @@ public class SessionManager {
     }
 
     public void clearSession() {
-        prefs.edit().clear().apply();
+        if (prefs != null) {
+            prefs.edit().clear().apply();
+        }
+        if (context != null) {
+            try {
+                com.smartmess.android.realtime.PusherRealtimeManager.getInstance(context).disconnect();
+            } catch (Throwable ignored) {}
+        }
     }
 }

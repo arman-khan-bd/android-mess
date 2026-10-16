@@ -37,6 +37,18 @@
             android:textSize="17sp"
             android:textStyle="bold" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTopSendNotif"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:layout_marginEnd="6dp"
+            android:backgroundTint="@color/primary"
+            android:text="+ পাঠান"
+            android:textColor="@android:color/white"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:cornerRadius="6dp" />
+
         <TextView
             android:id="@+id/btnMarkAllRead"
             android:layout_width="wrap_content"
@@ -93,7 +105,7 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <!-- Manager Quick Action Banner -->
+    <!-- Quick Action Banner -->
     <LinearLayout
         android:id="@+id/layoutManagerSendBanner"
         android:layout_width="match_parent"
@@ -104,7 +116,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="10dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:layout_width="20dp"
@@ -123,7 +135,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:text="ম্যানেজার নোটিফিকেশন হাব"
+                android:text="মেস নোটিফিকেশন হাব"
                 android:textColor="@color/text_primary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -182,6 +194,17 @@
             android:text="বাজার খরচ, দায়িত্ব হস্তান্তর, বাজেট সতর্কতা এবং ছুটির তথ্য এখানে দেখতে পাবেন।"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEmptySendNotif"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/primary"
+            android:text="+ নোটিফিকেশন পাঠান"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            app:cornerRadius="8dp" />
     </LinearLayout>
 
     <!-- Notifications List -->

@@ -45,14 +45,8 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         User member = members.get(position);
         holder.tvMemberName.setText(member.getName());
 
-        // Phone masking for non-managers
-        boolean isManager = sessionManager.isManager();
-        boolean isSelf = (sessionManager.getUserId() == member.getId());
-        if (isManager || isSelf) {
-            holder.tvMemberPhone.setText(member.getPhone());
-        } else {
-            holder.tvMemberPhone.setText(maskPhoneNumber(member.getPhone()));
-        }
+        // Phone number visible to all mess members
+        holder.tvMemberPhone.setText(member.getPhone() != null && !member.getPhone().isEmpty() ? member.getPhone() : "কোনো নম্বর নেই");
 
         // Avatar
         com.smartmess.android.utils.ImageLoaderHelper.loadAvatar(context, member.getAvatarUrl(), holder.ivItemMemberAvatar);

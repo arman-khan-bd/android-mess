@@ -64,10 +64,24 @@ public class ActivityNotificationCenter extends AppCompatActivity {
         loadNotifications();
     }
 
+    private final com.smartmess.android.realtime.PusherRealtimeManager.NotificationListener realtimeListener =
+            notification -> runOnUiThread(this::loadNotifications);
+
     @Override
     protected void onResume() {
         super.onResume();
         loadNotifications();
+        try {
+            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(this).addListener(realtimeListener);
+        } catch (Throwable ignored) {}
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(this).removeListener(realtimeListener);
+        } catch (Throwable ignored) {}
     }
 
     private void initViews() {
@@ -81,22 +95,32 @@ public class ActivityNotificationCenter extends AppCompatActivity {
 
         layoutManagerSendBanner = findViewById(R.id.layoutManagerSendBanner);
         btnOpenNotifManager = findViewById(R.id.btnOpenNotifManager);
+        View btnTopSendNotif = findViewById(R.id.btnTopSendNotif);
+        View btnEmptySendNotif = findViewById(R.id.btnEmptySendNotif);
 
-        boolean isManager = sessionManager.isManager() || sessionManager.isAssistant();
         if (layoutManagerSendBanner != null) {
-            layoutManagerSendBanner.setVisibility(isManager ? View.VISIBLE : View.GONE);
+            layoutManagerSendBanner.setVisibility(View.VISIBLE);
         }
-        if (btnOpenNotifManager != null) {
-            btnOpenNotifManager.setOnClickListener(v -> {
-                try {
-                    if (!isFinishing() && !getSupportFragmentManager().isStateSaved()) {
-                        SendNotificationBottomSheet sheet = SendNotificationBottomSheet.newInstance();
-                        sheet.show(getSupportFragmentManager(), SendNotificationBottomSheet.TAG);
-                    }
-                } catch (Throwable t) {
-                    android.util.Log.e("ActivityNotificationCenter", "Error showing SendNotificationBottomSheet: " + t.getMessage(), t);
+
+        View.OnClickListener sendClickListener = v -> {
+            try {
+                if (!isFinishing() && !getSupportFragmentManager().isStateSaved()) {
+                    SendNotificationBottomSheet sheet = SendNotificationBottomSheet.newInstance();
+                    sheet.show(getSupportFragmentManager(), SendNotificationBottomSheet.TAG);
                 }
-            });
+            } catch (Throwable t) {
+                android.util.Log.e("ActivityNotificationCenter", "Error showing SendNotificationBottomSheet: " + t.getMessage(), t);
+            }
+        };
+
+        if (btnOpenNotifManager != null) {
+            btnOpenNotifManager.setOnClickListener(sendClickListener);
+        }
+        if (btnTopSendNotif != null) {
+            btnTopSendNotif.setOnClickListener(sendClickListener);
+        }
+        if (btnEmptySendNotif != null) {
+            btnEmptySendNotif.setOnClickListener(sendClickListener);
         }
 
         btnBackNotifications.setOnClickListener(v -> finish());

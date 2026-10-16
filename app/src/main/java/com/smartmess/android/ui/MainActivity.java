@@ -351,6 +351,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private final com.smartmess.android.realtime.PusherRealtimeManager.NotificationListener realtimeNotifListener =
+            notification -> runOnUiThread(() -> {
+                updateNotificationBadge();
+                loadHeaderData();
+            });
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadHeaderData();
+        updateNotificationBadge();
+        try {
+            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(this).addListener(realtimeNotifListener);
+        } catch (Throwable ignored) {}
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(this).removeListener(realtimeNotifListener);
+        } catch (Throwable ignored) {}
+    }
+
     private void loadHeaderData() {
         try {
             String messName = sessionManager.getMessName();
@@ -478,7 +502,7 @@ public class MainActivity extends AppCompatActivity {
             int managerVisibility = isManager ? View.VISIBLE : View.GONE;
             if (tvDrawerManagerHeader != null) tvDrawerManagerHeader.setVisibility(managerVisibility);
             if (drawerItemSettings != null) drawerItemSettings.setVisibility(managerVisibility);
-            if (drawerItemNotifManager != null) drawerItemNotifManager.setVisibility(managerVisibility);
+            if (drawerItemNotifManager != null) drawerItemNotifManager.setVisibility(View.VISIBLE);
             if (drawerItemHandover != null) drawerItemHandover.setVisibility(managerVisibility);
 
         } catch (Throwable t) {

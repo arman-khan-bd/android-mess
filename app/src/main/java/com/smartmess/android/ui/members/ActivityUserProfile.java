@@ -81,9 +81,13 @@ public class ActivityUserProfile extends AppCompatActivity {
     private View btnEditAvatar;
     private TextView tvProfileName;
     private TextView tvProfilePhone;
+    private TextView tvProfileEmail;
     private TextView tvJoinedDate;
     private TextView tvRoleBadge;
     private TextView tvStatusBadge;
+    private MaterialButton btnCallMember;
+    private MaterialButton btnEmailMember;
+    private MaterialButton btnFacebookMember;
 
     private TextView tvCycleDates;
     private TextView tvTotalDeposits;
@@ -139,9 +143,13 @@ public class ActivityUserProfile extends AppCompatActivity {
         btnEditAvatar = findViewById(R.id.btnEditAvatar);
         tvProfileName = findViewById(R.id.tvProfileName);
         tvProfilePhone = findViewById(R.id.tvProfilePhone);
+        tvProfileEmail = findViewById(R.id.tvProfileEmail);
         tvJoinedDate = findViewById(R.id.tvJoinedDate);
         tvRoleBadge = findViewById(R.id.tvRoleBadge);
         tvStatusBadge = findViewById(R.id.tvStatusBadge);
+        btnCallMember = findViewById(R.id.btnCallMember);
+        btnEmailMember = findViewById(R.id.btnEmailMember);
+        btnFacebookMember = findViewById(R.id.btnFacebookMember);
 
         tvCycleDates = findViewById(R.id.tvCycleDates);
         tvTotalDeposits = findViewById(R.id.tvTotalDeposits);
@@ -237,13 +245,62 @@ public class ActivityUserProfile extends AppCompatActivity {
         // 1. Header Details
         tvProfileName.setText(targetUser.getName());
 
-        // Mask phone for non-managers
-        boolean isManager = sessionManager.isManager();
-        boolean isSelf = (sessionManager.getUserId() == targetUserId);
-        if (isManager || isSelf) {
-            tvProfilePhone.setText(targetUser.getPhone());
+        // Unmasked phone number for all mess members so any member can view and call
+        tvProfilePhone.setText(targetUser.getPhone());
+
+        // Email address
+        if (targetUser.getEmail() != null && !targetUser.getEmail().trim().isEmpty()) {
+            tvProfileEmail.setVisibility(View.VISIBLE);
+            tvProfileEmail.setText(targetUser.getEmail());
         } else {
-            tvProfilePhone.setText(maskPhoneNumber(targetUser.getPhone()));
+            tvProfileEmail.setVisibility(View.GONE);
+        }
+
+        // Call Button
+        if (btnCallMember != null) {
+            btnCallMember.setOnClickListener(v -> {
+                String phone = targetUser.getPhone();
+                if (phone != null && !phone.trim().isEmpty()) {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL, android.net.Uri.parse("tel:" + phone.trim()));
+                    startActivity(callIntent);
+                } else {
+                    Toast.makeText(this, "কোনো ফোন নম্বর পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // Email Button
+        if (btnEmailMember != null) {
+            btnEmailMember.setOnClickListener(v -> {
+                String email = targetUser.getEmail();
+                if (email != null && !email.trim().isEmpty()) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, android.net.Uri.parse("mailto:" + email.trim()));
+                    startActivity(Intent.createChooser(emailIntent, "ইমেইল পাঠান"));
+                } else {
+                    Toast.makeText(this, "এই সদস্যের ইমেইল অ্যাড্রেস যুক্ত করা হয়নি", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // Facebook Button
+        if (btnFacebookMember != null) {
+            btnFacebookMember.setOnClickListener(v -> {
+                String fb = targetUser.getFacebookUrl();
+                if (fb != null && !fb.trim().isEmpty()) {
+                    String url = fb.trim();
+                    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                        url = "https://" + url;
+                    }
+                    try {
+                        Intent fbIntent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url));
+                        startActivity(fbIntent);
+                    } catch (Exception e) {
+                        Toast.makeText(this, "ফেসবুক প্রোফাইল লিংক খোলা যায়নি", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "ফেসবুক প্রোফাইল লিংক এখনো যুক্ত করা হয়নি", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         if (targetUser.getCreatedAt() != null && targetUser.getCreatedAt().length() >= 10) {
@@ -281,6 +338,8 @@ public class ActivityUserProfile extends AppCompatActivity {
         com.smartmess.android.utils.ImageLoaderHelper.loadAvatar(this, targetUser.getAvatarUrl(), ivProfileAvatar);
 
         // Permissions for Manager UI
+        boolean isManager = sessionManager.isManager();
+        boolean isSelf = (sessionManager.getUserId() == targetUserId);
         if (isManager) {
             btnManageMemberTop.setVisibility(View.VISIBLE);
             layoutManagerActions.setVisibility(View.VISIBLE);
@@ -324,7 +383,7 @@ public class ActivityUserProfile extends AppCompatActivity {
                 android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        lp.topMargin = 24;
+        lp.topMargin = 18;
         tilPhone.setLayoutParams(lp);
         final com.google.android.material.textfield.TextInputEditText etPhone = new com.google.android.material.textfield.TextInputEditText(this);
         etPhone.setText(targetUser.getPhone());
@@ -332,12 +391,42 @@ public class ActivityUserProfile extends AppCompatActivity {
         tilPhone.addView(etPhone);
         layout.addView(tilPhone);
 
+        final com.google.android.material.textfield.TextInputLayout tilEmail = new com.google.android.material.textfield.TextInputLayout(this);
+        tilEmail.setHint("ইমেইল অ্যাড্রেস");
+        android.widget.LinearLayout.LayoutParams lpEmail = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        lpEmail.topMargin = 18;
+        tilEmail.setLayoutParams(lpEmail);
+        final com.google.android.material.textfield.TextInputEditText etEmail = new com.google.android.material.textfield.TextInputEditText(this);
+        etEmail.setText(targetUser.getEmail() != null ? targetUser.getEmail() : "");
+        etEmail.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        tilEmail.addView(etEmail);
+        layout.addView(tilEmail);
+
+        final com.google.android.material.textfield.TextInputLayout tilFacebook = new com.google.android.material.textfield.TextInputLayout(this);
+        tilFacebook.setHint("ফেসবুক প্রোফাইল লিংক (URL)");
+        android.widget.LinearLayout.LayoutParams lpFb = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        lpFb.topMargin = 18;
+        tilFacebook.setLayoutParams(lpFb);
+        final com.google.android.material.textfield.TextInputEditText etFacebook = new com.google.android.material.textfield.TextInputEditText(this);
+        etFacebook.setText(targetUser.getFacebookUrl() != null ? targetUser.getFacebookUrl() : "");
+        etFacebook.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_URI);
+        tilFacebook.addView(etFacebook);
+        layout.addView(tilFacebook);
+
         new MaterialAlertDialogBuilder(this)
                 .setTitle("প্রোফাইল তথ্য পরিবর্তন")
                 .setView(layout)
                 .setPositiveButton("সংরক্ষণ করুন", (dialog, which) -> {
                     String newName = etName.getText() != null ? etName.getText().toString().trim() : "";
                     String newPhone = etPhone.getText() != null ? etPhone.getText().toString().trim() : "";
+                    String newEmail = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+                    String newFacebook = etFacebook.getText() != null ? etFacebook.getText().toString().trim() : "";
                     if (newName.isEmpty()) {
                         Toast.makeText(this, "নাম খালি রাখা যাবে না", Toast.LENGTH_SHORT).show();
                         return;
@@ -346,16 +435,19 @@ public class ActivityUserProfile extends AppCompatActivity {
                         Toast.makeText(this, "ফোন নম্বর খালি রাখা যাবে না", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    saveProfileChanges(newName, newPhone);
+                    saveProfileChanges(newName, newPhone, newEmail, newFacebook);
                 })
                 .setNegativeButton("বাতিল", null)
                 .show();
     }
 
-    private void saveProfileChanges(String newName, String newPhone) {
+    private void saveProfileChanges(String newName, String newPhone, String newEmail, String newFacebook) {
         targetUser.setName(newName);
         targetUser.setPhone(newPhone);
-        userDao.updateUserProfile(targetUserId, newName, newPhone, targetUser.getAvatarUrl());
+        targetUser.setEmail(newEmail);
+        targetUser.setFacebookUrl(newFacebook);
+
+        userDao.updateUserProfile(targetUserId, newName, newPhone, newEmail, newFacebook, targetUser.getAvatarUrl());
 
         if (sessionManager.getUserId() == targetUserId) {
             sessionManager.setUserName(newName);
@@ -363,21 +455,21 @@ public class ActivityUserProfile extends AppCompatActivity {
         }
 
         tvProfileName.setText(newName);
-        boolean isManager = sessionManager.isManager();
-        boolean isSelf = (sessionManager.getUserId() == targetUserId);
-        if (isManager || isSelf) {
-            tvProfilePhone.setText(newPhone);
+        tvProfilePhone.setText(newPhone);
+        if (newEmail != null && !newEmail.isEmpty()) {
+            tvProfileEmail.setVisibility(View.VISIBLE);
+            tvProfileEmail.setText(newEmail);
         } else {
-            tvProfilePhone.setText(maskPhoneNumber(newPhone));
+            tvProfileEmail.setVisibility(View.GONE);
         }
 
         Toast.makeText(this, "প্রোফাইল তথ্য সফলভাবে আপডেট হয়েছে!", Toast.LENGTH_SHORT).show();
 
         // Sync to server API
-        syncProfileToServer(newName, newPhone);
+        syncProfileToServer(newName, newPhone, newEmail, newFacebook);
     }
 
-    private void syncProfileToServer(String newName, String newPhone) {
+    private void syncProfileToServer(String newName, String newPhone, String newEmail, String newFacebook) {
         OkHttpClient client = ApiClient.getOkHttpClient(getApplicationContext());
         boolean isSelf = (sessionManager.getUserId() == targetUserId);
 
@@ -387,6 +479,9 @@ public class ActivityUserProfile extends AppCompatActivity {
         FormBody.Builder formBuilder = new FormBody.Builder()
                 .add("name", newName)
                 .add("phone", newPhone);
+
+        if (newEmail != null) formBuilder.add("email", newEmail);
+        if (newFacebook != null) formBuilder.add("facebook_url", newFacebook);
 
         if (!isSelf) {
             if (targetUser.getRole() != null) formBuilder.add("role", targetUser.getRole());

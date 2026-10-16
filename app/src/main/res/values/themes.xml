@@ -72,7 +72,6 @@
     <!-- Bottom Sheet Dialog Theme with Material Components -->
     <style name="CustomBottomSheetDialogTheme" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
-        <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/surface</item>
     </style>

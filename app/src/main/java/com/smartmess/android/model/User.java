@@ -38,6 +38,12 @@ public class User {
     @SerializedName(value = "avatarUrl", alternate = {"avatar_url"})
     private String avatarUrl;
 
+    @SerializedName("email")
+    private String email;
+
+    @SerializedName(value = "facebookUrl", alternate = {"facebook_url", "facebook"})
+    private String facebookUrl;
+
     @SerializedName(value = "createdAt", alternate = {"created_at"})
     private String createdAt;
 
@@ -81,6 +87,12 @@ public class User {
 
     public String getAvatarUrl() { return avatarUrl; }
     public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getFacebookUrl() { return facebookUrl; }
+    public void setFacebookUrl(String facebookUrl) { this.facebookUrl = facebookUrl; }
 
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }

@@ -61,6 +61,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + UserEntry.COL_ROLE + " TEXT DEFAULT 'member', "
                 + UserEntry.COL_STATUS + " TEXT DEFAULT 'active', "
                 + UserEntry.COL_AVATAR_URL + " TEXT, "
+                + UserEntry.COL_EMAIL + " TEXT, "
+                + UserEntry.COL_FACEBOOK_URL + " TEXT, "
                 + UserEntry.COL_CREATED_AT + " TEXT, "
                 + UserEntry.COL_UPDATED_AT + " TEXT);");
 
@@ -185,6 +187,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (Exception ignored) {}
         try {
             db.execSQL("ALTER TABLE " + UserEntry.TABLE_NAME + " ADD COLUMN " + UserEntry.COL_AVATAR_URL + " TEXT;");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("ALTER TABLE " + UserEntry.TABLE_NAME + " ADD COLUMN " + UserEntry.COL_EMAIL + " TEXT;");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("ALTER TABLE " + UserEntry.TABLE_NAME + " ADD COLUMN " + UserEntry.COL_FACEBOOK_URL + " TEXT;");
         } catch (Exception ignored) {}
         try {
             db.execSQL("CREATE TABLE IF NOT EXISTS " + MealVacationEntry.TABLE_NAME + " ("

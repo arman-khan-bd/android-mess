@@ -72,6 +72,11 @@ public class SmartMessApp extends Application {
             com.smartmess.android.notification.PushNotificationSyncWorker.runImmediateSync(this);
         } catch (Throwable ignored) {}
 
+        // Initialize Pusher Instant Realtime Notification Client
+        try {
+            com.smartmess.android.realtime.PusherRealtimeManager.init(this);
+        } catch (Throwable ignored) {}
+
         // Prepopulate demo mess & default plans if fresh database
         try {
             seedInitialDataIfEmpty();

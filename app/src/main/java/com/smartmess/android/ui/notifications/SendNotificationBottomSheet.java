@@ -114,6 +114,28 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
         return R.style.CustomBottomSheetDialogTheme;
     }
 
+    @NonNull
+    @Override
+    public android.app.Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        com.google.android.material.bottomsheet.BottomSheetDialog dialog =
+                (com.google.android.material.bottomsheet.BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+        dialog.setOnShowListener(dialogInterface -> {
+            try {
+                com.google.android.material.bottomsheet.BottomSheetDialog d = (com.google.android.material.bottomsheet.BottomSheetDialog) dialogInterface;
+                android.widget.FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+                if (bottomSheet != null) {
+                    com.google.android.material.bottomsheet.BottomSheetBehavior<android.widget.FrameLayout> behavior =
+                            com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet);
+                    behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED);
+                    behavior.setSkipCollapsed(true);
+                }
+            } catch (Throwable t) {
+                android.util.Log.e(TAG, "Error configuring bottom sheet dialog on show: " + t.getMessage());
+            }
+        });
+        return dialog;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -50,6 +50,8 @@ public class UserDao {
         values.put(UserEntry.COL_ROLE, user.getRole() != null ? user.getRole() : "member");
         values.put(UserEntry.COL_STATUS, user.getStatus() != null ? user.getStatus() : "active");
         values.put(UserEntry.COL_AVATAR_URL, user.getAvatarUrl());
+        values.put(UserEntry.COL_EMAIL, user.getEmail());
+        values.put(UserEntry.COL_FACEBOOK_URL, user.getFacebookUrl());
         values.put(UserEntry.COL_CREATED_AT, user.getCreatedAt());
         values.put(UserEntry.COL_UPDATED_AT, user.getUpdatedAt());
 
@@ -180,10 +182,16 @@ public class UserDao {
     }
 
     public void updateUserProfile(long userId, String name, String phone, String avatarUrl) {
+        updateUserProfile(userId, name, phone, null, null, avatarUrl);
+    }
+
+    public void updateUserProfile(long userId, String name, String phone, String email, String facebookUrl, String avatarUrl) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         if (name != null) values.put(UserEntry.COL_NAME, name);
         if (phone != null) values.put(UserEntry.COL_PHONE, phone);
+        if (email != null) values.put(UserEntry.COL_EMAIL, email);
+        if (facebookUrl != null) values.put(UserEntry.COL_FACEBOOK_URL, facebookUrl);
         if (avatarUrl != null) values.put(UserEntry.COL_AVATAR_URL, avatarUrl);
         values.put(UserEntry.COL_UPDATED_AT, com.smartmess.android.utils.DateTimeUtils.getCurrentDateTime());
         db.update(UserEntry.TABLE_NAME, values, UserEntry.COL_ID + " = ?", new String[]{String.valueOf(userId)});
@@ -202,6 +210,14 @@ public class UserDao {
         int avatarCol = cursor.getColumnIndex(UserEntry.COL_AVATAR_URL);
         if (avatarCol >= 0 && !cursor.isNull(avatarCol)) {
             user.setAvatarUrl(cursor.getString(avatarCol));
+        }
+        int emailCol = cursor.getColumnIndex(UserEntry.COL_EMAIL);
+        if (emailCol >= 0 && !cursor.isNull(emailCol)) {
+            user.setEmail(cursor.getString(emailCol));
+        }
+        int fbCol = cursor.getColumnIndex(UserEntry.COL_FACEBOOK_URL);
+        if (fbCol >= 0 && !cursor.isNull(fbCol)) {
+            user.setFacebookUrl(cursor.getString(fbCol));
         }
         user.setCreatedAt(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.COL_CREATED_AT)));
         user.setUpdatedAt(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.COL_UPDATED_AT)));
