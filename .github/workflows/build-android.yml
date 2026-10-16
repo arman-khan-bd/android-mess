@@ -71,6 +71,31 @@ jobs:
         run: |
           ./gradlew assembleRelease --stacktrace --no-daemon
 
+      - name: Extract Dynamic App Version
+        id: app_version
+        run: |
+          if [ -f "version.properties" ]; then
+            MAJOR=$(grep 'VERSION_MAJOR' version.properties | cut -d'=' -f2 | tr -d ' \r\n')
+            MINOR=$(grep 'VERSION_MINOR' version.properties | cut -d'=' -f2 | tr -d ' \r\n')
+            PATCH=$(grep 'VERSION_PATCH' version.properties | cut -d'=' -f2 | tr -d ' \r\n')
+            BUILD=$(grep 'VERSION_BUILD' version.properties | cut -d'=' -f2 | tr -d ' \r\n')
+            V_NAME="${MAJOR}.${MINOR}.${PATCH}"
+            V_CODE=$((MAJOR * 10000 + MINOR * 100 + PATCH * 10 + BUILD))
+          else
+            V_NAME="1.1.0"
+            V_CODE=10101
+          fi
+          
+          if [ -n "$GITHUB_RUN_NUMBER" ]; then
+            V_CODE=$((V_CODE + GITHUB_RUN_NUMBER))
+          fi
+          
+          echo "VERSION_NAME=${V_NAME}" >> $GITHUB_OUTPUT
+          echo "VERSION_CODE=${V_CODE}" >> $GITHUB_OUTPUT
+          echo "APP_TAG=v${V_NAME}" >> $GITHUB_OUTPUT
+          echo "APP_RELEASE_TITLE=SmartMess v${V_NAME} (Build ${V_CODE})" >> $GITHUB_OUTPUT
+          echo "Resolved Version: v${V_NAME} (Code: ${V_CODE})"
+
       - name: Locate & Verify Built APKs
         run: |
           echo "Listing generated APK artifacts in app/build/outputs/apk/:"
@@ -80,18 +105,18 @@ jobs:
         uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
-          name: smartmess-debug-apk-api19
+          name: SmartMess-v${{ steps.app_version.outputs.VERSION_NAME }}-debug
           path: app/build/outputs/apk/debug/*.apk
-          retention-days: 1
+          retention-days: 7
           if-no-files-found: warn
 
       - name: Upload Release APK Artifact
         uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
-          name: smartmess-release-unsigned-apk-api19
+          name: SmartMess-v${{ steps.app_version.outputs.VERSION_NAME }}-release
           path: app/build/outputs/apk/release/*.apk
-          retention-days: 1
+          retention-days: 7
           if-no-files-found: warn
 
       - name: Publish APK to GitHub Releases (Unlimited Storage)
@@ -99,12 +124,21 @@ jobs:
         continue-on-error: true
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
-          name: "SmartMess Android Build (API 19+ KitKat to Android 14)"
+          tag_name: "v${{ steps.app_version.outputs.VERSION_NAME }}"
+          name: "${{ steps.app_version.outputs.APP_RELEASE_TITLE }}"
           body: |
-            Automated Android Build:
-            - **Compatibility**: Android 4.4+ (API 19) to Android 14
-            - **Commit**: ${{ github.sha }}
+            ## 🚀 SmartMess v${{ steps.app_version.outputs.VERSION_NAME }} (Build ${{ steps.app_version.outputs.VERSION_CODE }})
+
+            ### 📦 Release Information:
+            - **App Version**: `v${{ steps.app_version.outputs.VERSION_NAME }}` (Build `${{ steps.app_version.outputs.VERSION_CODE }}`)
+            - **Platform Compatibility**: Android 4.4+ (API 19) to Android 14 (API 34)
+            - **Commit SHA**: `${{ github.sha }}`
+            - **Branch**: `${{ github.ref_name }}`
+
+            ### 📲 Downloads:
+            Download the appropriate APK below:
+            - `SmartMess-v${{ steps.app_version.outputs.VERSION_NAME }}-debug.apk` (Testing & Debugging)
+            - `SmartMess-v${{ steps.app_version.outputs.VERSION_NAME }}-release.apk` (Optimized Release)
           files: |
             app/build/outputs/apk/debug/*.apk
             app/build/outputs/apk/release/*.apk

@@ -3,6 +3,29 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+// Read version properties
+def versionPropsFile = file("${rootDir}/version.properties")
+def versionMajor = 1
+def versionMinor = 1
+def versionPatch = 0
+def versionBuild = 1
+
+if (versionPropsFile.canRead()) {
+    Properties versionProps = new Properties()
+    versionProps.load(new FileInputStream(versionPropsFile))
+    versionMajor = versionProps['VERSION_MAJOR'].toInteger()
+    versionMinor = versionProps['VERSION_MINOR'].toInteger()
+    versionPatch = versionProps['VERSION_PATCH'].toInteger()
+    versionBuild = versionProps['VERSION_BUILD'].toInteger()
+}
+
+// Compute dynamic versionCode and versionName
+def computedVersionCode = (System.getenv("GITHUB_RUN_NUMBER") != null) ?
+        (versionMajor * 10000 + versionMinor * 100 + System.getenv("GITHUB_RUN_NUMBER").toInteger()) :
+        (versionMajor * 10000 + versionMinor * 100 + versionPatch * 10 + versionBuild)
+
+def computedVersionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+
 android {
     namespace 'com.smartmess.android'
     compileSdk 34
@@ -11,8 +34,8 @@ android {
         applicationId "com.smartmess.android"
         minSdk 19
         targetSdk 34
-        versionCode 1
-        versionName "1.0.0"
+        versionCode computedVersionCode
+        versionName computedVersionName
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
@@ -28,6 +51,50 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // Custom output APK naming with App Name and Version
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def appName = "SmartMess"
+            def vName = variant.versionName
+            def bType = variant.buildType.name
+            outputFileName = "${appName}-v${vName}-${bType}.apk"
+        }
+    }
+}
+
+// Tasks to bump app version automatically
+tasks.register('bumpPatch') {
+    doLast {
+        def propsFile = file("${rootDir}/version.properties")
+        if (propsFile.canRead()) {
+            Properties props = new Properties()
+            props.load(new FileInputStream(propsFile))
+            int patch = props['VERSION_PATCH'].toInteger() + 1
+            int build = props['VERSION_BUILD'].toInteger() + 1
+            props['VERSION_PATCH'] = patch.toString()
+            props['VERSION_BUILD'] = build.toString()
+            props.store(propsFile.newWriter(), null)
+            println "SmartMess Version updated to: ${props['VERSION_MAJOR']}.${props['VERSION_MINOR']}.${patch}"
+        }
+    }
+}
+
+tasks.register('bumpMinor') {
+    doLast {
+        def propsFile = file("${rootDir}/version.properties")
+        if (propsFile.canRead()) {
+            Properties props = new Properties()
+            props.load(new FileInputStream(propsFile))
+            int minor = props['VERSION_MINOR'].toInteger() + 1
+            int build = props['VERSION_BUILD'].toInteger() + 1
+            props['VERSION_MINOR'] = minor.toString()
+            props['VERSION_PATCH'] = "0"
+            props['VERSION_BUILD'] = build.toString()
+            props.store(propsFile.newWriter(), null)
+            println "SmartMess Version updated to: ${props['VERSION_MAJOR']}.${minor}.0"
+        }
     }
 }
 
