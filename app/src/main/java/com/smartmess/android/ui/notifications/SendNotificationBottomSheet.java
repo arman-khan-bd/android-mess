@@ -580,23 +580,20 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
                 }
 
                 final int finalSmsCount = smsSent;
-                android.app.Activity hostActivity = getActivity();
-                if (hostActivity != null) {
-                    hostActivity.runOnUiThread(() -> {
-                        String successMsg;
-                        if ("sms".equalsIgnoreCase(finalChannel)) {
-                            successMsg = "সিম থেকে " + finalSmsCount + "টি এসএমএস সফলভাবে পাঠানো হয়েছে!";
-                        } else if ("both".equalsIgnoreCase(finalChannel)) {
-                            successMsg = "অনলাইন পুশ ও " + finalSmsCount + "টি সিম এসএমএস পাঠানো হয়েছে!";
-                        } else {
-                            successMsg = "অনলাইন পুশ নোটিফিকেশন সফলভাবে পাঠানো হয়েছে!";
-                        }
-                        Toast.makeText(appContext, successMsg, Toast.LENGTH_LONG).show();
-                        try {
-                            dismissAllowingStateLoss();
-                        } catch (Throwable ignored) {}
-                    });
-                }
+                new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                    String successMsg;
+                    if ("sms".equalsIgnoreCase(finalChannel)) {
+                        successMsg = "সিম থেকে " + finalSmsCount + "টি এসএমএস সফলভাবে পাঠানো হয়েছে!";
+                    } else if ("both".equalsIgnoreCase(finalChannel)) {
+                        successMsg = "অনলাইন পুশ ও " + finalSmsCount + "টি সিম এসএমএস পাঠানো হয়েছে!";
+                    } else {
+                        successMsg = "অনলাইন পুশ নোটিফিকেশন সফলভাবে পাঠানো হয়েছে!";
+                    }
+                    Toast.makeText(appContext, successMsg, Toast.LENGTH_LONG).show();
+                    try {
+                        dismissAllowingStateLoss();
+                    } catch (Throwable ignored) {}
+                });
             });
 
         } catch (Throwable t) {
