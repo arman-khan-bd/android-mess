@@ -124,8 +124,8 @@ dependencies {
     // QR Code Generation
     implementation 'com.google.zxing:core:3.5.3'
 
-    // Firebase Cloud Messaging
-    implementation platform('com.google.firebase:firebase-bom:33.1.0')
+    // Firebase Cloud Messaging (API 19 KitKat compatible)
+    implementation platform('com.google.firebase:firebase-bom:32.7.4')
     implementation 'com.google.firebase:firebase-messaging'
 
     testImplementation 'junit:junit:4.13.2'

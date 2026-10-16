@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-sdk tools:overrideLibrary="com.google.android.gms.base, com.google.android.gms.common, com.google.android.gms.tasks" />
+    <uses-sdk tools:overrideLibrary="com.google.firebase.messaging, com.google.firebase.installations, com.google.firebase.datatransport, com.google.firebase.common, com.google.firebase.components, com.google.android.datatransport.runtime, com.google.android.datatransport.backend.cct, com.google.android.datatransport, com.google.firebase.encoders.json, com.google.android.gms.cloudmessaging, com.google.android.gms.stats, com.google.android.gms.base, com.google.android.gms.common, com.google.android.gms.tasks" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
