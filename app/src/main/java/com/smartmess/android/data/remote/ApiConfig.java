@@ -9,4 +9,8 @@ public class ApiConfig {
     public static final String ROUTE_UPLOAD_VOUCHER = BASE_URL + "uploads/voucher";
     public static final String ROUTE_REPORTS_SUMMARY = BASE_URL + "reports/summary";
     public static final String ROUTE_PLANS_CHECKOUT = BASE_URL + "plans/checkout";
+    
+    public static String getBaseUrl() {
+        return BASE_URL;
+    }
 }

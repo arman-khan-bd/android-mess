@@ -163,8 +163,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             com.smartmess.android.notification.FirebaseMessagingHelper.init(this);
             if (android.os.Build.VERSION.SDK_INT >= 33) {
-                if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                    androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 109);
+                if (androidx.core.content.ContextCompat.checkSelfPermission(this, "android.permission.POST_NOTIFICATIONS") != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{"android.permission.POST_NOTIFICATIONS"}, 109);
                 }
             }
         } catch (Throwable ignored) {}
