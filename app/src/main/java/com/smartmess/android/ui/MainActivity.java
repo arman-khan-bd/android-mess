@@ -426,9 +426,15 @@ public class MainActivity extends AppCompatActivity {
             // Check today's meal state
             String today = DateTimeUtils.getCurrentDate();
             Meal todayMeal = mealDao.getUserMealForDate(messId, userId, today);
-            boolean isMealOn = (todayMeal != null && (todayMeal.getDinnerCount() > 0 || todayMeal.getLunchCount() > 0));
+            // Default to true if meal record not yet created (standard mess active policy)
+            boolean isMealOn = true;
+            if (todayMeal != null) {
+                isMealOn = (todayMeal.getDinnerCount() > 0 || todayMeal.getLunchCount() > 0);
+            }
             if (switchQuickDinner != null) {
+                switchQuickDinner.setOnCheckedChangeListener(null);
                 switchQuickDinner.setChecked(isMealOn);
+                setupQuickMealToggle();
             }
 
         } catch (Throwable t) {
@@ -557,9 +563,13 @@ public class MainActivity extends AppCompatActivity {
         if (drawerItemNotifManager != null) {
             drawerItemNotifManager.setOnClickListener(v -> {
                 closeDrawer();
-                com.smartmess.android.ui.notifications.SendNotificationBottomSheet sheet =
-                        com.smartmess.android.ui.notifications.SendNotificationBottomSheet.newInstance();
-                sheet.show(getSupportFragmentManager(), com.smartmess.android.ui.notifications.SendNotificationBottomSheet.TAG);
+                try {
+                    com.smartmess.android.ui.notifications.SendNotificationBottomSheet sheet =
+                            com.smartmess.android.ui.notifications.SendNotificationBottomSheet.newInstance();
+                    sheet.show(getSupportFragmentManager(), com.smartmess.android.ui.notifications.SendNotificationBottomSheet.TAG);
+                } catch (Throwable t) {
+                    android.util.Log.e("MainActivity", "Error showing SendNotificationBottomSheet: " + t.getMessage(), t);
+                }
             });
         }
 
@@ -717,8 +727,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupQuickMealToggle() {
+        if (switchQuickDinner == null) return;
         switchQuickDinner.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (!buttonView.isPressed()) return; // ignore programmatic changes
+            if (!buttonView.isPressed()) return; // strictly ignore programmatic changes
 
             long messId = sessionManager.getMessId();
             long userId = sessionManager.getUserId();
@@ -747,7 +758,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             mealDao.insertOrUpdate(meal);
-            loadHeaderData();
             Toast.makeText(this, isChecked ? "Meals Enabled for Today" : "Meals Turned OFF for Today", Toast.LENGTH_SHORT).show();
 
             // Background sync

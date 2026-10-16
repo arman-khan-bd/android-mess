@@ -88,8 +88,12 @@ public class ActivityNotificationCenter extends AppCompatActivity {
         }
         if (btnOpenNotifManager != null) {
             btnOpenNotifManager.setOnClickListener(v -> {
-                SendNotificationBottomSheet sheet = SendNotificationBottomSheet.newInstance();
-                sheet.show(getSupportFragmentManager(), SendNotificationBottomSheet.TAG);
+                try {
+                    SendNotificationBottomSheet sheet = SendNotificationBottomSheet.newInstance();
+                    sheet.show(getSupportFragmentManager(), SendNotificationBottomSheet.TAG);
+                } catch (Throwable t) {
+                    android.util.Log.e("ActivityNotificationCenter", "Error showing SendNotificationBottomSheet: " + t.getMessage(), t);
+                }
             });
         }
 

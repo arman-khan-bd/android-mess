@@ -197,11 +197,11 @@ public class ActivitySmsDispatch extends AppCompatActivity {
                     }
                 }
             } else {
-                options.add("সিম ১ (স্লট ১)");
-                subIds.add(0);
+                options.add("সিম ১ (ডিফল্ট সিস্টেম সিম)");
+                subIds.add(-1);
                 slots.add(0);
-                options.add("সিম ২ (স্লট ২)");
-                subIds.add(1);
+                options.add("সিম ২ (দ্বিতীয় সিম)");
+                subIds.add(-1);
                 slots.add(1);
             }
 

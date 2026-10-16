@@ -81,13 +81,14 @@ public class SmsDispatcher {
     }
 
     public static boolean sendSms(Context context, int subscriptionId, String phoneNumber, String message) {
-        if (phoneNumber == null || phoneNumber.trim().isEmpty() || message == null || message.trim().isEmpty()) {
+        String cleanedPhone = phoneNumber.replaceAll("[\\s\\-\\(\\)]", "");
+        if (cleanedPhone.isEmpty()) {
             return false;
         }
 
         try {
             SmsManager smsManager = null;
-            if (subscriptionId >= 0) {
+            if (subscriptionId > 0) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && context != null) {
                     try {
                         SmsManager sysManager = context.getSystemService(SmsManager.class);
@@ -103,6 +104,12 @@ public class SmsDispatcher {
                 }
             }
 
+            if (smsManager == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && context != null) {
+                try {
+                    smsManager = context.getSystemService(SmsManager.class);
+                } catch (Throwable ignored) {}
+            }
+
             if (smsManager == null) {
                 smsManager = SmsManager.getDefault();
             }
@@ -114,14 +121,35 @@ public class SmsDispatcher {
 
             if (message.length() > 160) {
                 ArrayList<String> parts = smsManager.divideMessage(message);
-                smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
+                smsManager.sendMultipartTextMessage(cleanedPhone, null, parts, null, null);
             } else {
-                smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+                smsManager.sendTextMessage(cleanedPhone, null, message, null, null);
             }
+            Log.d(TAG, "SMS dispatched successfully to " + cleanedPhone);
             return true;
         } catch (Throwable e) {
-            Log.e(TAG, "Failed sending SMS to " + phoneNumber + ": " + e.getMessage(), e);
+            Log.e(TAG, "Failed sending SMS to " + cleanedPhone + ": " + e.getMessage(), e);
             return false;
         }
+    }
+
+    /**
+     * Fallback intent to launch device default SMS app directly with prefilled phone and message.
+     */
+    public static boolean launchSmsApp(Context context, String phoneNumber, String message) {
+        if (context == null) return false;
+        try {
+            String cleanedPhone = phoneNumber != null ? phoneNumber.replaceAll("[\\s\\-\\(\\)]", "") : "";
+            android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_SENDTO);
+            intent.setData(android.net.Uri.parse("smsto:" + android.net.Uri.encode(cleanedPhone)));
+            intent.putExtra("sms_body", message);
+            intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+            return true;
+        } catch (Throwable t) {
+            Log.e(TAG, "Failed launching system SMS app: " + t.getMessage(), t);
+            return false;
+        }
+    }
     }
 }

@@ -126,18 +126,29 @@
             android:paddingTop="8dp"
             android:paddingBottom="90dp" />
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/fabAddMeal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:layout_gravity="bottom|end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="80dp"
-            android:text="মিল যুক্ত / রিকুয়েস্ট"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="62dp"
+            android:backgroundTint="@color/coral_primary"
+            android:fontFamily="sans-serif-medium"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="14dp"
+            android:text="+ মিল / রিকুয়েস্ট"
             android:textColor="@color/surface"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:cornerRadius="18dp"
+            app:elevation="4dp"
             app:icon="@drawable/ic_meal"
-            app:iconTint="@color/surface"
-            app:backgroundTint="@color/coral_primary" />
+            app:iconPadding="4dp"
+            app:iconSize="16dp"
+            app:iconTint="@color/surface" />
 
     </FrameLayout>
 

@@ -108,7 +108,16 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.bottom_sheet_send_notification, container, false);
+        try {
+            return inflater.inflate(R.layout.bottom_sheet_send_notification, container, false);
+        } catch (Throwable t) {
+            android.util.Log.e(TAG, "Fatal inflation error in SendNotificationBottomSheet: " + t.getMessage(), t);
+            if (getContext() != null) {
+                android.view.ContextThemeWrapper themeWrapper = new android.view.ContextThemeWrapper(getContext(), R.style.Theme_SmartMess);
+                return LayoutInflater.from(themeWrapper).inflate(R.layout.bottom_sheet_send_notification, container, false);
+            }
+            throw t;
+        }
     }
 
     @Override
@@ -255,10 +264,10 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
                     }
                 }
             } else {
-                options.add("সিম ১ (ডিফল্ট স্লট)");
-                subIds.add(0);
-                options.add("সিম ২ (দ্বিতীয় স্লট)");
-                subIds.add(1);
+                options.add("সিম ১ (ডিফল্ট সিস্টেম সিম)");
+                subIds.add(-1);
+                options.add("সিম ২ (দ্বিতীয় সিম)");
+                subIds.add(-1);
             }
 
             String[] items = options.toArray(new String[0]);
