@@ -53,7 +53,7 @@ public class SessionManager {
 
         if (context != null) {
             try {
-                com.smartmess.android.realtime.PusherRealtimeManager.getInstance(context).updateSubscription();
+                com.smartmess.android.notification.FirebaseMessagingHelper.updateSubscriptions(messId, userId);
             } catch (Throwable ignored) {}
         }
     }
@@ -228,12 +228,14 @@ public class SessionManager {
     }
 
     public void clearSession() {
+        long messId = getMessId();
+        long userId = getUserId();
         if (prefs != null) {
             prefs.edit().clear().apply();
         }
         if (context != null) {
             try {
-                com.smartmess.android.realtime.PusherRealtimeManager.getInstance(context).disconnect();
+                com.smartmess.android.notification.FirebaseMessagingHelper.clearSubscriptions(messId, userId);
             } catch (Throwable ignored) {}
         }
     }

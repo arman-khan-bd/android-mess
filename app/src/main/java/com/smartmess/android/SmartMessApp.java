@@ -72,9 +72,9 @@ public class SmartMessApp extends Application {
             com.smartmess.android.notification.PushNotificationSyncWorker.runImmediateSync(this);
         } catch (Throwable ignored) {}
 
-        // Initialize Pusher Instant Realtime Notification Client
+        // Initialize Firebase Cloud Messaging & Topic Subscriptions
         try {
-            com.smartmess.android.realtime.PusherRealtimeManager.init(this);
+            com.smartmess.android.notification.FirebaseMessagingHelper.init(this);
         } catch (Throwable ignored) {}
 
         // Prepopulate demo mess & default plans if fresh database

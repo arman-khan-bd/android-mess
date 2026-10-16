@@ -80,7 +80,7 @@ public class FragmentNotifications extends Fragment {
         return view;
     }
 
-    private final com.smartmess.android.realtime.PusherRealtimeManager.NotificationListener realtimeListener =
+    private final com.smartmess.android.notification.FirebaseMessagingHelper.NotificationListener realtimeListener =
             notification -> {
                 if (isAdded() && getActivity() != null) {
                     getActivity().runOnUiThread(this::loadNotifications);
@@ -93,7 +93,7 @@ public class FragmentNotifications extends Fragment {
         loadNotifications();
         updateBatteryPromptCard();
         try {
-            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(requireContext()).addListener(realtimeListener);
+            com.smartmess.android.notification.FirebaseMessagingHelper.addListener(realtimeListener);
         } catch (Throwable ignored) {}
     }
 
@@ -101,7 +101,7 @@ public class FragmentNotifications extends Fragment {
     public void onPause() {
         super.onPause();
         try {
-            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(requireContext()).removeListener(realtimeListener);
+            com.smartmess.android.notification.FirebaseMessagingHelper.removeListener(realtimeListener);
         } catch (Throwable ignored) {}
     }
 

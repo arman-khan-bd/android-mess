@@ -14,3 +14,7 @@ app/build/
 
 # OS
 Thumbs.db
+
+# Secrets & Service Accounts
+*firebase-adminsdk*.json
+*-adminsdk-*.json

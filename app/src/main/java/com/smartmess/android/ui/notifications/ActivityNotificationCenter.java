@@ -64,7 +64,7 @@ public class ActivityNotificationCenter extends AppCompatActivity {
         loadNotifications();
     }
 
-    private final com.smartmess.android.realtime.PusherRealtimeManager.NotificationListener realtimeListener =
+    private final com.smartmess.android.notification.FirebaseMessagingHelper.NotificationListener realtimeListener =
             notification -> runOnUiThread(this::loadNotifications);
 
     @Override
@@ -72,7 +72,7 @@ public class ActivityNotificationCenter extends AppCompatActivity {
         super.onResume();
         loadNotifications();
         try {
-            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(this).addListener(realtimeListener);
+            com.smartmess.android.notification.FirebaseMessagingHelper.addListener(realtimeListener);
         } catch (Throwable ignored) {}
     }
 
@@ -80,7 +80,7 @@ public class ActivityNotificationCenter extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         try {
-            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(this).removeListener(realtimeListener);
+            com.smartmess.android.notification.FirebaseMessagingHelper.removeListener(realtimeListener);
         } catch (Throwable ignored) {}
     }
 

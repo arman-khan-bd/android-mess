@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private final com.smartmess.android.realtime.PusherRealtimeManager.NotificationListener realtimeNotifListener =
+    private final com.smartmess.android.notification.FirebaseMessagingHelper.NotificationListener realtimeNotifListener =
             notification -> runOnUiThread(() -> {
                 updateNotificationBadge();
                 loadHeaderData();
@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
         loadHeaderData();
         updateNotificationBadge();
         try {
-            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(this).addListener(realtimeNotifListener);
+            com.smartmess.android.notification.FirebaseMessagingHelper.addListener(realtimeNotifListener);
         } catch (Throwable ignored) {}
     }
 
@@ -371,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         try {
-            com.smartmess.android.realtime.PusherRealtimeManager.getInstance(this).removeListener(realtimeNotifListener);
+            com.smartmess.android.notification.FirebaseMessagingHelper.removeListener(realtimeNotifListener);
         } catch (Throwable ignored) {}
     }
 
