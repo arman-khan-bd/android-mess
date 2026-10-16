@@ -20,6 +20,9 @@ import com.smartmess.android.utils.CurrencyUtils;
 import com.smartmess.android.utils.PermissionHelper;
 import com.smartmess.android.utils.SessionManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SmsBroadcastActivity extends AppCompatActivity {
 
     public static final String EXTRA_TEMPLATE_TYPE = "EXTRA_TEMPLATE_TYPE";
