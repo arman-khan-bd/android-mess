@@ -89,6 +89,14 @@ public class ActivityNotificationManager extends AppCompatActivity {
 
     private MaterialButton btnDispatchNotification;
 
+    // SIM selector
+    private LinearLayout layoutNotifManagerSimSelector;
+    private MaterialButton btnNotifManagerSelectSim;
+    private TextView tvNotifManagerSelectedSimLabel;
+    private List<com.smartmess.android.sms.SmsDispatcher.SimCardInfo> availableSims = new ArrayList<>();
+    private int selectedSimSubscriptionId = -1;
+    private String selectedSimDisplay = "সিস্টেম ডিফল্ট (স্বয়ংক্রিয়)";
+
     private SessionManager sessionManager;
     private UserDao userDao;
     private AppNotificationDao notificationDao;
@@ -101,7 +109,14 @@ public class ActivityNotificationManager extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification_manager);
+        try {
+            setContentView(R.layout.activity_notification_manager);
+        } catch (Throwable t) {
+            android.util.Log.e("ActivityNotifManager", "Layout inflation error: " + t.getMessage(), t);
+            Toast.makeText(this, "লেআউট লোড করা যায়নি, ডিফল্ট ডায়ালগ খোলা হচ্ছে", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         sessionManager = new SessionManager(this);
 
@@ -114,6 +129,7 @@ public class ActivityNotificationManager extends AppCompatActivity {
         try {
             initViews();
             loadMembers();
+            loadSims();
             updateBatteryOptCard();
             setupListeners();
             updateCostEstimate();
@@ -155,6 +171,10 @@ public class ActivityNotificationManager extends AppCompatActivity {
         tvCostEstimate = findViewById(R.id.tvCostEstimate);
 
         btnDispatchNotification = findViewById(R.id.btnDispatchNotification);
+
+        layoutNotifManagerSimSelector = findViewById(R.id.layoutNotifManagerSimSelector);
+        btnNotifManagerSelectSim = findViewById(R.id.btnNotifManagerSelectSim);
+        tvNotifManagerSelectedSimLabel = findViewById(R.id.tvNotifManagerSelectedSimLabel);
 
         if (btnBackNotifManager != null) {
             btnBackNotifManager.setOnClickListener(v -> finish());
@@ -227,6 +247,82 @@ public class ActivityNotificationManager extends AppCompatActivity {
         }
     }
 
+    private void loadSims() {
+        try {
+            availableSims = com.smartmess.android.sms.SmsDispatcher.getActiveSimCards(this);
+            int defaultSlot = sessionManager.getDefaultSimSlot();
+
+            selectedSimSubscriptionId = -1;
+            selectedSimDisplay = "সিস্টেম ডিফল্ট (স্বয়ংক্রিয়)";
+
+            if (availableSims != null && !availableSims.isEmpty()) {
+                if (defaultSlot >= 0) {
+                    for (com.smartmess.android.sms.SmsDispatcher.SimCardInfo s : availableSims) {
+                        if (s.slotIndex == defaultSlot) {
+                            selectedSimSubscriptionId = s.subscriptionId;
+                            selectedSimDisplay = s.getDisplayLabel();
+                            break;
+                        }
+                    }
+                }
+                if (selectedSimSubscriptionId == -1 && !availableSims.isEmpty()) {
+                    com.smartmess.android.sms.SmsDispatcher.SimCardInfo first = availableSims.get(0);
+                    selectedSimSubscriptionId = first.subscriptionId;
+                    selectedSimDisplay = first.getDisplayLabel();
+                }
+            }
+
+            if (tvNotifManagerSelectedSimLabel != null) {
+                tvNotifManagerSelectedSimLabel.setText("নির্বাচিত: " + selectedSimDisplay);
+            }
+        } catch (Throwable t) {
+            android.util.Log.e("NotifManager", "Error loading SIM cards: " + t.getMessage());
+        }
+    }
+
+    private void showSimPickerDialog() {
+        try {
+            List<String> options = new ArrayList<>();
+            final List<Integer> subIds = new ArrayList<>();
+
+            options.add("সিস্টেম ডিফল্ট (স্বয়ংক্রিয়)");
+            subIds.add(-1);
+
+            int selectedIndex = 0;
+            if (availableSims != null && !availableSims.isEmpty()) {
+                for (int i = 0; i < availableSims.size(); i++) {
+                    com.smartmess.android.sms.SmsDispatcher.SimCardInfo sim = availableSims.get(i);
+                    options.add(sim.getDisplayLabel());
+                    subIds.add(sim.subscriptionId);
+                    if (sim.subscriptionId == selectedSimSubscriptionId) {
+                        selectedIndex = i + 1;
+                    }
+                }
+            } else {
+                options.add("সিম ১ (ডিফল্ট স্লট)");
+                subIds.add(0);
+                options.add("সিম ২ (দ্বিতীয় স্লট)");
+                subIds.add(1);
+            }
+
+            String[] items = options.toArray(new String[0]);
+            new AlertDialog.Builder(this)
+                    .setTitle("এসএমএস পাঠানোর সিম নির্বাচন করুন")
+                    .setSingleChoiceItems(items, selectedIndex, (dialog, which) -> {
+                        selectedSimSubscriptionId = subIds.get(which);
+                        selectedSimDisplay = items[which];
+                        if (tvNotifManagerSelectedSimLabel != null) {
+                            tvNotifManagerSelectedSimLabel.setText("নির্বাচিত: " + selectedSimDisplay);
+                        }
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton("বাতিল", null)
+                    .show();
+        } catch (Throwable t) {
+            Toast.makeText(this, "সিম তালিকা দেখানো যায়নি", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void setupListeners() {
         rgTargetAudience.setOnCheckedChangeListener((group, checkedId) -> {
             boolean isSingle = (checkedId == R.id.rbTargetSingle);
@@ -235,6 +331,10 @@ public class ActivityNotificationManager extends AppCompatActivity {
         });
 
         rgDeliveryChannel.setOnCheckedChangeListener((group, checkedId) -> {
+            boolean needsSms = (checkedId == R.id.rbChannelSms || checkedId == R.id.rbChannelBoth);
+            if (layoutNotifManagerSimSelector != null) {
+                layoutNotifManagerSimSelector.setVisibility(needsSms ? View.VISIBLE : View.GONE);
+            }
             if (checkedId == R.id.rbChannelBoth) {
                 tvPreviewChannelBadge.setText("🚀 PUSH + SMS");
             } else if (checkedId == R.id.rbChannelSms) {
@@ -244,6 +344,10 @@ public class ActivityNotificationManager extends AppCompatActivity {
             }
             updateCostEstimate();
         });
+
+        if (btnNotifManagerSelectSim != null) {
+            btnNotifManagerSelectSim.setOnClickListener(v -> showSimPickerDialog());
+        }
 
         chipGroupTemplates.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == View.NO_ID) {
@@ -386,10 +490,10 @@ public class ActivityNotificationManager extends AppCompatActivity {
                         }
 
                         if (finalTargetUser != null) {
-                            boolean sent = smsCostingManager.sendSingleDueReminder(sender, finalTargetUser, finalMessage);
+                            boolean sent = smsCostingManager.sendSingleDueReminder(sender, finalTargetUser, finalMessage, selectedSimSubscriptionId);
                             if (sent) smsSent = 1;
                         } else {
-                            smsSent = smsCostingManager.broadcastNoticeToAllMembers(sender, finalMessage);
+                            smsSent = smsCostingManager.broadcastNoticeToAllMembers(sender, finalMessage, selectedSimSubscriptionId);
                         }
                     } catch (Throwable smsEx) {
                         android.util.Log.e("NotifManager", "SMS dispatch error: " + smsEx.getMessage(), smsEx);

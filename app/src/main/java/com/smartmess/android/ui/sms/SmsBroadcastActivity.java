@@ -29,6 +29,11 @@ public class SmsBroadcastActivity extends AppCompatActivity {
     private EditText etBroadcastMessage;
     private MaterialButton btnDispatchBroadcast;
 
+    private TextView tvBroadcastSimLabel;
+    private MaterialButton btnBroadcastSelectSim;
+    private List<com.smartmess.android.sms.SmsDispatcher.SimCardInfo> availableSims = new java.util.ArrayList<>();
+    private int selectedSubscriptionId = -1;
+
     private UserDao userDao;
     private MessDao messDao;
     private SessionManager sessionManager;
@@ -46,6 +51,8 @@ public class SmsBroadcastActivity extends AppCompatActivity {
         tvTotalBroadcastCost = findViewById(R.id.tvTotalBroadcastCost);
         etBroadcastMessage = findViewById(R.id.etBroadcastMessage);
         btnDispatchBroadcast = findViewById(R.id.btnDispatchBroadcast);
+        tvBroadcastSimLabel = findViewById(R.id.tvBroadcastSimLabel);
+        btnBroadcastSelectSim = findViewById(R.id.btnBroadcastSelectSim);
 
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
         userDao = new UserDao(helper);
@@ -55,7 +62,85 @@ public class SmsBroadcastActivity extends AppCompatActivity {
         planGateManager = new PlanGateManager(this);
 
         loadBroadcastInfo();
+        loadSims();
+
+        if (btnBroadcastSelectSim != null) {
+            btnBroadcastSelectSim.setOnClickListener(v -> showSimSelectorDialog());
+        }
         btnDispatchBroadcast.setOnClickListener(v -> dispatchBroadcast());
+    }
+
+    private void loadSims() {
+        try {
+            availableSims = com.smartmess.android.sms.SmsDispatcher.getActiveSimCards(this);
+            int defaultSlot = sessionManager.getDefaultSimSlot();
+            selectedSubscriptionId = -1;
+
+            String label = "সিম: সিস্টেম ডিফল্ট";
+            if (availableSims != null && !availableSims.isEmpty()) {
+                if (defaultSlot >= 0) {
+                    for (com.smartmess.android.sms.SmsDispatcher.SimCardInfo s : availableSims) {
+                        if (s.slotIndex == defaultSlot) {
+                            selectedSubscriptionId = s.subscriptionId;
+                            label = s.getDisplayLabel();
+                            break;
+                        }
+                    }
+                }
+                if (selectedSubscriptionId == -1 && !availableSims.isEmpty()) {
+                    com.smartmess.android.sms.SmsDispatcher.SimCardInfo first = availableSims.get(0);
+                    selectedSubscriptionId = first.subscriptionId;
+                    label = first.getDisplayLabel();
+                }
+            }
+            if (tvBroadcastSimLabel != null) {
+                tvBroadcastSimLabel.setText(label);
+            }
+        } catch (Throwable t) {
+            android.util.Log.e("SmsBroadcastActivity", "Error loading SIMs: " + t.getMessage());
+        }
+    }
+
+    private void showSimSelectorDialog() {
+        try {
+            List<String> options = new java.util.ArrayList<>();
+            final List<Integer> subIds = new java.util.ArrayList<>();
+
+            options.add("সিস্টেম ডিফল্ট (স্বয়ংক্রিয়)");
+            subIds.add(-1);
+
+            int checkedPos = 0;
+            if (availableSims != null && !availableSims.isEmpty()) {
+                for (int i = 0; i < availableSims.size(); i++) {
+                    com.smartmess.android.sms.SmsDispatcher.SimCardInfo sim = availableSims.get(i);
+                    options.add(sim.getDisplayLabel());
+                    subIds.add(sim.subscriptionId);
+                    if (sim.subscriptionId == selectedSubscriptionId) {
+                        checkedPos = i + 1;
+                    }
+                }
+            } else {
+                options.add("সিম ১ (স্লট ১)");
+                subIds.add(0);
+                options.add("সিম ২ (স্লট ২)");
+                subIds.add(1);
+            }
+
+            String[] items = options.toArray(new String[0]);
+            new android.app.AlertDialog.Builder(this)
+                    .setTitle("এসএমএস পাঠানোর সিম নির্বাচন করুন")
+                    .setSingleChoiceItems(items, checkedPos, (dialog, which) -> {
+                        selectedSubscriptionId = subIds.get(which);
+                        if (tvBroadcastSimLabel != null) {
+                            tvBroadcastSimLabel.setText(items[which]);
+                        }
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton("বাতিল", null)
+                    .show();
+        } catch (Throwable t) {
+            Toast.makeText(this, "সিম তালিকা দেখানো যায়নি", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loadBroadcastInfo() {
@@ -97,7 +182,7 @@ public class SmsBroadcastActivity extends AppCompatActivity {
             sender.setId(sessionManager.getUserId());
         }
 
-        int sent = smsCostingManager.broadcastNoticeToAllMembers(sender, msg);
+        int sent = smsCostingManager.broadcastNoticeToAllMembers(sender, msg, selectedSubscriptionId);
         if (sent > 0) {
             Toast.makeText(this, "ব্রডকাস্ট এসএমএস পাঠানো হয়েছে: " + sent + " members! Total cost split equally across mess members.", Toast.LENGTH_LONG).show();
             finish();

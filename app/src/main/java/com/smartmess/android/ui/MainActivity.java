@@ -557,7 +557,9 @@ public class MainActivity extends AppCompatActivity {
         if (drawerItemNotifManager != null) {
             drawerItemNotifManager.setOnClickListener(v -> {
                 closeDrawer();
-                startActivity(new Intent(MainActivity.this, com.smartmess.android.ui.notifications.ActivityNotificationManager.class));
+                com.smartmess.android.ui.notifications.SendNotificationBottomSheet sheet =
+                        com.smartmess.android.ui.notifications.SendNotificationBottomSheet.newInstance();
+                sheet.show(getSupportFragmentManager(), com.smartmess.android.ui.notifications.SendNotificationBottomSheet.TAG);
             });
         }
 

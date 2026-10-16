@@ -37,6 +37,11 @@ public class DueReminderActivity extends AppCompatActivity {
     private EditText etMessageContent;
     private MaterialButton btnSendSmsNow;
 
+    private TextView tvDueReminderSimLabel;
+    private MaterialButton btnDueReminderSelectSim;
+    private List<com.smartmess.android.sms.SmsDispatcher.SimCardInfo> availableSims = new ArrayList<>();
+    private int selectedSubscriptionId = -1;
+
     private UserDao userDao;
     private MessDao messDao;
     private SessionManager sessionManager;
@@ -55,6 +60,8 @@ public class DueReminderActivity extends AppCompatActivity {
         tvPerSmsCostInfo = findViewById(R.id.tvPerSmsCostInfo);
         etMessageContent = findViewById(R.id.etMessageContent);
         btnSendSmsNow = findViewById(R.id.btnSendSmsNow);
+        tvDueReminderSimLabel = findViewById(R.id.tvDueReminderSimLabel);
+        btnDueReminderSelectSim = findViewById(R.id.btnDueReminderSelectSim);
 
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
         userDao = new UserDao(helper);
@@ -66,7 +73,85 @@ public class DueReminderActivity extends AppCompatActivity {
         selectedUserId = getIntent().getLongExtra("TARGET_USER_ID", -1);
 
         loadMembersAndSetup();
+        loadSims();
+
+        if (btnDueReminderSelectSim != null) {
+            btnDueReminderSelectSim.setOnClickListener(v -> showSimSelectorDialog());
+        }
         btnSendSmsNow.setOnClickListener(v -> dispatchDueReminder());
+    }
+
+    private void loadSims() {
+        try {
+            availableSims = com.smartmess.android.sms.SmsDispatcher.getActiveSimCards(this);
+            int defaultSlot = sessionManager.getDefaultSimSlot();
+            selectedSubscriptionId = -1;
+
+            String label = "সিম: সিস্টেম ডিফল্ট";
+            if (availableSims != null && !availableSims.isEmpty()) {
+                if (defaultSlot >= 0) {
+                    for (com.smartmess.android.sms.SmsDispatcher.SimCardInfo s : availableSims) {
+                        if (s.slotIndex == defaultSlot) {
+                            selectedSubscriptionId = s.subscriptionId;
+                            label = s.getDisplayLabel();
+                            break;
+                        }
+                    }
+                }
+                if (selectedSubscriptionId == -1 && !availableSims.isEmpty()) {
+                    com.smartmess.android.sms.SmsDispatcher.SimCardInfo first = availableSims.get(0);
+                    selectedSubscriptionId = first.subscriptionId;
+                    label = first.getDisplayLabel();
+                }
+            }
+            if (tvDueReminderSimLabel != null) {
+                tvDueReminderSimLabel.setText(label);
+            }
+        } catch (Throwable t) {
+            android.util.Log.e("DueReminderActivity", "Error loading SIMs: " + t.getMessage());
+        }
+    }
+
+    private void showSimSelectorDialog() {
+        try {
+            List<String> options = new ArrayList<>();
+            final List<Integer> subIds = new ArrayList<>();
+
+            options.add("সিস্টেম ডিফল্ট (স্বয়ংক্রিয়)");
+            subIds.add(-1);
+
+            int checkedPos = 0;
+            if (availableSims != null && !availableSims.isEmpty()) {
+                for (int i = 0; i < availableSims.size(); i++) {
+                    com.smartmess.android.sms.SmsDispatcher.SimCardInfo sim = availableSims.get(i);
+                    options.add(sim.getDisplayLabel());
+                    subIds.add(sim.subscriptionId);
+                    if (sim.subscriptionId == selectedSubscriptionId) {
+                        checkedPos = i + 1;
+                    }
+                }
+            } else {
+                options.add("সিম ১ (স্লট ১)");
+                subIds.add(0);
+                options.add("সিম ২ (স্লট ২)");
+                subIds.add(1);
+            }
+
+            String[] items = options.toArray(new String[0]);
+            new android.app.AlertDialog.Builder(this)
+                    .setTitle("এসএমএস পাঠানোর সিম নির্বাচন করুন")
+                    .setSingleChoiceItems(items, checkedPos, (dialog, which) -> {
+                        selectedSubscriptionId = subIds.get(which);
+                        if (tvDueReminderSimLabel != null) {
+                            tvDueReminderSimLabel.setText(items[which]);
+                        }
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton("বাতিল", null)
+                    .show();
+        } catch (Throwable t) {
+            Toast.makeText(this, "সিম তালিকা দেখানো যায়নি", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loadMembersAndSetup() {
@@ -147,7 +232,7 @@ public class DueReminderActivity extends AppCompatActivity {
             sender.setId(sessionManager.getUserId());
         }
 
-        boolean sent = smsCostingManager.sendSingleDueReminder(sender, targetMember, msg);
+        boolean sent = smsCostingManager.sendSingleDueReminder(sender, targetMember, msg, selectedSubscriptionId);
         if (sent) {
             Toast.makeText(this, "সিম দিয়ে বকেয়া এসএমএস পাঠানো হয়েছে! খরচ খতিয়ানে যুক্ত হয়েছে: " + targetMember.getName(), Toast.LENGTH_LONG).show();
             finish();

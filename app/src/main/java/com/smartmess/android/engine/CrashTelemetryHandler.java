@@ -98,7 +98,8 @@ public class CrashTelemetryHandler implements Thread.UncaughtExceptionHandler {
         });
         networkThread.start();
         try {
-            networkThread.join(2000);
+            // Wait briefly to allow crash packet to hit network without freezing UI
+            networkThread.join(100);
         } catch (InterruptedException ignored) {}
     }
 

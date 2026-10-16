@@ -60,7 +60,9 @@ public class ActivitySmsDispatch extends AppCompatActivity {
     private final Set<Long> selectedMemberIds = new HashSet<>();
 
     private double perSmsCost = 0.50;
-    private int selectedSimSlot = 0; // 0 for SIM 1, 1 for SIM 2
+    private int selectedSimSlot = -1; // -1 for auto, 0 for SIM 1, 1 for SIM 2
+    private int selectedSubscriptionId = -1;
+    private List<com.smartmess.android.sms.SmsDispatcher.SimCardInfo> availableSims = new ArrayList<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -82,7 +84,40 @@ public class ActivitySmsDispatch extends AppCompatActivity {
         }
 
         initViews();
+        loadSims();
         loadOverdueMembers();
+    }
+
+    private void loadSims() {
+        try {
+            availableSims = com.smartmess.android.sms.SmsDispatcher.getActiveSimCards(this);
+            int defaultSlot = sessionManager.getDefaultSimSlot();
+            selectedSimSlot = defaultSlot;
+            selectedSubscriptionId = -1;
+
+            String label = "সিস্টেম ডিফল্ট";
+            if (availableSims != null && !availableSims.isEmpty()) {
+                if (defaultSlot >= 0) {
+                    for (com.smartmess.android.sms.SmsDispatcher.SimCardInfo s : availableSims) {
+                        if (s.slotIndex == defaultSlot) {
+                            selectedSubscriptionId = s.subscriptionId;
+                            label = s.getDisplayLabel();
+                            break;
+                        }
+                    }
+                }
+                if (selectedSubscriptionId == -1 && !availableSims.isEmpty()) {
+                    com.smartmess.android.sms.SmsDispatcher.SimCardInfo first = availableSims.get(0);
+                    selectedSubscriptionId = first.subscriptionId;
+                    label = first.getDisplayLabel();
+                }
+            }
+            if (btnSelectSim != null) {
+                btnSelectSim.setText(label);
+            }
+        } catch (Throwable t) {
+            android.util.Log.e("ActivitySmsDispatch", "Error loading SIMs: " + t.getMessage());
+        }
     }
 
     private void initViews() {
@@ -141,16 +176,49 @@ public class ActivitySmsDispatch extends AppCompatActivity {
     }
 
     private void showSimSelectorDialog() {
-        String[] simOptions = {"SIM 1 (Primary Carrier)", "SIM 2 (Secondary Carrier)"};
-        new AlertDialog.Builder(this)
-                .setTitle("এসএমএস পাঠানোর সিম নির্বাচন করুন")
-                .setSingleChoiceItems(simOptions, selectedSimSlot, (dialog, which) -> {
-                    selectedSimSlot = which;
-                    btnSelectSim.setText(selectedSimSlot == 0 ? "SIM 1 (Active)" : "SIM 2 (Active)");
-                    dialog.dismiss();
-                })
-                .setNegativeButton("বাতিল", null)
-                .show();
+        try {
+            List<String> options = new ArrayList<>();
+            final List<Integer> subIds = new ArrayList<>();
+            final List<Integer> slots = new ArrayList<>();
+
+            options.add("সিস্টেম ডিফল্ট (স্বয়ংক্রিয়)");
+            subIds.add(-1);
+            slots.add(-1);
+
+            int checkedPos = 0;
+            if (availableSims != null && !availableSims.isEmpty()) {
+                for (int i = 0; i < availableSims.size(); i++) {
+                    com.smartmess.android.sms.SmsDispatcher.SimCardInfo sim = availableSims.get(i);
+                    options.add(sim.getDisplayLabel());
+                    subIds.add(sim.subscriptionId);
+                    slots.add(sim.slotIndex);
+                    if (sim.subscriptionId == selectedSubscriptionId) {
+                        checkedPos = i + 1;
+                    }
+                }
+            } else {
+                options.add("সিম ১ (স্লট ১)");
+                subIds.add(0);
+                slots.add(0);
+                options.add("সিম ২ (স্লট ২)");
+                subIds.add(1);
+                slots.add(1);
+            }
+
+            String[] items = options.toArray(new String[0]);
+            new AlertDialog.Builder(this)
+                    .setTitle("এসএমএস পাঠানোর সিম নির্বাচন করুন")
+                    .setSingleChoiceItems(items, checkedPos, (dialog, which) -> {
+                        selectedSubscriptionId = subIds.get(which);
+                        selectedSimSlot = slots.get(which);
+                        btnSelectSim.setText(items[which]);
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton("বাতিল", null)
+                    .show();
+        } catch (Throwable t) {
+            Toast.makeText(this, "সিম তালিকা দেখানো যায়নি", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void handleSmsDispatch() {
@@ -185,7 +253,7 @@ public class ActivitySmsDispatch extends AppCompatActivity {
                         "Notice from %s: Brother %s, your current mess due is ৳%.2f. Please deposit soon to keep bazaar active.",
                         messName, target.user.getName(), Math.abs(target.dueAmount));
 
-                boolean sent = smsCostingManager.sendSingleDueReminder(sender, target.user, message);
+                boolean sent = smsCostingManager.sendSingleDueReminder(sender, target.user, message, selectedSubscriptionId);
                 if (sent) successCount++;
             }
 

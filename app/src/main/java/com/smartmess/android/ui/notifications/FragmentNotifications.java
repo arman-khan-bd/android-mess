@@ -113,8 +113,10 @@ public class FragmentNotifications extends Fragment {
             cardFragManagerDispatch.setVisibility(isManager ? View.VISIBLE : View.GONE);
         }
         if (btnFragOpenDispatcher != null) {
-            btnFragOpenDispatcher.setOnClickListener(v ->
-                    startActivity(new Intent(requireContext(), ActivityNotificationManager.class)));
+            btnFragOpenDispatcher.setOnClickListener(v -> {
+                SendNotificationBottomSheet sheet = SendNotificationBottomSheet.newInstance();
+                sheet.show(getChildFragmentManager(), SendNotificationBottomSheet.TAG);
+            });
         }
 
         // Battery optimization banner

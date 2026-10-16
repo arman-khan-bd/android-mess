@@ -40,6 +40,10 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText etTargetMealBudget;
     private MaterialButton btnSaveMessSettings;
 
+    private TextView tvSettingsDefaultSimBadge;
+    private MaterialButton btnSettingsChangeSim;
+    private int selectedDefaultSimSlot = -1;
+
     private TextView tvPlanTitle;
     private TextView tvPlanFeaturesDescription;
     private MaterialButton btnUpgradePlan;
@@ -66,6 +70,8 @@ public class SettingsActivity extends AppCompatActivity {
         etPerSmsCost = findViewById(R.id.etPerSmsCost);
         etTargetMealBudget = findViewById(R.id.etTargetMealBudget);
         btnSaveMessSettings = findViewById(R.id.btnSaveMessSettings);
+        tvSettingsDefaultSimBadge = findViewById(R.id.tvSettingsDefaultSimBadge);
+        btnSettingsChangeSim = findViewById(R.id.btnSettingsChangeSim);
         tvPlanTitle = findViewById(R.id.tvPlanTitle);
         tvPlanFeaturesDescription = findViewById(R.id.tvPlanFeaturesDescription);
         btnUpgradePlan = findViewById(R.id.btnUpgradePlan);
@@ -88,6 +94,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         btnSaveMessSettings.setOnClickListener(v -> saveSettings());
         btnUpgradePlan.setOnClickListener(v -> showDynamicPlansSheet());
+        if (btnSettingsChangeSim != null) {
+            btnSettingsChangeSim.setOnClickListener(v -> showSimSelectionDialog());
+        }
         if (btnSupportTickets != null) {
             btnSupportTickets.setOnClickListener(v ->
                     startActivity(new Intent(this, ActivitySupportTickets.class)));
@@ -138,6 +147,70 @@ public class SettingsActivity extends AppCompatActivity {
         if (tvCurrentThemeBadge != null) {
             tvCurrentThemeBadge.setText(com.smartmess.android.utils.ThemeManager.getThemeName(this));
         }
+
+        selectedDefaultSimSlot = sessionManager.getDefaultSimSlot();
+        updateSimBadgeText();
+    }
+
+    private void updateSimBadgeText() {
+        if (tvSettingsDefaultSimBadge == null) return;
+        if (selectedDefaultSimSlot < 0) {
+            tvSettingsDefaultSimBadge.setText("সিস্টেম ডিফল্ট (স্বয়ংক্রিয়)");
+        } else {
+            java.util.List<com.smartmess.android.sms.SmsDispatcher.SimCardInfo> sims =
+                    com.smartmess.android.sms.SmsDispatcher.getActiveSimCards(this);
+            String label = "সিম " + (selectedDefaultSimSlot + 1);
+            for (com.smartmess.android.sms.SmsDispatcher.SimCardInfo s : sims) {
+                if (s.slotIndex == selectedDefaultSimSlot) {
+                    label = s.getDisplayLabel();
+                    break;
+                }
+            }
+            tvSettingsDefaultSimBadge.setText(label);
+        }
+    }
+
+    private void showSimSelectionDialog() {
+        java.util.List<com.smartmess.android.sms.SmsDispatcher.SimCardInfo> activeSims =
+                com.smartmess.android.sms.SmsDispatcher.getActiveSimCards(this);
+
+        java.util.List<String> options = new java.util.ArrayList<>();
+        final java.util.List<Integer> slots = new java.util.ArrayList<>();
+
+        options.add("সিস্টেম ডিফল্ট (স্বয়ংক্রিয়)");
+        slots.add(-1);
+
+        int checkedPos = 0;
+        if (activeSims != null && !activeSims.isEmpty()) {
+            for (int i = 0; i < activeSims.size(); i++) {
+                com.smartmess.android.sms.SmsDispatcher.SimCardInfo sim = activeSims.get(i);
+                options.add(sim.getDisplayLabel());
+                slots.add(sim.slotIndex);
+                if (sim.slotIndex == selectedDefaultSimSlot) {
+                    checkedPos = i + 1;
+                }
+            }
+        } else {
+            options.add("সিম ১ (স্লট ১)");
+            slots.add(0);
+            options.add("সিম ২ (স্লট ২)");
+            slots.add(1);
+            if (selectedDefaultSimSlot == 0) checkedPos = 1;
+            else if (selectedDefaultSimSlot == 1) checkedPos = 2;
+        }
+
+        String[] items = options.toArray(new String[0]);
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("ডিফল্ট এসএমএস সিম নির্বাচন করুন")
+                .setSingleChoiceItems(items, checkedPos, (dialog, which) -> {
+                    selectedDefaultSimSlot = slots.get(which);
+                    sessionManager.setDefaultSimSlot(selectedDefaultSimSlot);
+                    updateSimBadgeText();
+                    dialog.dismiss();
+                    Toast.makeText(SettingsActivity.this, "ডিফল্ট সিম নির্ধারিত হয়েছে: " + items[which], Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("বাতিল", null)
+                .show();
     }
 
     private void showThemeSelectionDialog() {
@@ -183,6 +256,7 @@ public class SettingsActivity extends AppCompatActivity {
         messDao.updateCutoffTime(messId, cutoff);
         messDao.updateSmsCost(messId, cost);
         messDao.updateTargetBudget(messId, budget);
+        sessionManager.setDefaultSimSlot(selectedDefaultSimSlot);
 
         // 2. Synchronize to Backend Cloud API
         Map<String, Object> body = new HashMap<>();

@@ -205,6 +205,19 @@ public class SessionManager {
         }
     }
 
+    // =========================================================================
+    // Default SMS SIM Preferences (-1 for system default, 0 for SIM 1, 1 for SIM 2)
+    // =========================================================================
+    private static final String KEY_DEFAULT_SIM_SLOT = "default_sms_sim_slot";
+
+    public int getDefaultSimSlot() {
+        return prefs.getInt(KEY_DEFAULT_SIM_SLOT, -1);
+    }
+
+    public void setDefaultSimSlot(int slot) {
+        prefs.edit().putInt(KEY_DEFAULT_SIM_SLOT, slot).apply();
+    }
+
     public void clearSession() {
         prefs.edit().clear().apply();
     }

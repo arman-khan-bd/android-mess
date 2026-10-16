@@ -87,8 +87,10 @@ public class ActivityNotificationCenter extends AppCompatActivity {
             layoutManagerSendBanner.setVisibility(isManager ? View.VISIBLE : View.GONE);
         }
         if (btnOpenNotifManager != null) {
-            btnOpenNotifManager.setOnClickListener(v ->
-                    startActivity(new Intent(ActivityNotificationCenter.this, ActivityNotificationManager.class)));
+            btnOpenNotifManager.setOnClickListener(v -> {
+                SendNotificationBottomSheet sheet = SendNotificationBottomSheet.newInstance();
+                sheet.show(getSupportFragmentManager(), SendNotificationBottomSheet.TAG);
+            });
         }
 
         btnBackNotifications.setOnClickListener(v -> finish());

@@ -37,16 +37,36 @@ public class SmsCostingManager {
         this.smsLogDao = new SmsLogDao(helper);
     }
 
+    private int resolveDefaultSubscriptionId() {
+        try {
+            com.smartmess.android.utils.SessionManager session = new com.smartmess.android.utils.SessionManager(context);
+            int slot = session.getDefaultSimSlot();
+            if (slot >= 0) {
+                java.util.List<SmsDispatcher.SimCardInfo> sims = SmsDispatcher.getActiveSimCards(context);
+                for (SmsDispatcher.SimCardInfo s : sims) {
+                    if (s.slotIndex == slot) {
+                        return s.subscriptionId;
+                    }
+                }
+            }
+        } catch (Throwable ignored) {}
+        return -1;
+    }
+
     /**
      * Requirement:
      * If sent to a single member (due reminder), the exact configured SMS cost is debited
      * from that member's ledger (expense targeting that member) and credited to the sender's deposit.
      */
     public boolean sendSingleDueReminder(User sender, User targetMember, String messageContent) {
+        return sendSingleDueReminder(sender, targetMember, messageContent, resolveDefaultSubscriptionId());
+    }
+
+    public boolean sendSingleDueReminder(User sender, User targetMember, String messageContent, int subscriptionId) {
         Mess mess = messDao.getById(sender.getMessId());
         double perSmsCost = mess != null ? mess.getPerSmsCost() : 0.50;
 
-        boolean sent = SmsDispatcher.sendSms(targetMember.getPhone(), messageContent);
+        boolean sent = SmsDispatcher.sendSms(context, subscriptionId, targetMember.getPhone(), messageContent);
         String status = sent ? "sent" : "failed";
         String now = DateTimeUtils.nowIso();
         String today = DateTimeUtils.currentDate();
@@ -106,6 +126,10 @@ public class SmsCostingManager {
      * If broadcast to all members, total cost is split equally across mess members.
      */
     public int broadcastNoticeToAllMembers(User sender, String messageContent) {
+        return broadcastNoticeToAllMembers(sender, messageContent, resolveDefaultSubscriptionId());
+    }
+
+    public int broadcastNoticeToAllMembers(User sender, String messageContent, int subscriptionId) {
         Mess mess = messDao.getById(sender.getMessId());
         double perSmsCost = mess != null ? mess.getPerSmsCost() : 0.50;
         List<User> members = userDao.getActiveMembersByMess(sender.getMessId());
@@ -115,7 +139,7 @@ public class SmsCostingManager {
         String today = DateTimeUtils.currentDate();
 
         for (User member : members) {
-            boolean sent = SmsDispatcher.sendSms(member.getPhone(), messageContent);
+            boolean sent = SmsDispatcher.sendSms(context, subscriptionId, member.getPhone(), messageContent);
             if (sent) sentCount++;
 
             SmsLog log = new SmsLog(
