@@ -433,7 +433,7 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
 
             // If SMS is involved, check SMS permission
             if ("sms".equalsIgnoreCase(channel) || "both".equalsIgnoreCase(channel)) {
-                if (!PermissionHelper.hasSmsPermission(requireContext())) {
+                if (!PermissionHelper.hasSmsPermission(requireActivity())) {
                     PermissionHelper.requestSmsPermission(requireActivity());
                     Toast.makeText(requireContext(), "এসএমএস পাঠানোর জন্য SMS অনুমতি প্রয়োজন", Toast.LENGTH_LONG).show();
                     return;
@@ -486,10 +486,8 @@ public class SendNotificationBottomSheet extends BottomSheetDialogFragment {
                             finalTitle,
                             finalMessage,
                             selectedType,
-                            false,
-                            DateTimeUtils.nowIso(),
-                            null,
-                            0
+                            finalChannel,
+                            DateTimeUtils.nowIso()
                     );
                     notificationDao.insert(notif);
                 } catch (Throwable notifEx) {

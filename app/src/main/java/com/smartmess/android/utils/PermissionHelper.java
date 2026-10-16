@@ -38,8 +38,13 @@ public class PermissionHelper {
         }
     }
 
+    public static boolean hasSmsPermission(android.content.Context context) {
+        if (context == null) return false;
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+    }
+
     public static boolean hasSmsPermission(Activity activity) {
-        return ContextCompat.checkSelfPermission(activity, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+        return hasSmsPermission((android.content.Context) activity);
     }
 
     public static void requestSmsPermission(Activity activity) {
