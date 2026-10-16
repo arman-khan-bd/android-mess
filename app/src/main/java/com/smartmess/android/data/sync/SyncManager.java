@@ -150,10 +150,20 @@ public class SyncManager {
                                     Log.w(TAG, "Server reported push error: " + body.getMessage());
                                 }
                             } else {
-                                Log.e(TAG, "Push failed with HTTP code: " + pushResponse.code());
+                                String pushErr = "";
+                                try {
+                                    if (pushResponse.errorBody() != null) {
+                                        pushErr = pushResponse.errorBody().string();
+                                    }
+                                } catch (Exception ignored) {}
+                                Log.e(TAG, "Push failed with HTTP code: " + pushResponse.code() + ": " + pushErr);
+                                if (pushResponse.code() == 401) {
+                                    notifyFailed(callback, "Session expired or unauthenticated. Please log in to sync.");
+                                    return;
+                                }
                             }
                         } catch (Exception pushEx) {
-                            Log.e(TAG, "Exception during push sync: " + pushEx.getMessage());
+                            Log.e(TAG, "Exception during push sync: " + pushEx.getMessage(), pushEx);
                             // Do not abort pull; continue to pull if possible
                         }
                     } else {

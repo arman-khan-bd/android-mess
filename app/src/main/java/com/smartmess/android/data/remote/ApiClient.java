@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.smartmess.android.data.remote.dto.LoginRequest;
@@ -102,6 +103,7 @@ public class ApiClient {
         if (sRetrofit == null) {
             OkHttpClient client = getOkHttpClient(context);
             Gson gson = new GsonBuilder()
+                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                     .setDateFormat("yyyy-MM-dd HH:mm:ss")
                     .setLenient()
                     .create();

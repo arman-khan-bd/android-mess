@@ -1,16 +1,39 @@
 package com.smartmess.android.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Deposit {
+    @SerializedName("id")
     private long id;
+
+    @SerializedName("uuid")
     private String uuid;
+
+    @SerializedName(value = "messId", alternate = {"mess_id"})
     private long messId;
+
+    @SerializedName(value = "userId", alternate = {"user_id"})
     private long userId;
+
+    @SerializedName(value = "userName", alternate = {"user_name"})
     private String userName; // transient/joined
+
+    @SerializedName("amount")
     private double amount;
+
+    @SerializedName(value = "depositDate", alternate = {"deposit_date"})
     private String depositDate;
+
+    @SerializedName("note")
     private String note;
+
+    @SerializedName(value = "syncStatus", alternate = {"sync_status"})
     private int syncStatus; // 0=pending, 1=synced
+
+    @SerializedName(value = "createdAt", alternate = {"created_at"})
     private String createdAt;
+
+    @SerializedName(value = "updatedAt", alternate = {"updated_at"})
     private String updatedAt;
 
     public Deposit() {}

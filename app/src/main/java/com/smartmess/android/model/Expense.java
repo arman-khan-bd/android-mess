@@ -1,5 +1,7 @@
 package com.smartmess.android.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Expense {
     // Categories
     public static final String CAT_RAW_MEAL = "raw_meal";
@@ -12,21 +14,52 @@ public class Expense {
     public static final String SPLIT_ALL_EQUAL = "split_all_equal";
     public static final String SPLIT_INDIVIDUAL = "individual_member";
 
+    @SerializedName("id")
     private long id;
+
+    @SerializedName("uuid")
     private String uuid;
+
+    @SerializedName(value = "messId", alternate = {"mess_id"})
     private long messId;
+
+    @SerializedName(value = "buyerUserId", alternate = {"buyer_user_id"})
     private long buyerUserId;
+
+    @SerializedName(value = "buyerName", alternate = {"buyer_name"})
     private String buyerName; // transient/joined
+
+    @SerializedName(value = "expenseCategory", alternate = {"expense_category"})
     private String expenseCategory;
+
+    @SerializedName("amount")
     private double amount;
+
+    @SerializedName(value = "expenseDate", alternate = {"expense_date"})
     private String expenseDate;
+
+    @SerializedName("title")
     private String title;
+
+    @SerializedName(value = "voucherImageUrl", alternate = {"voucher_image_url"})
     private String voucherImageUrl;
+
+    @SerializedName(value = "splitType", alternate = {"split_type"})
     private String splitType;
+
+    @SerializedName(value = "targetUserId", alternate = {"target_user_id"})
     private Long targetUserId;
+
+    @SerializedName(value = "targetUserName", alternate = {"target_user_name"})
     private String targetUserName; // transient/joined
+
+    @SerializedName(value = "syncStatus", alternate = {"sync_status"})
     private int syncStatus; // 0=pending, 1=synced
+
+    @SerializedName(value = "createdAt", alternate = {"created_at"})
     private String createdAt;
+
+    @SerializedName(value = "updatedAt", alternate = {"updated_at"})
     private String updatedAt;
 
     public Expense() {}

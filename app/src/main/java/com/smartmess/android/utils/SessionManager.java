@@ -113,12 +113,24 @@ public class SessionManager {
         return prefs.getLong(KEY_MESS_ID, 0);
     }
 
+    public void setMessId(long messId) {
+        prefs.edit().putLong(KEY_MESS_ID, messId).apply();
+    }
+
     public String getMessUuid() {
         return prefs.getString(KEY_MESS_UUID, "");
     }
 
+    public void setMessUuid(String messUuid) {
+        prefs.edit().putString(KEY_MESS_UUID, messUuid).apply();
+    }
+
     public String getMessName() {
         return prefs.getString(KEY_MESS_NAME, "My Mess");
+    }
+
+    public void setMessName(String messName) {
+        prefs.edit().putString(KEY_MESS_NAME, messName).apply();
     }
 
     public String getAuthToken() {

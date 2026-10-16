@@ -162,9 +162,18 @@ public class DatabaseManager {
             long messId = sessionManager.getMessId();
             if (messId > 0) {
                 Mess currentMess = new com.smartmess.android.data.local.dao.MessDao(dbHelper).getById(messId);
-                if (currentMess != null && currentMess.getCurrentPlanId() > 1) {
-                    payload.setCurrentPlanId(currentMess.getCurrentPlanId());
-                    payload.setPlanTier("pro");
+                if (currentMess != null) {
+                    if ((messUuid == null || messUuid.trim().isEmpty()) && currentMess.getUuid() != null && !currentMess.getUuid().trim().isEmpty()) {
+                        payload.setMessUuid(currentMess.getUuid().trim());
+                        sessionManager.setMessUuid(currentMess.getUuid().trim());
+                    }
+                    if (currentMess.getCurrentPlanId() > 1) {
+                        payload.setCurrentPlanId(currentMess.getCurrentPlanId());
+                        payload.setPlanTier("pro");
+                    } else if (sessionManager.isPro()) {
+                        payload.setCurrentPlanId(2L);
+                        payload.setPlanTier("pro");
+                    }
                 } else if (sessionManager.isPro()) {
                     payload.setCurrentPlanId(2L);
                     payload.setPlanTier("pro");
@@ -213,12 +222,16 @@ public class DatabaseManager {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
+            long currentMessId = sessionManager.getMessId();
+            long currentUserId = sessionManager.getUserId();
+            String todayDate = com.smartmess.android.utils.DateTimeUtils.currentDate();
+
             // 1. Mess & Plan
             if (data.getPlan() != null) {
                 SaasPlan plan = data.getPlan();
                 ContentValues pv = new ContentValues();
                 if (plan.getId() > 0) pv.put(SaasPlanEntry.COL_ID, plan.getId());
-                pv.put(SaasPlanEntry.COL_NAME, plan.getName());
+                pv.put(SaasPlanEntry.COL_NAME, plan.getName() != null ? plan.getName() : "SmartMess Plan");
                 pv.put(SaasPlanEntry.COL_PRICE, plan.getPrice());
                 pv.put(SaasPlanEntry.COL_DURATION_IN_DAYS, plan.getDurationInDays());
                 pv.put(SaasPlanEntry.COL_FEATURES, plan.getFeaturesJson());
@@ -229,13 +242,26 @@ public class DatabaseManager {
             if (data.getMess() != null) {
                 Mess mess = data.getMess();
                 ContentValues mv = new ContentValues();
-                if (mess.getId() > 0) mv.put(MessEntry.COL_ID, mess.getId());
-                mv.put(MessEntry.COL_UUID, mess.getUuid());
-                mv.put(MessEntry.COL_NAME, mess.getName());
+                if (mess.getId() > 0) {
+                    mv.put(MessEntry.COL_ID, mess.getId());
+                    if (currentMessId <= 0) {
+                        currentMessId = mess.getId();
+                        sessionManager.setMessId(mess.getId());
+                    }
+                }
+                String mUuid = (mess.getUuid() != null && !mess.getUuid().trim().isEmpty())
+                        ? mess.getUuid().trim() : (sessionManager.getMessUuid() != null && !sessionManager.getMessUuid().trim().isEmpty() ? sessionManager.getMessUuid() : java.util.UUID.randomUUID().toString());
+                mv.put(MessEntry.COL_UUID, mUuid);
+                if (sessionManager.getMessUuid() == null || sessionManager.getMessUuid().trim().isEmpty()) {
+                    sessionManager.setMessUuid(mUuid);
+                }
+
+                String mName = (mess.getName() != null && !mess.getName().trim().isEmpty()) ? mess.getName().trim() : sessionManager.getMessName();
+                mv.put(MessEntry.COL_NAME, mName);
                 mv.put(MessEntry.COL_INVITE_CODE, mess.getInviteCode());
-                mv.put(MessEntry.COL_BILLING_CYCLE, mess.getBillingCycle());
-                mv.put(MessEntry.COL_CYCLE_START_DAY, mess.getCycleStartDay());
-                mv.put(MessEntry.COL_MEAL_CUTOFF_TIME, mess.getMealCutoffTime());
+                mv.put(MessEntry.COL_BILLING_CYCLE, mess.getBillingCycle() != null ? mess.getBillingCycle() : "monthly");
+                mv.put(MessEntry.COL_CYCLE_START_DAY, mess.getCycleStartDay() > 0 ? mess.getCycleStartDay() : 1);
+                mv.put(MessEntry.COL_MEAL_CUTOFF_TIME, mess.getMealCutoffTime() != null ? mess.getMealCutoffTime() : "22:00:00");
                 mv.put(MessEntry.COL_PER_SMS_COST, mess.getPerSmsCost());
                 mv.put(MessEntry.COL_CURRENT_PLAN_ID, mess.getCurrentPlanId());
                 mv.put(MessEntry.COL_PLAN_EXPIRES_AT, mess.getPlanExpiresAt());
@@ -250,12 +276,13 @@ public class DatabaseManager {
                 for (User u : data.getUsers()) {
                     ContentValues uv = new ContentValues();
                     if (u.getId() > 0) uv.put(UserEntry.COL_ID, u.getId());
-                    uv.put(UserEntry.COL_UUID, u.getUuid());
-                    uv.put(UserEntry.COL_MESS_ID, u.getMessId());
-                    uv.put(UserEntry.COL_NAME, u.getName());
-                    uv.put(UserEntry.COL_PHONE, u.getPhone());
-                    uv.put(UserEntry.COL_ROLE, u.getRole());
-                    uv.put(UserEntry.COL_STATUS, u.getStatus());
+                    String uUuid = (u.getUuid() != null && !u.getUuid().trim().isEmpty()) ? u.getUuid().trim() : java.util.UUID.randomUUID().toString();
+                    uv.put(UserEntry.COL_UUID, uUuid);
+                    uv.put(UserEntry.COL_MESS_ID, u.getMessId() > 0 ? u.getMessId() : currentMessId);
+                    uv.put(UserEntry.COL_NAME, (u.getName() != null && !u.getName().trim().isEmpty()) ? u.getName().trim() : "Member");
+                    uv.put(UserEntry.COL_PHONE, u.getPhone() != null ? u.getPhone().trim() : "");
+                    uv.put(UserEntry.COL_ROLE, u.getRole() != null ? u.getRole() : "member");
+                    uv.put(UserEntry.COL_STATUS, u.getStatus() != null ? u.getStatus() : "active");
                     if (u.getAvatarUrl() != null) uv.put(UserEntry.COL_AVATAR_URL, u.getAvatarUrl());
                     db.insertWithOnConflict(UserEntry.TABLE_NAME, null, uv, SQLiteDatabase.CONFLICT_REPLACE);
                 }
@@ -266,13 +293,17 @@ public class DatabaseManager {
                 for (Deposit d : data.getDeposits()) {
                     ContentValues dv = new ContentValues();
                     if (d.getId() > 0) dv.put(DepositEntry.COL_ID, d.getId());
-                    dv.put(DepositEntry.COL_UUID, d.getUuid());
-                    dv.put(DepositEntry.COL_MESS_ID, d.getMessId());
-                    dv.put(DepositEntry.COL_USER_ID, d.getUserId());
+                    String dUuid = (d.getUuid() != null && !d.getUuid().trim().isEmpty()) ? d.getUuid().trim() : java.util.UUID.randomUUID().toString();
+                    dv.put(DepositEntry.COL_UUID, dUuid);
+                    dv.put(DepositEntry.COL_MESS_ID, d.getMessId() > 0 ? d.getMessId() : currentMessId);
+                    dv.put(DepositEntry.COL_USER_ID, d.getUserId() > 0 ? d.getUserId() : currentUserId);
                     dv.put(DepositEntry.COL_AMOUNT, d.getAmount());
-                    dv.put(DepositEntry.COL_DEPOSIT_DATE, d.getDepositDate());
+                    String depDate = (d.getDepositDate() != null && !d.getDepositDate().trim().isEmpty()) ? d.getDepositDate().trim() : todayDate;
+                    dv.put(DepositEntry.COL_DEPOSIT_DATE, depDate);
                     dv.put(DepositEntry.COL_NOTE, d.getNote());
                     dv.put(DepositEntry.COL_SYNC_STATUS, 1);
+                    if (d.getCreatedAt() != null) dv.put(DepositEntry.COL_CREATED_AT, d.getCreatedAt());
+                    if (d.getUpdatedAt() != null) dv.put(DepositEntry.COL_UPDATED_AT, d.getUpdatedAt());
                     db.insertWithOnConflict(DepositEntry.TABLE_NAME, null, dv, SQLiteDatabase.CONFLICT_REPLACE);
                 }
             }
@@ -282,21 +313,27 @@ public class DatabaseManager {
                 for (Expense e : data.getExpenses()) {
                     ContentValues ev = new ContentValues();
                     if (e.getId() > 0) ev.put(ExpenseEntry.COL_ID, e.getId());
-                    ev.put(ExpenseEntry.COL_UUID, e.getUuid());
-                    ev.put(ExpenseEntry.COL_MESS_ID, e.getMessId());
-                    ev.put(ExpenseEntry.COL_BUYER_USER_ID, e.getBuyerUserId());
-                    ev.put(ExpenseEntry.COL_EXPENSE_CATEGORY, e.getExpenseCategory());
+                    String eUuid = (e.getUuid() != null && !e.getUuid().trim().isEmpty()) ? e.getUuid().trim() : java.util.UUID.randomUUID().toString();
+                    ev.put(ExpenseEntry.COL_UUID, eUuid);
+                    ev.put(ExpenseEntry.COL_MESS_ID, e.getMessId() > 0 ? e.getMessId() : currentMessId);
+                    ev.put(ExpenseEntry.COL_BUYER_USER_ID, e.getBuyerUserId() > 0 ? e.getBuyerUserId() : currentUserId);
+                    String cat = (e.getExpenseCategory() != null && !e.getExpenseCategory().trim().isEmpty()) ? e.getExpenseCategory().trim() : Expense.CAT_RAW_MEAL;
+                    ev.put(ExpenseEntry.COL_EXPENSE_CATEGORY, cat);
                     ev.put(ExpenseEntry.COL_AMOUNT, e.getAmount());
-                    ev.put(ExpenseEntry.COL_EXPENSE_DATE, e.getExpenseDate());
-                    ev.put(ExpenseEntry.COL_TITLE, e.getTitle());
+                    String expDate = (e.getExpenseDate() != null && !e.getExpenseDate().trim().isEmpty()) ? e.getExpenseDate().trim() : todayDate;
+                    ev.put(ExpenseEntry.COL_EXPENSE_DATE, expDate);
+                    ev.put(ExpenseEntry.COL_TITLE, (e.getTitle() != null && !e.getTitle().trim().isEmpty()) ? e.getTitle().trim() : "Expense");
                     ev.put(ExpenseEntry.COL_VOUCHER_IMAGE_URL, e.getVoucherImageUrl());
-                    ev.put(ExpenseEntry.COL_SPLIT_TYPE, e.getSplitType());
-                    if (e.getTargetUserId() != null) {
+                    String split = (e.getSplitType() != null && !e.getSplitType().trim().isEmpty()) ? e.getSplitType().trim() : Expense.SPLIT_MEAL_DEPENDENT;
+                    ev.put(ExpenseEntry.COL_SPLIT_TYPE, split);
+                    if (e.getTargetUserId() != null && e.getTargetUserId() > 0) {
                         ev.put(ExpenseEntry.COL_TARGET_USER_ID, e.getTargetUserId());
                     } else {
                         ev.putNull(ExpenseEntry.COL_TARGET_USER_ID);
                     }
                     ev.put(ExpenseEntry.COL_SYNC_STATUS, 1);
+                    if (e.getCreatedAt() != null) ev.put(ExpenseEntry.COL_CREATED_AT, e.getCreatedAt());
+                    if (e.getUpdatedAt() != null) ev.put(ExpenseEntry.COL_UPDATED_AT, e.getUpdatedAt());
                     db.insertWithOnConflict(ExpenseEntry.TABLE_NAME, null, ev, SQLiteDatabase.CONFLICT_REPLACE);
                 }
             }
@@ -306,16 +343,20 @@ public class DatabaseManager {
                 for (Meal m : data.getMeals()) {
                     ContentValues mv = new ContentValues();
                     if (m.getId() > 0) mv.put(MealEntry.COL_ID, m.getId());
-                    mv.put(MealEntry.COL_UUID, m.getUuid());
-                    mv.put(MealEntry.COL_MESS_ID, m.getMessId());
-                    mv.put(MealEntry.COL_USER_ID, m.getUserId());
-                    mv.put(MealEntry.COL_MEAL_DATE, m.getMealDate());
+                    String mUuid = (m.getUuid() != null && !m.getUuid().trim().isEmpty()) ? m.getUuid().trim() : java.util.UUID.randomUUID().toString();
+                    mv.put(MealEntry.COL_UUID, mUuid);
+                    mv.put(MealEntry.COL_MESS_ID, m.getMessId() > 0 ? m.getMessId() : currentMessId);
+                    mv.put(MealEntry.COL_USER_ID, m.getUserId() > 0 ? m.getUserId() : currentUserId);
+                    String mDate = (m.getMealDate() != null && !m.getMealDate().trim().isEmpty()) ? m.getMealDate().trim() : todayDate;
+                    mv.put(MealEntry.COL_MEAL_DATE, mDate);
                     mv.put(MealEntry.COL_BREAKFAST_COUNT, m.getBreakfastCount());
                     mv.put(MealEntry.COL_LUNCH_COUNT, m.getLunchCount());
                     mv.put(MealEntry.COL_DINNER_COUNT, m.getDinnerCount());
                     mv.put(MealEntry.COL_GUEST_MEAL_COUNT, m.getGuestMealCount());
                     mv.put(MealEntry.COL_IS_LOCKED, m.getIsLocked());
                     mv.put(MealEntry.COL_SYNC_STATUS, 1);
+                    if (m.getCreatedAt() != null) mv.put(MealEntry.COL_CREATED_AT, m.getCreatedAt());
+                    if (m.getUpdatedAt() != null) mv.put(MealEntry.COL_UPDATED_AT, m.getUpdatedAt());
                     db.insertWithOnConflict(MealEntry.TABLE_NAME, null, mv, SQLiteDatabase.CONFLICT_REPLACE);
                 }
             }
@@ -325,20 +366,23 @@ public class DatabaseManager {
                 for (SmsLog s : data.getSmsLogs()) {
                     ContentValues sv = new ContentValues();
                     if (s.getId() > 0) sv.put(SmsLogEntry.COL_ID, s.getId());
-                    sv.put(SmsLogEntry.COL_UUID, s.getUuid());
-                    sv.put(SmsLogEntry.COL_MESS_ID, s.getMessId());
-                    sv.put(SmsLogEntry.COL_SENDER_USER_ID, s.getSenderUserId());
-                    sv.put(SmsLogEntry.COL_RECIPIENT_PHONE, s.getRecipientPhone());
-                    if (s.getTargetUserId() != null) {
+                    String sUuid = (s.getUuid() != null && !s.getUuid().trim().isEmpty()) ? s.getUuid().trim() : java.util.UUID.randomUUID().toString();
+                    sv.put(SmsLogEntry.COL_UUID, sUuid);
+                    sv.put(SmsLogEntry.COL_MESS_ID, s.getMessId() > 0 ? s.getMessId() : currentMessId);
+                    sv.put(SmsLogEntry.COL_SENDER_USER_ID, s.getSenderUserId() > 0 ? s.getSenderUserId() : currentUserId);
+                    sv.put(SmsLogEntry.COL_RECIPIENT_PHONE, s.getRecipientPhone() != null ? s.getRecipientPhone().trim() : "");
+                    if (s.getTargetUserId() != null && s.getTargetUserId() > 0) {
                         sv.put(SmsLogEntry.COL_TARGET_USER_ID, s.getTargetUserId());
                     } else {
                         sv.putNull(SmsLogEntry.COL_TARGET_USER_ID);
                     }
-                    sv.put(SmsLogEntry.COL_MESSAGE_CONTENT, s.getMessageContent());
+                    sv.put(SmsLogEntry.COL_MESSAGE_CONTENT, s.getMessageContent() != null ? s.getMessageContent() : "");
                     sv.put(SmsLogEntry.COL_COST_APPLIED, s.getCostApplied());
-                    sv.put(SmsLogEntry.COL_DISPATCH_TYPE, s.getDispatchType());
-                    sv.put(SmsLogEntry.COL_DELIVERY_STATUS, s.getDeliveryStatus());
+                    sv.put(SmsLogEntry.COL_DISPATCH_TYPE, s.getDispatchType() != null ? s.getDispatchType() : "device_sim");
+                    sv.put(SmsLogEntry.COL_DELIVERY_STATUS, s.getDeliveryStatus() != null ? s.getDeliveryStatus() : "sent");
                     sv.put(SmsLogEntry.COL_SYNC_STATUS, 1);
+                    if (s.getCreatedAt() != null) sv.put(SmsLogEntry.COL_CREATED_AT, s.getCreatedAt());
+                    if (s.getUpdatedAt() != null) sv.put(SmsLogEntry.COL_UPDATED_AT, s.getUpdatedAt());
                     db.insertWithOnConflict(SmsLogEntry.TABLE_NAME, null, sv, SQLiteDatabase.CONFLICT_REPLACE);
                 }
             }

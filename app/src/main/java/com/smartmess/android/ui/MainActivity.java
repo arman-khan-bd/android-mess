@@ -367,17 +367,10 @@ public class MainActivity extends AppCompatActivity {
                 tvTopPlanPill.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.warning_amber));
             }
 
-            // Cloud Sync Button in Header: Visible for all logged in mess members, styled for paid vs free
-            boolean isPaidMess = planGateManager.isPro() ||
-                    (sessionManager.getPlanCapabilities() != null && sessionManager.getPlanCapabilities().isPro());
+            // Cloud Sync Button in Header: Visible and active for all logged in mess members
             btnCloudSync.setVisibility(sessionManager.isLoggedIn() ? View.VISIBLE : View.GONE);
-            if (isPaidMess) {
-                btnCloudSync.setAlpha(1.0f);
-                btnCloudSync.setColorFilter(androidx.core.content.ContextCompat.getColor(this, R.color.primary));
-            } else {
-                btnCloudSync.setAlpha(0.6f);
-                btnCloudSync.setColorFilter(androidx.core.content.ContextCompat.getColor(this, R.color.text_muted));
-            }
+            btnCloudSync.setAlpha(1.0f);
+            btnCloudSync.setColorFilter(androidx.core.content.ContextCompat.getColor(this, R.color.primary));
 
             // User name & role in top bar
             String userName = sessionManager.getUserName();
@@ -762,15 +755,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupSyncIndicator() {
         btnCloudSync.setOnClickListener(v -> {
-            boolean isPaidMess = planGateManager.isPro() ||
-                    (sessionManager.getPlanCapabilities() != null && sessionManager.getPlanCapabilities().isPro());
+            if (!com.smartmess.android.utils.NetworkUtils.isNetworkAvailable(MainActivity.this)) {
+                Toast.makeText(MainActivity.this, "ইন্টারনেট সংযোগ নেই। অফলাইন মোডে ডেটা সংরক্ষিত আছে।", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            if (!isPaidMess) {
-                planGateManager.showUpgradeBottomSheet(
-                        getSupportFragmentManager(),
-                        "ক্লাউড সিঙ্ক ফিচার (Pro)",
-                        "ক্লাউড সিঙ্ক শুধুমাত্র পেইড / প্রো মেস অ্যাকাউন্টে উপলব্ধ। যেকোনো মেস সদস্য সিঙ্ক করতে মেস প্রো-তে আপগ্রেড করুন।"
-                );
+            if (!sessionManager.isLoggedIn()) {
+                Toast.makeText(MainActivity.this, "ক্লাউড সিঙ্ক করতে প্রথমে লগইন করুন।", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -798,7 +789,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSyncFailed(String error) {
                     runOnUiThread(() -> {
-                        Toast.makeText(MainActivity.this, "সিঙ্ক নোটিশ: " + error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "সিঙ্ক নোটিশ: " + error, Toast.LENGTH_LONG).show();
                     });
                 }
             });

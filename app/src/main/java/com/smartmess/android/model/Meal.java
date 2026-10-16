@@ -1,19 +1,48 @@
 package com.smartmess.android.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Meal {
+    @SerializedName("id")
     private long id;
+
+    @SerializedName("uuid")
     private String uuid;
+
+    @SerializedName(value = "messId", alternate = {"mess_id"})
     private long messId;
+
+    @SerializedName(value = "userId", alternate = {"user_id"})
     private long userId;
+
+    @SerializedName(value = "userName", alternate = {"user_name"})
     private String userName; // transient/joined
+
+    @SerializedName(value = "mealDate", alternate = {"meal_date"})
     private String mealDate; // 'YYYY-MM-DD'
+
+    @SerializedName(value = "breakfastCount", alternate = {"breakfast_count"})
     private double breakfastCount;
+
+    @SerializedName(value = "lunchCount", alternate = {"lunch_count"})
     private double lunchCount;
+
+    @SerializedName(value = "dinnerCount", alternate = {"dinner_count"})
     private double dinnerCount;
+
+    @SerializedName(value = "guestMealCount", alternate = {"guest_meal_count"})
     private double guestMealCount;
+
+    @SerializedName(value = "isLocked", alternate = {"is_locked"})
     private int isLocked;
+
+    @SerializedName(value = "syncStatus", alternate = {"sync_status"})
     private int syncStatus; // 0=pending, 1=synced
+
+    @SerializedName(value = "createdAt", alternate = {"created_at"})
     private String createdAt;
+
+    @SerializedName(value = "updatedAt", alternate = {"updated_at"})
     private String updatedAt;
 
     public Meal() {}
