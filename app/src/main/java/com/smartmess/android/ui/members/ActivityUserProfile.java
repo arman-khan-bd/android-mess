@@ -38,6 +38,7 @@ import com.smartmess.android.engine.CalculationModels.CycleSummary;
 import com.smartmess.android.engine.CalculationModels.MemberBalanceSheet;
 import com.smartmess.android.model.Deposit;
 import com.smartmess.android.model.Expense;
+import com.smartmess.android.model.Meal;
 import com.smartmess.android.model.Mess;
 import com.smartmess.android.model.User;
 import com.smartmess.android.ui.sms.DueReminderActivity;
