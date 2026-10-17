@@ -99,6 +99,12 @@ public class ActivityUserProfile extends AppCompatActivity {
     private TextView tvBalanceStatusLabel;
     private TextView tvNetBalance;
 
+    private TextView tvFlexibleMealCost;
+    private TextView tvFlexibleMealSubtitle;
+    private TextView tvFlexibleMealBadge;
+    private LinearLayout layoutFlexibleMealsContainer;
+    private TextView tvEmptyFlexibleMeals;
+
     private LinearLayout layoutActivityHistoryContainer;
     private TextView tvEmptyHistory;
 
@@ -110,6 +116,7 @@ public class ActivityUserProfile extends AppCompatActivity {
     private ExpenseDao expenseDao;
     private DepositDao depositDao;
     private MessDao messDao;
+    private com.smartmess.android.data.local.dao.MealDao mealDao;
     private AccountingEngine accountingEngine;
     private SessionManager sessionManager;
 
@@ -127,6 +134,7 @@ public class ActivityUserProfile extends AppCompatActivity {
         expenseDao = new ExpenseDao(helper);
         depositDao = new DepositDao(helper);
         messDao = new MessDao(helper);
+        mealDao = new com.smartmess.android.data.local.dao.MealDao(helper);
         accountingEngine = new AccountingEngine(this);
         sessionManager = new SessionManager(this);
 
@@ -160,6 +168,12 @@ public class ActivityUserProfile extends AppCompatActivity {
         tvSmsCharges = findViewById(R.id.tvSmsCharges);
         tvBalanceStatusLabel = findViewById(R.id.tvBalanceStatusLabel);
         tvNetBalance = findViewById(R.id.tvNetBalance);
+
+        tvFlexibleMealCost = findViewById(R.id.tvFlexibleMealCost);
+        tvFlexibleMealSubtitle = findViewById(R.id.tvFlexibleMealSubtitle);
+        tvFlexibleMealBadge = findViewById(R.id.tvFlexibleMealBadge);
+        layoutFlexibleMealsContainer = findViewById(R.id.layoutFlexibleMealsContainer);
+        tvEmptyFlexibleMeals = findViewById(R.id.tvEmptyFlexibleMeals);
 
         layoutActivityHistoryContainer = findViewById(R.id.layoutActivityHistoryContainer);
         tvEmptyHistory = findViewById(R.id.tvEmptyHistory);
@@ -533,6 +547,11 @@ public class ActivityUserProfile extends AppCompatActivity {
             tvMealDetailsFormula.setText(String.format(Locale.US, "%.1f Meals × %s rate",
                     memberSheet.getConsumedMeals(), CurrencyUtils.format(cycleSummary.getMealRate())));
 
+            if (tvFlexibleMealCost != null) {
+                tvFlexibleMealCost.setText(CurrencyUtils.format(memberSheet.getFlexibleMealCost()));
+                tvFlexibleMealSubtitle.setText("কাঁচা বাজার ভিত্তিক শেয়ার খরচ");
+            }
+
             tvSharedFoodShare.setText(CurrencyUtils.format(memberSheet.getSharedFoodCost()));
             tvUtilityShare.setText(CurrencyUtils.format(memberSheet.getUtilityAssetCost()));
             tvSmsCharges.setText(CurrencyUtils.format(memberSheet.getIndividualCost()));
@@ -559,11 +578,68 @@ public class ActivityUserProfile extends AppCompatActivity {
             tvTotalDeposits.setText(CurrencyUtils.format(userDeposits));
             tvConsumedMealCost.setText("৳ 0.00");
             tvMealDetailsFormula.setText("0 Meals × ৳0.00 rate");
+            if (tvFlexibleMealCost != null) tvFlexibleMealCost.setText("৳ 0.00");
             tvSharedFoodShare.setText("৳ 0.00");
             tvUtilityShare.setText("৳ 0.00");
             tvSmsCharges.setText("৳ 0.00");
             tvNetBalance.setText(CurrencyUtils.format(userDeposits));
         }
+
+        loadFlexibleMealBreakdown(startDate, endDate);
+    }
+
+    private void loadFlexibleMealBreakdown(String startDate, String endDate) {
+        if (layoutFlexibleMealsContainer == null) return;
+        layoutFlexibleMealsContainer.removeAllViews();
+        long messId = sessionManager.getMessId();
+
+        List<Meal> flexMeals = mealDao.getFlexibleMealsForUser(messId, targetUserId, startDate, endDate);
+        if (flexMeals == null || flexMeals.isEmpty()) {
+            if (tvEmptyFlexibleMeals != null) tvEmptyFlexibleMeals.setVisibility(View.VISIBLE);
+            if (tvFlexibleMealBadge != null) tvFlexibleMealBadge.setText("০ টি মিল");
+            return;
+        }
+
+        if (tvEmptyFlexibleMeals != null) tvEmptyFlexibleMeals.setVisibility(View.GONE);
+        if (tvFlexibleMealBadge != null) tvFlexibleMealBadge.setText(flexMeals.size() + " টি মিল");
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (Meal m : flexMeals) {
+            View row = inflater.inflate(R.layout.item_profile_activity_row, layoutFlexibleMealsContainer, false);
+            ImageView ivIcon = row.findViewById(R.id.ivActivityIcon);
+            TextView tvTitle = row.findViewById(R.id.tvActivityTitle);
+            TextView tvDate = row.findViewById(R.id.tvActivityDate);
+            TextView tvAmount = row.findViewById(R.id.tvActivityAmount);
+
+            ivIcon.setImageResource(R.drawable.ic_lucide_cart);
+            ivIcon.setColorFilter(ContextCompat.getColor(this, R.color.coral_primary));
+
+            String rawName = m.getRawBazarName() != null ? m.getRawBazarName() : "কাঁচা বাজার";
+            String mealTypeLabel = getMealTypeLabel(m.getMealType());
+            tvTitle.setText(rawName + " (" + mealTypeLabel + ")");
+
+            double count = getMealTypeCount(m);
+            tvDate.setText(m.getMealDate() + " • " + String.format(Locale.US, "%.1f", count) + " মিল গ্রহণ");
+            tvAmount.setText(CurrencyUtils.format(m.getSharedPrice()));
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.coral_primary));
+
+            layoutFlexibleMealsContainer.addView(row);
+        }
+    }
+
+    private String getMealTypeLabel(String type) {
+        if ("lunch".equalsIgnoreCase(type)) return "দুপুর";
+        if ("dinner".equalsIgnoreCase(type)) return "রাত";
+        if ("breakfast".equalsIgnoreCase(type)) return "সকাল";
+        if ("special".equalsIgnoreCase(type)) return "বিশেষ মিল";
+        return "মিল";
+    }
+
+    private double getMealTypeCount(Meal m) {
+        if ("breakfast".equalsIgnoreCase(m.getMealType())) return m.getBreakfastCount();
+        if ("lunch".equalsIgnoreCase(m.getMealType())) return m.getLunchCount() + m.getGuestMealCount();
+        if ("dinner".equalsIgnoreCase(m.getMealType())) return m.getDinnerCount();
+        return m.getTotalMeals();
     }
 
     private void loadActivityHistory() {
@@ -572,8 +648,12 @@ public class ActivityUserProfile extends AppCompatActivity {
 
         List<Expense> bazarTrips = expenseDao.getUserBazarTrips(messId, targetUserId);
         List<Deposit> deposits = depositDao.getUserDeposits(messId, targetUserId);
+        List<Meal> flexMeals = mealDao.getFlexibleMealsForUser(messId, targetUserId,
+                DateTimeUtils.getCurrentMonthStart(), DateTimeUtils.getCurrentMonthEnd());
 
-        boolean hasEntries = (bazarTrips != null && !bazarTrips.isEmpty()) || (deposits != null && !deposits.isEmpty());
+        boolean hasEntries = (bazarTrips != null && !bazarTrips.isEmpty())
+                || (deposits != null && !deposits.isEmpty())
+                || (flexMeals != null && !flexMeals.isEmpty());
 
         if (!hasEntries) {
             tvEmptyHistory.setVisibility(View.VISIBLE);
@@ -621,6 +701,28 @@ public class ActivityUserProfile extends AppCompatActivity {
                 tvDate.setText(dep.getDepositDate());
                 tvAmount.setText("+" + CurrencyUtils.format(dep.getAmount()));
                 tvAmount.setTextColor(ContextCompat.getColor(this, R.color.credit_green));
+
+                layoutActivityHistoryContainer.addView(row);
+            }
+        }
+
+        // Display recent flexible meal shares
+        if (flexMeals != null) {
+            for (Meal m : flexMeals) {
+                View row = inflater.inflate(R.layout.item_profile_activity_row, layoutActivityHistoryContainer, false);
+                ImageView ivIcon = row.findViewById(R.id.ivActivityIcon);
+                TextView tvTitle = row.findViewById(R.id.tvActivityTitle);
+                TextView tvDate = row.findViewById(R.id.tvActivityDate);
+                TextView tvAmount = row.findViewById(R.id.tvActivityAmount);
+
+                ivIcon.setImageResource(R.drawable.ic_lucide_cart);
+                ivIcon.setColorFilter(ContextCompat.getColor(this, R.color.coral_primary));
+
+                String rawName = m.getRawBazarName() != null ? m.getRawBazarName() : "কাঁচা বাজার";
+                tvTitle.setText("নমনীয় মিল: " + rawName + " (" + getMealTypeLabel(m.getMealType()) + ")");
+                tvDate.setText(m.getMealDate() + " • " + String.format(Locale.US, "%.1f", getMealTypeCount(m)) + " মিল");
+                tvAmount.setText(CurrencyUtils.format(m.getSharedPrice()));
+                tvAmount.setTextColor(ContextCompat.getColor(this, R.color.coral_primary));
 
                 layoutActivityHistoryContainer.addView(row);
             }

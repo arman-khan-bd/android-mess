@@ -71,6 +71,37 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layoutSummaryFlexibleRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvSummaryFlexibleCost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="নমনীয় মিল: ৳ ০.০০"
+                android:textColor="@color/primary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvSummaryFlexibleTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/badge_neutral"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:text="কাঁচামাল ভাগ (তারিখভিত্তিক হিসাব →)"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"

@@ -21,8 +21,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.smartmess.android.R;
 import com.smartmess.android.data.local.DatabaseHelper;
 import com.smartmess.android.data.local.dao.ExpenseDao;
+import com.smartmess.android.data.local.dao.MealDao;
 import com.smartmess.android.engine.PlanGateManager;
 import com.smartmess.android.model.Expense;
+import com.smartmess.android.model.Meal;
 import com.smartmess.android.utils.CurrencyUtils;
 import com.smartmess.android.utils.DateTimeUtils;
 import com.smartmess.android.utils.FileDownloadHelper;
@@ -51,11 +53,13 @@ public class ActivityBazarLedger extends AppCompatActivity {
     private TextView tvRawSubtotal;
     private TextView tvSharedSubtotal;
     private TextView tvUtilitySubtotal;
+    private TextView tvFlexibleSubtotal;
 
     private LinearLayout layoutLedgerTableRows;
     private TextView tvEmptyLedger;
 
     private ExpenseDao expenseDao;
+    private MealDao mealDao;
     private SessionManager sessionManager;
     private PlanGateManager planGateManager;
 
@@ -71,6 +75,7 @@ public class ActivityBazarLedger extends AppCompatActivity {
 
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
         expenseDao = new ExpenseDao(helper);
+        mealDao = new MealDao(helper);
         sessionManager = new SessionManager(this);
         planGateManager = new PlanGateManager(this);
 
@@ -98,6 +103,7 @@ public class ActivityBazarLedger extends AppCompatActivity {
         tvRawSubtotal = findViewById(R.id.tvRawSubtotal);
         tvSharedSubtotal = findViewById(R.id.tvSharedSubtotal);
         tvUtilitySubtotal = findViewById(R.id.tvUtilitySubtotal);
+        tvFlexibleSubtotal = findViewById(R.id.tvFlexibleSubtotal);
 
         layoutLedgerTableRows = findViewById(R.id.layoutLedgerTableRows);
         tvEmptyLedger = findViewById(R.id.tvEmptyLedger);
@@ -222,14 +228,19 @@ public class ActivityBazarLedger extends AppCompatActivity {
 
         long messId = sessionManager.getMessId();
         List<Expense> expenses = expenseDao.getExpensesInDateRange(messId, currentStartDate, currentEndDate);
+        List<Meal> flexibleMeals = mealDao.getAllFlexibleMealsForMess(messId, currentStartDate, currentEndDate);
 
-        if (expenses == null || expenses.isEmpty()) {
+        boolean hasExpenses = expenses != null && !expenses.isEmpty();
+        boolean hasFlexible = flexibleMeals != null && !flexibleMeals.isEmpty();
+
+        if (!hasExpenses && !hasFlexible) {
             tvEmptyLedger.setVisibility(View.VISIBLE);
             tvLedgerTotalCost.setText("৳ 0.00");
             tvLedgerTotalCount.setText("0 Entries");
             tvRawSubtotal.setText("Raw: ৳0.00");
             tvSharedSubtotal.setText("Shared: ৳0.00");
             tvUtilitySubtotal.setText("Utility: ৳0.00");
+            if (tvFlexibleSubtotal != null) tvFlexibleSubtotal.setText("নমনীয় মিল: ৳০.০০");
             return;
         }
 
@@ -239,85 +250,148 @@ public class ActivityBazarLedger extends AppCompatActivity {
         double rawAmount = 0.0;
         double sharedAmount = 0.0;
         double utilAmount = 0.0;
+        double flexibleAmount = 0.0;
+        int rowIndex = 0;
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        for (int i = 0; i < expenses.size(); i++) {
-            Expense e = expenses.get(i);
-            totalAmount += e.getAmount();
+        // 1. Render Standard Bazar Expenses
+        if (hasExpenses) {
+            for (Expense e : expenses) {
+                totalAmount += e.getAmount();
 
-            if (e.isRawMeal()) rawAmount += e.getAmount();
-            else if (e.isSharedFood()) sharedAmount += e.getAmount();
-            else if (e.isUtilityAsset()) utilAmount += e.getAmount();
+                if (e.isRawMeal()) rawAmount += e.getAmount();
+                else if (e.isSharedFood()) sharedAmount += e.getAmount();
+                else if (e.isUtilityAsset()) utilAmount += e.getAmount();
 
-            View rowView = inflater.inflate(R.layout.item_ledger_table_row, layoutLedgerTableRows, false);
+                View rowView = inflater.inflate(R.layout.item_ledger_table_row, layoutLedgerTableRows, false);
 
-            TextView tvDate = rowView.findViewById(R.id.tvRowDate);
-            TextView tvTitle = rowView.findViewById(R.id.tvRowTitle);
-            TextView tvCategory = rowView.findViewById(R.id.tvRowCategory);
-            TextView tvAmount = rowView.findViewById(R.id.tvRowAmount);
-            TextView tvBuyer = rowView.findViewById(R.id.tvRowBuyer);
-            TextView tvVoucher = rowView.findViewById(R.id.tvRowVoucher);
+                TextView tvDate = rowView.findViewById(R.id.tvRowDate);
+                TextView tvTitle = rowView.findViewById(R.id.tvRowTitle);
+                TextView tvCategory = rowView.findViewById(R.id.tvRowCategory);
+                TextView tvAmount = rowView.findViewById(R.id.tvRowAmount);
+                TextView tvBuyer = rowView.findViewById(R.id.tvRowBuyer);
+                TextView tvVoucher = rowView.findViewById(R.id.tvRowVoucher);
 
-            tvDate.setText(e.getExpenseDate());
-            tvTitle.setText(e.getTitle() != null ? e.getTitle() : "Bazar Expense");
-            tvAmount.setText(CurrencyUtils.format(e.getAmount()));
+                tvDate.setText(e.getExpenseDate());
+                tvTitle.setText(e.getTitle() != null ? e.getTitle() : "Bazar Expense");
+                tvAmount.setText(CurrencyUtils.format(e.getAmount()));
 
-            String buyer = e.getBuyerName() != null ? e.getBuyerName() : "Buyer #" + e.getBuyerUserId();
-            tvBuyer.setText(buyer);
+                String buyer = e.getBuyerName() != null ? e.getBuyerName() : "Buyer #" + e.getBuyerUserId();
+                tvBuyer.setText(buyer);
 
-            // Category styling
-            if (e.isRawMeal()) {
-                tvCategory.setText("Raw Meal");
-                tvCategory.setTextColor(ContextCompat.getColor(this, R.color.credit_green));
-                tvCategory.setBackgroundResource(R.drawable.badge_credit);
-            } else if (e.isSharedFood()) {
-                tvCategory.setText("Shared Food");
-                tvCategory.setTextColor(ContextCompat.getColor(this, R.color.accent));
-                tvCategory.setBackgroundResource(R.drawable.badge_credit);
-            } else if (e.isUtilityAsset()) {
-                tvCategory.setText("Utility/Asset");
-                tvCategory.setTextColor(ContextCompat.getColor(this, R.color.info_blue));
-                tvCategory.setBackgroundResource(R.drawable.badge_credit);
-            } else {
-                tvCategory.setText("General");
-                tvCategory.setTextColor(ContextCompat.getColor(this, R.color.warning_amber));
-                tvCategory.setBackgroundResource(R.drawable.badge_credit);
+                // Category styling
+                if (e.isRawMeal()) {
+                    tvCategory.setText("Raw Meal");
+                    tvCategory.setTextColor(ContextCompat.getColor(this, R.color.credit_green));
+                    tvCategory.setBackgroundResource(R.drawable.badge_credit);
+                } else if (e.isSharedFood()) {
+                    tvCategory.setText("Shared Food");
+                    tvCategory.setTextColor(ContextCompat.getColor(this, R.color.accent));
+                    tvCategory.setBackgroundResource(R.drawable.badge_credit);
+                } else if (e.isUtilityAsset()) {
+                    tvCategory.setText("Utility/Asset");
+                    tvCategory.setTextColor(ContextCompat.getColor(this, R.color.info_blue));
+                    tvCategory.setBackgroundResource(R.drawable.badge_credit);
+                } else {
+                    tvCategory.setText("General");
+                    tvCategory.setTextColor(ContextCompat.getColor(this, R.color.warning_amber));
+                    tvCategory.setBackgroundResource(R.drawable.badge_credit);
+                }
+
+                // Voucher thumbnail or modal preview
+                final String voucherUrl = e.getVoucherImageUrl();
+                if (voucherUrl != null && !voucherUrl.trim().isEmpty()) {
+                    tvVoucher.setText("📎 View");
+                    tvVoucher.setTextColor(ContextCompat.getColor(this, R.color.accent));
+                    tvVoucher.setOnClickListener(v -> showVoucherPreviewDialog(e, voucherUrl.trim()));
+                } else {
+                    tvVoucher.setText("—");
+                    tvVoucher.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
+                    tvVoucher.setOnClickListener(null);
+                }
+
+                if (rowIndex % 2 == 1) {
+                    rowView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface_variant));
+                } else {
+                    rowView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface));
+                }
+                rowIndex++;
+
+                layoutLedgerTableRows.addView(rowView);
+
+                View divider = new View(this);
+                divider.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1));
+                divider.setBackgroundColor(ContextCompat.getColor(this, R.color.border_stroke));
+                layoutLedgerTableRows.addView(divider);
             }
-
-            // Voucher thumbnail or modal preview
-            final String voucherUrl = e.getVoucherImageUrl();
-            if (voucherUrl != null && !voucherUrl.trim().isEmpty()) {
-                tvVoucher.setText("📎 View");
-                tvVoucher.setTextColor(ContextCompat.getColor(this, R.color.accent));
-                tvVoucher.setOnClickListener(v -> showVoucherPreviewDialog(e, voucherUrl.trim()));
-            } else {
-                tvVoucher.setText("—");
-                tvVoucher.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
-                tvVoucher.setOnClickListener(null);
-            }
-
-            // Zebra striping for table readability
-            if (i % 2 == 1) {
-                rowView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface_variant));
-            } else {
-                rowView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface));
-            }
-
-            layoutLedgerTableRows.addView(rowView);
-
-            // 1dp horizontal divider
-            View divider = new View(this);
-            divider.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1));
-            divider.setBackgroundColor(ContextCompat.getColor(this, R.color.border_stroke));
-            layoutLedgerTableRows.addView(divider);
         }
 
+        // 2. Render Flexible Meal Raw Cooking Shares
+        if (hasFlexible) {
+            for (Meal m : flexibleMeals) {
+                double shareCost = m.getSharedPrice();
+                flexibleAmount += shareCost;
+                totalAmount += shareCost;
+
+                View rowView = inflater.inflate(R.layout.item_ledger_table_row, layoutLedgerTableRows, false);
+
+                TextView tvDate = rowView.findViewById(R.id.tvRowDate);
+                TextView tvTitle = rowView.findViewById(R.id.tvRowTitle);
+                TextView tvCategory = rowView.findViewById(R.id.tvRowCategory);
+                TextView tvAmount = rowView.findViewById(R.id.tvRowAmount);
+                TextView tvBuyer = rowView.findViewById(R.id.tvRowBuyer);
+                TextView tvVoucher = rowView.findViewById(R.id.tvRowVoucher);
+
+                tvDate.setText(m.getMealDate());
+                String rawName = m.getRawBazarName() != null ? m.getRawBazarName() : "কাঁচা বাজার";
+                tvTitle.setText(rawName + " (" + getMealTypeLabel(m.getMealType()) + ")");
+
+                tvCategory.setText("নমনীয় মিল");
+                tvCategory.setTextColor(ContextCompat.getColor(this, R.color.coral_primary));
+                tvCategory.setBackgroundResource(R.drawable.badge_credit);
+
+                tvAmount.setText(CurrencyUtils.format(shareCost));
+                String userName = m.getUserName() != null ? m.getUserName() : "মেম্বার #" + m.getUserId();
+                tvBuyer.setText(userName + " (শেয়ার)");
+
+                tvVoucher.setText("কাঁচা বাজার");
+                tvVoucher.setTextColor(ContextCompat.getColor(this, R.color.coral_primary_dark));
+                tvVoucher.setOnClickListener(null);
+
+                if (rowIndex % 2 == 1) {
+                    rowView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface_variant));
+                } else {
+                    rowView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface));
+                }
+                rowIndex++;
+
+                layoutLedgerTableRows.addView(rowView);
+
+                View divider = new View(this);
+                divider.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1));
+                divider.setBackgroundColor(ContextCompat.getColor(this, R.color.border_stroke));
+                layoutLedgerTableRows.addView(divider);
+            }
+        }
+
+        int totalEntries = (expenses != null ? expenses.size() : 0) + (flexibleMeals != null ? flexibleMeals.size() : 0);
         tvLedgerTotalCost.setText(CurrencyUtils.format(totalAmount));
-        tvLedgerTotalCount.setText(expenses.size() + (expenses.size() == 1 ? " Entry" : " Entries"));
+        tvLedgerTotalCount.setText(totalEntries + (totalEntries == 1 ? " Entry" : " Entries"));
         tvRawSubtotal.setText("Raw: " + CurrencyUtils.format(rawAmount));
         tvSharedSubtotal.setText("Shared: " + CurrencyUtils.format(sharedAmount));
         tvUtilitySubtotal.setText("Utility: " + CurrencyUtils.format(utilAmount));
+        if (tvFlexibleSubtotal != null) {
+            tvFlexibleSubtotal.setText("নমনীয় মিল: " + CurrencyUtils.format(flexibleAmount));
+        }
+    }
+
+    private String getMealTypeLabel(String type) {
+        if ("lunch".equalsIgnoreCase(type)) return "দুপুর";
+        if ("dinner".equalsIgnoreCase(type)) return "রাত";
+        if ("breakfast".equalsIgnoreCase(type)) return "সকাল";
+        if ("special".equalsIgnoreCase(type)) return "বিশেষ মিল";
+        return "মিল";
     }
 
     private void showVoucherPreviewDialog(Expense expense, String voucherUrl) {

@@ -122,6 +122,18 @@ public class DatabaseManager {
                 m.setDinnerCount(mealCursor.getDouble(mealCursor.getColumnIndexOrThrow(MealEntry.COL_DINNER_COUNT)));
                 m.setGuestMealCount(mealCursor.getDouble(mealCursor.getColumnIndexOrThrow(MealEntry.COL_GUEST_MEAL_COUNT)));
                 m.setIsLocked(mealCursor.getInt(mealCursor.getColumnIndexOrThrow(MealEntry.COL_IS_LOCKED)));
+                int isFlexIdx = mealCursor.getColumnIndex(MealEntry.COL_IS_FLEXIBLE);
+                if (isFlexIdx >= 0) m.setIsFlexible(mealCursor.getInt(isFlexIdx));
+                int mealTypeIdx = mealCursor.getColumnIndex(MealEntry.COL_MEAL_TYPE);
+                if (mealTypeIdx >= 0) m.setMealType(mealCursor.getString(mealTypeIdx));
+                int rawNameIdx = mealCursor.getColumnIndex(MealEntry.COL_RAW_BAZAR_NAME);
+                if (rawNameIdx >= 0) m.setRawBazarName(mealCursor.getString(rawNameIdx));
+                int rawAmtIdx = mealCursor.getColumnIndex(MealEntry.COL_RAW_BAZAR_AMOUNT);
+                if (rawAmtIdx >= 0) m.setRawBazarAmount(mealCursor.getDouble(rawAmtIdx));
+                int sharedPriceIdx = mealCursor.getColumnIndex(MealEntry.COL_SHARED_PRICE);
+                if (sharedPriceIdx >= 0) m.setSharedPrice(mealCursor.getDouble(sharedPriceIdx));
+                int bazarIdIdx = mealCursor.getColumnIndex(MealEntry.COL_BAZAR_ID);
+                if (bazarIdIdx >= 0 && !mealCursor.isNull(bazarIdIdx)) m.setBazarId(mealCursor.getLong(bazarIdIdx));
                 m.setSyncStatus(0);
                 m.setCreatedAt(mealCursor.getString(mealCursor.getColumnIndexOrThrow(MealEntry.COL_CREATED_AT)));
                 m.setUpdatedAt(mealCursor.getString(mealCursor.getColumnIndexOrThrow(MealEntry.COL_UPDATED_AT)));
@@ -354,6 +366,16 @@ public class DatabaseManager {
                     mv.put(MealEntry.COL_DINNER_COUNT, m.getDinnerCount());
                     mv.put(MealEntry.COL_GUEST_MEAL_COUNT, m.getGuestMealCount());
                     mv.put(MealEntry.COL_IS_LOCKED, m.getIsLocked());
+                    mv.put(MealEntry.COL_IS_FLEXIBLE, m.getIsFlexible());
+                    mv.put(MealEntry.COL_MEAL_TYPE, m.getMealType());
+                    mv.put(MealEntry.COL_RAW_BAZAR_NAME, m.getRawBazarName());
+                    mv.put(MealEntry.COL_RAW_BAZAR_AMOUNT, m.getRawBazarAmount());
+                    mv.put(MealEntry.COL_SHARED_PRICE, m.getSharedPrice());
+                    if (m.getBazarId() != null && m.getBazarId() > 0) {
+                        mv.put(MealEntry.COL_BAZAR_ID, m.getBazarId());
+                    } else {
+                        mv.putNull(MealEntry.COL_BAZAR_ID);
+                    }
                     mv.put(MealEntry.COL_SYNC_STATUS, 1);
                     if (m.getCreatedAt() != null) mv.put(MealEntry.COL_CREATED_AT, m.getCreatedAt());
                     if (m.getUpdatedAt() != null) mv.put(MealEntry.COL_UPDATED_AT, m.getUpdatedAt());
