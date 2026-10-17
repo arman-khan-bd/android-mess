@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,8 +28,11 @@ import com.smartmess.android.data.remote.dto.SendTicketMessageRequest;
 import com.smartmess.android.data.remote.dto.TicketDetailResponse;
 import com.smartmess.android.data.remote.dto.TicketMessageDto;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,7 +46,9 @@ public class ActivityTicketChat extends AppCompatActivity {
     private String ticketStatus;
 
     private ImageButton btnBackChat;
-    private ImageButton btnRefreshChat;
+    private View btnRefreshChat;
+    private ImageView ivRefreshIcon;
+    private TextView tvRefreshLabel;
     private TextView tvTicketNumber;
     private TextView tvTicketStatus;
     private TextView tvTicketSubject;
@@ -52,14 +58,15 @@ public class ActivityTicketChat extends AppCompatActivity {
 
     private ChatAdapter adapter;
     private final List<TicketMessageDto> messageList = new ArrayList<>();
+    private boolean isReloading = false;
 
     private final Handler pollHandler = new Handler(Looper.getMainLooper());
     private final Runnable pollRunnable = new Runnable() {
         @Override
         public void run() {
-            if (!isFinishing() && (android.os.Build.VERSION.SDK_INT < 17 || !isDestroyed())) {
-                loadMessagesSilently();
-                pollHandler.postDelayed(this, 15000); // Poll every 15s for live replies
+            if (!isFinishing() && !isDestroyedCompat()) {
+                reloadMessagesWithoutLoading(false);
+                pollHandler.postDelayed(this, 4000); // Live poll every 4s for instant two-way chat sync
             }
         }
     };
@@ -78,12 +85,14 @@ public class ActivityTicketChat extends AppCompatActivity {
         setupHeader();
         setupRecyclerView();
         setupSendButton();
-        loadMessages();
+        reloadMessagesWithoutLoading(false);
     }
 
     private void initViews() {
         btnBackChat = findViewById(R.id.btnBackChat);
         btnRefreshChat = findViewById(R.id.btnRefreshChat);
+        ivRefreshIcon = findViewById(R.id.ivRefreshIcon);
+        tvRefreshLabel = findViewById(R.id.tvRefreshLabel);
         tvTicketNumber = findViewById(R.id.tvTicketNumber);
         tvTicketStatus = findViewById(R.id.tvTicketStatus);
         tvTicketSubject = findViewById(R.id.tvTicketSubject);
@@ -97,9 +106,10 @@ public class ActivityTicketChat extends AppCompatActivity {
 
         if (btnRefreshChat != null) {
             btnRefreshChat.setOnClickListener(v -> {
-                btnRefreshChat.animate().rotationBy(360f).setDuration(600).start();
-                loadMessages();
-                Toast.makeText(ActivityTicketChat.this, "নতুন বার্তা চেক করা হচ্ছে...", Toast.LENGTH_SHORT).show();
+                if (ivRefreshIcon != null) {
+                    ivRefreshIcon.animate().rotationBy(360f).setDuration(500).start();
+                }
+                reloadMessagesWithoutLoading(true);
             });
         }
     }
@@ -141,7 +151,7 @@ public class ActivityTicketChat extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         pollHandler.removeCallbacks(pollRunnable);
-        pollHandler.postDelayed(pollRunnable, 15000);
+        pollHandler.postDelayed(pollRunnable, 4000);
     }
 
     @Override
@@ -156,24 +166,72 @@ public class ActivityTicketChat extends AppCompatActivity {
         pollHandler.removeCallbacks(pollRunnable);
     }
 
-    private void loadMessages() {
+    private boolean isDestroyedCompat() {
+        return android.os.Build.VERSION.SDK_INT >= 17 && isDestroyed();
+    }
+
+    /**
+     * Reload messages silently without screen flicker, without clearing the list,
+     * and without disruptive blocking progress dialogs.
+     */
+    private void reloadMessagesWithoutLoading(boolean showToast) {
+        if (ticketId <= 0 || isReloading) return;
+        isReloading = true;
+
         ApiService apiService = ApiClient.getApiService(this);
         apiService.getTicketMessages(ticketId).enqueue(new Callback<TicketDetailResponse>() {
             @Override
             public void onResponse(Call<TicketDetailResponse> call, Response<TicketDetailResponse> response) {
-                if (isFinishing()) return;
+                isReloading = false;
+                if (isFinishing() || isDestroyedCompat()) return;
 
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getTicket() != null) {
-                        ticketStatus = response.body().getTicket().getStatus();
-                        updateStatusPill(ticketStatus);
+                        String newStatus = response.body().getTicket().getStatus();
+                        if (newStatus != null && !newStatus.equalsIgnoreCase(ticketStatus)) {
+                            ticketStatus = newStatus;
+                            updateStatusPill(ticketStatus);
+                        }
                     }
-                    if (response.body().getMessages() != null) {
-                        messageList.clear();
-                        messageList.addAll(response.body().getMessages());
-                        adapter.notifyDataSetChanged();
-                        if (!messageList.isEmpty()) {
-                            rvMessages.scrollToPosition(messageList.size() - 1);
+
+                    List<TicketMessageDto> incoming = response.body().getMessages();
+                    if (incoming != null) {
+                        if (messageList.isEmpty()) {
+                            messageList.addAll(incoming);
+                            adapter.notifyDataSetChanged();
+                            if (!messageList.isEmpty()) {
+                                rvMessages.scrollToPosition(messageList.size() - 1);
+                            }
+                            if (showToast) {
+                                Toast.makeText(ActivityTicketChat.this, "বার্তা লোড সম্পন্ন", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            // Find genuinely new messages by comparing message IDs
+                            List<TicketMessageDto> newMessages = new ArrayList<>();
+                            for (TicketMessageDto inMsg : incoming) {
+                                boolean exists = false;
+                                for (TicketMessageDto existing : messageList) {
+                                    if (existing.getId() != 0 && existing.getId() == inMsg.getId()) {
+                                        exists = true;
+                                        break;
+                                    }
+                                }
+                                if (!exists) {
+                                    newMessages.add(inMsg);
+                                }
+                            }
+
+                            if (!newMessages.isEmpty()) {
+                                int startPos = messageList.size();
+                                messageList.addAll(newMessages);
+                                adapter.notifyItemRangeInserted(startPos, newMessages.size());
+                                rvMessages.smoothScrollToPosition(messageList.size() - 1);
+                                if (showToast) {
+                                    Toast.makeText(ActivityTicketChat.this, "নতুন " + newMessages.size() + " টি বার্তা এসেছে", Toast.LENGTH_SHORT).show();
+                                }
+                            } else if (showToast) {
+                                Toast.makeText(ActivityTicketChat.this, "সব বার্তা আপ-টু-ডেট", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 }
@@ -181,38 +239,12 @@ public class ActivityTicketChat extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TicketDetailResponse> call, Throwable t) {
-                if (isFinishing()) return;
-                Toast.makeText(ActivityTicketChat.this, "অফলাইন: নতুন উত্তর লোড করা যায়নি", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void loadMessagesSilently() {
-        ApiService apiService = ApiClient.getApiService(this);
-        apiService.getTicketMessages(ticketId).enqueue(new Callback<TicketDetailResponse>() {
-            @Override
-            public void onResponse(Call<TicketDetailResponse> call, Response<TicketDetailResponse> response) {
-                if (isFinishing()) return;
-
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getTicket() != null) {
-                        ticketStatus = response.body().getTicket().getStatus();
-                        updateStatusPill(ticketStatus);
-                    }
-                    if (response.body().getMessages() != null) {
-                        int oldSize = messageList.size();
-                        messageList.clear();
-                        messageList.addAll(response.body().getMessages());
-                        adapter.notifyDataSetChanged();
-                        if (messageList.size() > oldSize) {
-                            rvMessages.smoothScrollToPosition(messageList.size() - 1);
-                        }
-                    }
+                isReloading = false;
+                if (isFinishing() || isDestroyedCompat()) return;
+                if (showToast) {
+                    Toast.makeText(ActivityTicketChat.this, "বার্তা আপডেট করা সম্ভব হয়নি", Toast.LENGTH_SHORT).show();
                 }
             }
-
-            @Override
-            public void onFailure(Call<TicketDetailResponse> call, Throwable t) {}
         });
     }
 
@@ -223,14 +255,28 @@ public class ActivityTicketChat extends AppCompatActivity {
         btnSendMessage.setEnabled(false);
         SendTicketMessageRequest req = new SendTicketMessageRequest(msg);
 
+        // Optimistic display for ultra-smooth user experience without lag
+        TicketMessageDto optMsg = new TicketMessageDto();
+        optMsg.setId(System.currentTimeMillis());
+        optMsg.setMessageBody(msg);
+        optMsg.setSenderType("user");
+        optMsg.setMe(true);
+        optMsg.setSenderName("You");
+        optMsg.setCreatedAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+
+        int optIndex = messageList.size();
+        messageList.add(optMsg);
+        adapter.notifyItemInserted(optIndex);
+        rvMessages.smoothScrollToPosition(messageList.size() - 1);
+        etMessageInput.setText("");
+
         ApiService apiService = ApiClient.getApiService(this);
         apiService.sendTicketMessage(ticketId, req).enqueue(new Callback<TicketDetailResponse>() {
             @Override
             public void onResponse(Call<TicketDetailResponse> call, Response<TicketDetailResponse> response) {
                 btnSendMessage.setEnabled(true);
                 if (response.isSuccessful()) {
-                    etMessageInput.setText("");
-                    loadMessages();
+                    reloadMessagesWithoutLoading(false);
                 } else {
                     Toast.makeText(ActivityTicketChat.this, "বার্তা পাঠাতে সমস্যা হয়েছে", Toast.LENGTH_SHORT).show();
                 }

@@ -37,7 +37,10 @@ public class TicketMessageDto {
     public String getAttachmentUrl() { return attachmentUrl; }
     public String getCreatedAt() { return createdAt; }
 
+    public void setId(long id) { this.id = id; }
     public void setMessageBody(String messageBody) { this.messageBody = messageBody; }
     public void setSenderType(String senderType) { this.senderType = senderType; }
+    public void setSenderName(String senderName) { this.senderName = senderName; }
     public void setMe(boolean me) { isMe = me; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }

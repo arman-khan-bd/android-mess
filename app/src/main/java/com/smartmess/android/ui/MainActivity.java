@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private View drawerItemSupport;
     private View drawerItemBugReport;
     private View tvDrawerManagerHeader;
+    private View drawerItemAdminDashboard;
     private View drawerItemSettings;
     private View drawerItemNotifManager;
     private View drawerItemHandover;
@@ -334,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
         drawerItemSupport = findViewById(R.id.drawerItemSupport);
         drawerItemBugReport = findViewById(R.id.drawerItemBugReport);
         tvDrawerManagerHeader = findViewById(R.id.tvDrawerManagerHeader);
+        drawerItemAdminDashboard = findViewById(R.id.drawerItemAdminDashboard);
         drawerItemSettings = findViewById(R.id.drawerItemSettings);
         drawerItemNotifManager = findViewById(R.id.drawerItemNotifManager);
         drawerItemHandover = findViewById(R.id.drawerItemHandover);
@@ -531,6 +533,7 @@ public class MainActivity extends AppCompatActivity {
             // Manager Controls visibility
             int managerVisibility = isManager ? View.VISIBLE : View.GONE;
             if (tvDrawerManagerHeader != null) tvDrawerManagerHeader.setVisibility(managerVisibility);
+            if (drawerItemAdminDashboard != null) drawerItemAdminDashboard.setVisibility(managerVisibility);
             if (drawerItemSettings != null) drawerItemSettings.setVisibility(managerVisibility);
             if (drawerItemNotifManager != null) drawerItemNotifManager.setVisibility(View.VISIBLE);
             if (drawerItemHandover != null) drawerItemHandover.setVisibility(managerVisibility);
@@ -613,6 +616,13 @@ public class MainActivity extends AppCompatActivity {
             drawerItemBugReport.setOnClickListener(v -> {
                 closeDrawer();
                 startActivity(new Intent(MainActivity.this, ActivityReportIssue.class));
+            });
+        }
+
+        if (drawerItemAdminDashboard != null) {
+            drawerItemAdminDashboard.setOnClickListener(v -> {
+                closeDrawer();
+                startActivity(new Intent(MainActivity.this, com.smartmess.android.ui.settings.ActivityAdminDashboard.class));
             });
         }
 

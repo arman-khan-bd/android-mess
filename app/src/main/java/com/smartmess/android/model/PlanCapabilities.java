@@ -65,7 +65,7 @@ public class PlanCapabilities implements Serializable {
         capabilities.put("cloud_sync", true);
         capabilities.put("unlimited_members", false);
         capabilities.put("max_members", 6);
-        capabilities.put("pdf_export", false);
+        capabilities.put("pdf_export", true);
         capabilities.put("bulk_sms", true);
         capabilities.put("ocr_scanner", false);
         capabilities.put("full_history", false);
@@ -100,7 +100,7 @@ public class PlanCapabilities implements Serializable {
     }
 
     public boolean isPdfExportEnabled() {
-        return getBooleanCap("pdf_export", isPro());
+        return true;
     }
 
     public boolean isBulkSmsEnabled() {

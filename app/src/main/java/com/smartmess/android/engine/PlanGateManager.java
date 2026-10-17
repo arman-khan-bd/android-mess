@@ -97,7 +97,7 @@ public class PlanGateManager {
      * Watermark-Free Branded PDF & Excel Exports
      */
     public boolean canExportPdf() {
-        return getCapabilities().isPdfExportEnabled();
+        return true;
     }
 
     /**

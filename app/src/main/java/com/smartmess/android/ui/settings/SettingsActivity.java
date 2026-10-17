@@ -54,6 +54,8 @@ public class SettingsActivity extends AppCompatActivity {
     private MaterialButton btnChangeTheme;
     private MaterialButton btnMealVacationMode;
     private MaterialButton btnNotificationCenterSettings;
+    private View cardSettingsAdminDashboard;
+    private MaterialButton btnOpenAdminDashboard;
     private MaterialButton btnLogout;
 
     private MessDao messDao;
@@ -82,6 +84,8 @@ public class SettingsActivity extends AppCompatActivity {
         btnChangeTheme = findViewById(R.id.btnChangeTheme);
         btnMealVacationMode = findViewById(R.id.btnMealVacationMode);
         btnNotificationCenterSettings = findViewById(R.id.btnNotificationCenterSettings);
+        cardSettingsAdminDashboard = findViewById(R.id.cardSettingsAdminDashboard);
+        btnOpenAdminDashboard = findViewById(R.id.btnOpenAdminDashboard);
         btnLogout = findViewById(R.id.btnLogout);
 
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
@@ -122,6 +126,10 @@ public class SettingsActivity extends AppCompatActivity {
             btnNotificationCenterSettings.setOnClickListener(v ->
                     startActivity(new Intent(this, com.smartmess.android.ui.notifications.ActivityNotificationCenter.class)));
         }
+        if (btnOpenAdminDashboard != null) {
+            btnOpenAdminDashboard.setOnClickListener(v ->
+                    startActivity(new Intent(this, ActivityAdminDashboard.class)));
+        }
         btnLogout.setOnClickListener(v -> performLogout());
     }
 
@@ -152,6 +160,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (tvCurrentThemeBadge != null) {
             tvCurrentThemeBadge.setText(com.smartmess.android.utils.ThemeManager.getThemeName(this));
+        }
+
+        boolean isManager = sessionManager.isManager() || "admin".equalsIgnoreCase(sessionManager.getRole());
+        if (cardSettingsAdminDashboard != null) {
+            cardSettingsAdminDashboard.setVisibility(isManager ? View.VISIBLE : View.GONE);
         }
 
         selectedDefaultSimSlot = sessionManager.getDefaultSimSlot();

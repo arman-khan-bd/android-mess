@@ -359,4 +359,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + SmsLogEntry.TABLE_NAME);
         onCreate(db);
     }
+
+    /**
+     * Atomically clears all operational mess transaction records (meals, expenses, deposits,
+     * bazar sessions, itemized logs, meal requests, vacations) for the given mess,
+     * while preserving member profiles, credentials, mess metadata, and SaaS plans.
+     */
+    public void resetMessOperationalData(long messId) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            String where = "mess_id = ?";
+            String[] args = new String[]{String.valueOf(messId)};
+
+            db.delete(MealEntry.TABLE_NAME, where, args);
+            db.delete(ExpenseEntry.TABLE_NAME, where, args);
+            db.delete(DepositEntry.TABLE_NAME, where, args);
+            db.delete(BazarSessionEntry.TABLE_NAME, where, args);
+            db.delete(ItemizedConsumptionEntry.TABLE_NAME, where, args);
+            db.delete(MealRequestEntry.TABLE_NAME, where, args);
+            db.delete(MealVacationEntry.TABLE_NAME, where, args);
+            db.delete(SmsLogEntry.TABLE_NAME, where, args);
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
 }

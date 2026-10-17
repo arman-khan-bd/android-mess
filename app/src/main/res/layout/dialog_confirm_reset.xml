@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- Warning Icon & Title Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_lucide_shield_alert"
+            app:tint="@color/due_red" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:text="মেস ডাটা সম্পূর্ণ রিসেট"
+            android:textColor="@color/due_red"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Destructive Action Warning Text -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:lineSpacingExtra="3dp"
+        android:text="⚠️ সতর্কতা: এই পদক্ষেপটি সম্পূর্ণ অপ্রত্যাবর্তনীয় (Irreversible)। মেসের বর্তমান সমস্ত মিল, বাজার খরচ, সদস্যদের জমা, বাজার সেশন এবং ভাউচার লগ স্থায়ীভাবে মুছে ফেলা হবে।"
+        android:textColor="@color/text_primary"
+        android:textSize="13sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/badge_credit"
+        android:backgroundTint="#F1F5F9"
+        android:padding="10dp"
+        android:text="✓ মেস একাউন্ট ও মেম্বারদের প্রোফাইল নিরাপদ ও অক্ষত থাকবে।"
+        android:textColor="@color/primary_dark"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <!-- Instruction Prompt for Writing Confirmation -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="নিশ্চিত করতে নিচের বক্সে হুবহু বড় হাতের অক্ষরে RESET লিখুন:"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <!-- Outlined Input for Typing RESET -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilConfirmReset"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:boxStrokeColor="@color/due_red"
+        app:hintTextColor="@color/due_red">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etConfirmResetInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="এখানে RESET লিখুন"
+            android:inputType="textCapCharacters"
+            android:maxLines="1"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Dialog Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelReset"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="বাতিল"
+            android:textColor="@color/text_secondary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirmResetSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@color/due_red"
+            android:enabled="false"
+            android:text="ডাটা রিসেট নিশ্চিত করুন"
+            android:textColor="@android:color/white"
+            app:icon="@drawable/ic_lucide_trash"
+            app:iconTint="@android:color/white" />
+    </LinearLayout>
+
+</LinearLayout>

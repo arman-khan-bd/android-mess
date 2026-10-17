@@ -85,7 +85,7 @@ public class SummaryReportActivity extends AppCompatActivity {
 
                 new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                         .setTitle("ডাউনলোডের ফরম্যাট নির্বাচন করুন")
-                        .setItems(new CharSequence[]{"PDF Statement (.pdf)", "Excel Workbook (.xlsx)"}, (dialog, which) -> {
+                        .setItems(new CharSequence[]{"PDF বিবরণী - PDF Statement (.pdf)", "Excel স্প্রেডশিট - Excel Workbook (.csv)"}, (dialog, which) -> {
                             if (which == 0) {
                                 com.smartmess.android.utils.FileDownloadHelper.downloadReport(this, "pdf", start, end, null);
                             } else {

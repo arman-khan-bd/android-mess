@@ -109,5 +109,9 @@ public interface ApiService {
             @Query("phone") String phone,
             @Query("mess_id") Long messId
     );
+
+    // Reset Mess Operational Data (Manager Only)
+    @POST("mess/reset")
+    Call<okhttp3.ResponseBody> resetMessData(@Body java.util.Map<String, String> body);
 }
 

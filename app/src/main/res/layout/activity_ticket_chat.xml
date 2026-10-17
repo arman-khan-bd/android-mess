@@ -71,17 +71,37 @@
                 android:textSize="10sp"
                 android:textStyle="bold" />
 
-            <!-- Refresh Button to get new messages -->
-            <ImageButton
+            <!-- Reload Message Button without loading -->
+            <LinearLayout
                 android:id="@+id/btnRefreshChat"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
                 android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="নতুন বার্তা রিফ্রেশ করুন"
-                android:padding="8dp"
-                android:src="@drawable/ic_lucide_refresh"
-                app:tint="@color/primary" />
+                android:background="@drawable/bg_reload_pill"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivRefreshIcon"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:contentDescription="রিলোড বার্তা"
+                    android:src="@drawable/ic_lucide_refresh"
+                    app:tint="@color/primary" />
+
+                <TextView
+                    android:id="@+id/tvRefreshLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="রিলোড"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 

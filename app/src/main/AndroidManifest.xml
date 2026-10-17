@@ -188,6 +188,12 @@
             android:name=".ui.settings.SettingsActivity"
             android:exported="false" />
 
+        <!-- Admin Dashboard & Mess Data Reset -->
+        <activity
+            android:name=".ui.settings.ActivityAdminDashboard"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Telemetry & Feedback Reporting -->
         <activity
             android:name=".ui.telemetry.ActivityReportIssue"
