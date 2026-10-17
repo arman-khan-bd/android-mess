@@ -15,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,16 +29,19 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.smartmess.android.R;
 import com.smartmess.android.data.local.DatabaseHelper;
+import com.smartmess.android.data.local.dao.BazarSessionDao;
 import com.smartmess.android.data.local.dao.ExpenseDao;
 import com.smartmess.android.data.local.dao.UserDao;
 import com.smartmess.android.data.sync.SyncManager;
 import com.smartmess.android.engine.VoucherManager;
 import com.smartmess.android.model.BazarItem;
 import com.smartmess.android.model.BazarPayer;
+import com.smartmess.android.model.BazarSession;
 import com.smartmess.android.model.Expense;
 import com.smartmess.android.model.User;
 import com.smartmess.android.utils.CurrencyUtils;
 import com.smartmess.android.utils.DateTimeUtils;
+import com.smartmess.android.utils.NotificationCenterHelper;
 import com.smartmess.android.utils.PermissionHelper;
 import com.smartmess.android.utils.SessionManager;
 
@@ -54,13 +59,25 @@ import java.util.UUID;
 
 public class ActivityAddBazar extends AppCompatActivity {
 
+    public static final String EXTRA_BAZAR_UUID = "extra_bazar_uuid";
+    public static final String EXTRA_EXPENSE_ID = "extra_expense_id";
+
     private static final int REQ_CAPTURE_CAMERA = 201;
     private static final int REQ_PICK_GALLERY = 202;
 
     // Header & Info
     private View btnBack;
+    private TextView tvHeaderTitle;
     private EditText etBazarDate;
     private EditText etBazarTitle;
+
+    // Meal Type RadioGroup
+    private RadioGroup rgMealType;
+    private RadioButton rbMealLunch;
+    private RadioButton rbMealDinner;
+    private RadioButton rbMealBreakfast;
+    private RadioButton rbMealSpecial;
+    private RadioButton rbMealMixed;
 
     // Item Repeater
     private TextView tvTotalItemCost;
@@ -73,7 +90,6 @@ public class ActivityAddBazar extends AppCompatActivity {
     // Multi-Payer Split
     private TextView tvTotalPaidAmount;
     private MaterialButton btnPaidByMe;
-    private MaterialButton btnSplitEqually;
     private LinearLayout layoutPayersContainer;
     private MaterialButton btnAddPayerRow;
     private LinearLayout layoutBalanceStatus;
@@ -89,6 +105,7 @@ public class ActivityAddBazar extends AppCompatActivity {
 
     // Database & Session
     private ExpenseDao expenseDao;
+    private BazarSessionDao bazarSessionDao;
     private UserDao userDao;
     private SessionManager sessionManager;
     private List<User> members = new ArrayList<>();
@@ -99,6 +116,12 @@ public class ActivityAddBazar extends AppCompatActivity {
     private final List<ItemRowHolder> itemRows = new ArrayList<>();
     private final List<PayerRowHolder> payerRows = new ArrayList<>();
     private final List<File> compressedReceiptFiles = new ArrayList<>();
+
+    // Edit Mode State
+    private String editBazarUuid = null;
+    private long editExpenseId = -1;
+    private boolean isEditMode = false;
+    private String originalCreatedAt = null;
 
     // Category mappings
     private final String[] categoryNames = {
@@ -126,22 +149,31 @@ public class ActivityAddBazar extends AppCompatActivity {
 
         DatabaseHelper helper = DatabaseHelper.getInstance(this);
         expenseDao = new ExpenseDao(helper);
+        bazarSessionDao = new BazarSessionDao(this);
         userDao = new UserDao(helper);
+
+        editBazarUuid = getIntent().getStringExtra(EXTRA_BAZAR_UUID);
+        editExpenseId = getIntent().getLongExtra(EXTRA_EXPENSE_ID, -1);
 
         initViews();
         loadMembers();
         setupDatePicker();
 
-        // Add initial rows
-        addItemRow();
-        addPayerRow(sessionManager.getUserId());
+        if ((editBazarUuid != null && !editBazarUuid.trim().isEmpty()) || editExpenseId > 0) {
+            isEditMode = true;
+            btnSaveBazar.setText("বাজারের পরিবর্তন সংরক্ষণ করুন (Update)");
+            loadBazarForEditing();
+        } else {
+            // Add initial rows for new creation
+            addItemRow();
+            addPayerRow(sessionManager.getUserId());
+        }
 
         // Button listeners
         btnAddItemRow.setOnClickListener(v -> addItemRow());
         btnAddPayerRow.setOnClickListener(v -> addPayerRow(-1));
 
         btnPaidByMe.setOnClickListener(v -> setPaid100ByCurrentUser());
-        btnSplitEqually.setOnClickListener(v -> splitBillEquallyAmongPayers());
 
         btnCaptureCamera.setOnClickListener(v -> launchCamera());
         btnPickGallery.setOnClickListener(v -> launchGallery());
@@ -159,6 +191,13 @@ public class ActivityAddBazar extends AppCompatActivity {
         etBazarDate = findViewById(R.id.etBazarDate);
         etBazarTitle = findViewById(R.id.etBazarTitle);
 
+        rgMealType = findViewById(R.id.rgMealType);
+        rbMealLunch = findViewById(R.id.rbMealLunch);
+        rbMealDinner = findViewById(R.id.rbMealDinner);
+        rbMealBreakfast = findViewById(R.id.rbMealBreakfast);
+        rbMealSpecial = findViewById(R.id.rbMealSpecial);
+        rbMealMixed = findViewById(R.id.rbMealMixed);
+
         tvTotalItemCost = findViewById(R.id.tvTotalItemCost);
         tvSubtotalRawMeal = findViewById(R.id.tvSubtotalRawMeal);
         tvSubtotalSharedFood = findViewById(R.id.tvSubtotalSharedFood);
@@ -168,7 +207,6 @@ public class ActivityAddBazar extends AppCompatActivity {
 
         tvTotalPaidAmount = findViewById(R.id.tvTotalPaidAmount);
         btnPaidByMe = findViewById(R.id.btnPaidByMe);
-        btnSplitEqually = findViewById(R.id.btnSplitEqually);
         layoutPayersContainer = findViewById(R.id.layoutPayersContainer);
         btnAddPayerRow = findViewById(R.id.btnAddPayerRow);
         layoutBalanceStatus = findViewById(R.id.layoutBalanceStatus);
@@ -181,6 +219,31 @@ public class ActivityAddBazar extends AppCompatActivity {
         btnSaveBazar = findViewById(R.id.btnSaveBazar);
 
         etBazarDate.setText(dateFormat.format(calendar.getTime()));
+    }
+
+    private String getSelectedMealType() {
+        if (rgMealType == null) return "lunch";
+        int checkedId = rgMealType.getCheckedRadioButtonId();
+        if (checkedId == R.id.rbMealDinner) return "dinner";
+        if (checkedId == R.id.rbMealBreakfast) return "breakfast";
+        if (checkedId == R.id.rbMealSpecial) return "special";
+        if (checkedId == R.id.rbMealMixed) return "mixed";
+        return "lunch";
+    }
+
+    private void setSelectedMealType(String mealType) {
+        if (rgMealType == null || mealType == null) return;
+        if ("dinner".equalsIgnoreCase(mealType)) {
+            if (rbMealDinner != null) rbMealDinner.setChecked(true);
+        } else if ("breakfast".equalsIgnoreCase(mealType)) {
+            if (rbMealBreakfast != null) rbMealBreakfast.setChecked(true);
+        } else if ("special".equalsIgnoreCase(mealType)) {
+            if (rbMealSpecial != null) rbMealSpecial.setChecked(true);
+        } else if ("mixed".equalsIgnoreCase(mealType)) {
+            if (rbMealMixed != null) rbMealMixed.setChecked(true);
+        } else {
+            if (rbMealLunch != null) rbMealLunch.setChecked(true);
+        }
     }
 
     private void loadMembers() {
@@ -209,14 +272,97 @@ public class ActivityAddBazar extends AppCompatActivity {
         });
     }
 
+    private void loadBazarForEditing() {
+        BazarSession session = null;
+        if (editBazarUuid != null && !editBazarUuid.trim().isEmpty()) {
+            session = bazarSessionDao.getByUuid(editBazarUuid);
+        }
+
+        if (session == null && editExpenseId > 0) {
+            Expense exp = expenseDao.getById(editExpenseId);
+            if (exp != null) {
+                if (exp.getBazarSessionUuid() != null && !exp.getBazarSessionUuid().trim().isEmpty()) {
+                    editBazarUuid = exp.getBazarSessionUuid();
+                    session = bazarSessionDao.getByUuid(editBazarUuid);
+                }
+                if (session == null) {
+                    session = new BazarSession();
+                    session.setUuid(exp.getUuid());
+                    session.setDate(exp.getExpenseDate());
+                    session.setTitle(exp.getTitle());
+                    session.setVoucherImageUrl(exp.getVoucherImageUrl());
+                    originalCreatedAt = exp.getCreatedAt();
+
+                    List<BazarItem> items = new ArrayList<>();
+                    items.add(new BazarItem(exp.getTitle(), exp.getExpenseCategory(), "1 pkg", exp.getAmount()));
+                    session.setItems(items);
+
+                    List<BazarPayer> payers = new ArrayList<>();
+                    payers.add(new BazarPayer(exp.getBuyerUserId(), exp.getBuyerName() != null ? exp.getBuyerName() : "Buyer", exp.getAmount()));
+                    session.setPayers(payers);
+                }
+            }
+        }
+
+        if (session != null) {
+            editBazarUuid = session.getUuid();
+            originalCreatedAt = session.getCreatedAt();
+            if (session.getDate() != null) etBazarDate.setText(session.getDate());
+            if (session.getTitle() != null) etBazarTitle.setText(session.getTitle());
+            setSelectedMealType(session.getMealType());
+
+            layoutItemsContainer.removeAllViews();
+            itemRows.clear();
+            if (session.getItems() != null && !session.getItems().isEmpty()) {
+                for (BazarItem it : session.getItems()) {
+                    addItemRowWithData(it);
+                }
+            } else {
+                addItemRow();
+            }
+
+            layoutPayersContainer.removeAllViews();
+            payerRows.clear();
+            if (session.getPayers() != null && !session.getPayers().isEmpty()) {
+                for (BazarPayer p : session.getPayers()) {
+                    addPayerRowWithData(p.getUserId(), p.getAmountPaid());
+                }
+            } else {
+                addPayerRow(sessionManager.getUserId());
+            }
+
+            if (session.getVoucherImageUrl() != null && !session.getVoucherImageUrl().trim().isEmpty()) {
+                File f = new File(session.getVoucherImageUrl());
+                if (f.exists()) {
+                    addReceiptThumbnail(f);
+                }
+            }
+        } else {
+            addItemRow();
+            addPayerRow(sessionManager.getUserId());
+        }
+        recalculateTotals();
+    }
+
     // ==========================================
     // 1. DYNAMIC ITEM REPEATER ENGINE
     // ==========================================
     private void addItemRow() {
+        addItemRowWithData(null);
+    }
+
+    private void addItemRowWithData(@Nullable BazarItem initialItem) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View rowView = inflater.inflate(R.layout.item_bazar_repeater_row, layoutItemsContainer, false);
 
         ItemRowHolder holder = new ItemRowHolder(rowView);
+        if (initialItem != null) {
+            if (initialItem.getName() != null) holder.etItemName.setText(initialItem.getName());
+            if (initialItem.getQuantity() != null) holder.etItemQty.setText(initialItem.getQuantity());
+            holder.setPrice(initialItem.getPrice());
+            holder.setCategoryByKey(initialItem.getCategory());
+        }
+
         itemRows.add(holder);
         layoutItemsContainer.addView(rowView);
 
@@ -259,17 +405,8 @@ public class ActivityAddBazar extends AppCompatActivity {
                     refreshItemRowIndices();
                     recalculateTotals();
                 } else {
-                    Toast.makeText(ActivityAddBazar.this, "অন্তত ১টি পণ্যের নাম প্রয়োজন", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityAddBazar.this, "বাজার তালিকায় অন্তত ১টি পণ্য থাকা আবশ্যক", Toast.LENGTH_SHORT).show();
                 }
-            });
-
-            spItemCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-                    recalculateTotals();
-                }
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {}
             });
 
             etItemPrice.addTextChangedListener(new SimpleTextWatcher() {
@@ -277,6 +414,16 @@ public class ActivityAddBazar extends AppCompatActivity {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     recalculateTotals();
                 }
+            });
+
+            spItemCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    recalculateTotals();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
             });
         }
 
@@ -290,12 +437,25 @@ public class ActivityAddBazar extends AppCompatActivity {
             }
         }
 
+        void setPrice(double price) {
+            etItemPrice.setText(String.format(Locale.US, "%.2f", price));
+        }
+
         String getCategoryKey() {
             int pos = spItemCategory.getSelectedItemPosition();
             if (pos >= 0 && pos < categoryKeys.length) {
                 return categoryKeys[pos];
             }
             return Expense.CAT_RAW_MEAL;
+        }
+
+        void setCategoryByKey(String key) {
+            for (int i = 0; i < categoryKeys.length; i++) {
+                if (categoryKeys[i].equalsIgnoreCase(key)) {
+                    spItemCategory.setSelection(i);
+                    break;
+                }
+            }
         }
 
         String getItemName() {
@@ -311,10 +471,17 @@ public class ActivityAddBazar extends AppCompatActivity {
     // 2. MULTI-MEMBER SPLIT PAYMENT ENGINE
     // ==========================================
     private void addPayerRow(long preselectUserId) {
+        addPayerRowWithData(preselectUserId, 0.0);
+    }
+
+    private void addPayerRowWithData(long preselectUserId, double initialAmount) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View rowView = inflater.inflate(R.layout.item_bazar_payer_row, layoutPayersContainer, false);
 
         PayerRowHolder holder = new PayerRowHolder(rowView, preselectUserId);
+        if (initialAmount > 0) {
+            holder.setAmount(initialAmount);
+        }
         payerRows.add(holder);
         layoutPayersContainer.addView(rowView);
 
@@ -325,12 +492,14 @@ public class ActivityAddBazar extends AppCompatActivity {
         View rootView;
         Spinner spPayerMember;
         EditText etPayerAmount;
+        MaterialButton btnFillAmount;
         View btnDeletePayerRow;
 
         PayerRowHolder(View view, long preselectUserId) {
             rootView = view;
             spPayerMember = view.findViewById(R.id.spPayerMember);
             etPayerAmount = view.findViewById(R.id.etPayerAmount);
+            btnFillAmount = view.findViewById(R.id.btnFillAmount);
             btnDeletePayerRow = view.findViewById(R.id.btnDeletePayerRow);
 
             List<String> memberNames = new ArrayList<>();
@@ -348,6 +517,27 @@ public class ActivityAddBazar extends AppCompatActivity {
             spPayerMember.setAdapter(adapter);
             if (!memberNames.isEmpty() && defaultIndex < memberNames.size()) {
                 spPayerMember.setSelection(defaultIndex);
+            }
+
+            // Fill Button Click: Auto-assigns remaining or total bazaar amount to this member
+            if (btnFillAmount != null) {
+                btnFillAmount.setOnClickListener(v -> {
+                    double totalBill = calculateTotalItemCost();
+                    double otherPayersTotal = 0.0;
+                    for (PayerRowHolder p : payerRows) {
+                        if (p != PayerRowHolder.this) {
+                            otherPayersTotal += p.getAmount();
+                        }
+                    }
+                    double remaining = round(totalBill - otherPayersTotal);
+                    if (remaining > 0) {
+                        setAmount(remaining);
+                    } else {
+                        setAmount(totalBill);
+                    }
+                    recalculateTotals();
+                    Toast.makeText(ActivityAddBazar.this, "সম্পূর্ণ অবশিষ্ট টাকা বরাদ্দ করা হয়েছে: " + CurrencyUtils.format(getAmount()), Toast.LENGTH_SHORT).show();
+                });
             }
 
             btnDeletePayerRow.setOnClickListener(v -> {
@@ -403,7 +593,6 @@ public class ActivityAddBazar extends AppCompatActivity {
         double totalBill = calculateTotalItemCost();
         long currentUserId = sessionManager.getUserId();
 
-        // Keep 1st payer or reset to 1 payer
         while (payerRows.size() > 1) {
             View viewToRemove = payerRows.get(payerRows.size() - 1).rootView;
             layoutPayersContainer.removeView(viewToRemove);
@@ -415,7 +604,6 @@ public class ActivityAddBazar extends AppCompatActivity {
         }
 
         PayerRowHolder first = payerRows.get(0);
-        // Preselect current user in spinner
         for (int i = 0; i < members.size(); i++) {
             if (members.get(i).getId() == currentUserId) {
                 first.spPayerMember.setSelection(i);
@@ -424,45 +612,6 @@ public class ActivityAddBazar extends AppCompatActivity {
         }
         first.setAmount(totalBill);
         recalculateTotals();
-    }
-
-    private void splitBillEquallyAmongPayers() {
-        double totalBill = calculateTotalItemCost();
-        if (members == null || members.isEmpty()) {
-            loadMembers();
-        }
-        if (members == null || members.isEmpty()) {
-            Toast.makeText(this, "মেসে কোনো সদস্য পাওয়া যায়নি", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Auto-show all mess members in payer list
-        layoutPayersContainer.removeAllViews();
-        payerRows.clear();
-
-        for (User u : members) {
-            addPayerRow(u.getId());
-        }
-
-        int count = payerRows.size();
-        if (count == 0) return;
-
-        double splitAmount = round(totalBill / count);
-        double distributed = 0.0;
-
-        for (int i = 0; i < count; i++) {
-            if (i == count - 1) {
-                // Adjust rounding difference on last member
-                double lastShare = round(totalBill - distributed);
-                payerRows.get(i).setAmount(lastShare);
-            } else {
-                payerRows.get(i).setAmount(splitAmount);
-                distributed += splitAmount;
-            }
-        }
-
-        recalculateTotals();
-        Toast.makeText(this, "সকল " + count + " জন সদস্যের মধ্যে সমান ভাগ করা হয়েছে (জনপ্রতি ৳" + String.format(Locale.US, "%.2f", splitAmount) + ")", Toast.LENGTH_SHORT).show();
     }
 
     // ==========================================
@@ -625,7 +774,7 @@ public class ActivityAddBazar extends AppCompatActivity {
     }
 
     // ==========================================
-    // 5. COMMIT MULTI-SPLIT BAZAR TO LEDGER
+    // 5. COMMIT MULTI-SPLIT BAZAR TO LEDGER & BROADCAST
     // ==========================================
     private void saveBazarSession() {
         double totalBill = calculateTotalItemCost();
@@ -660,8 +809,13 @@ public class ActivityAddBazar extends AppCompatActivity {
 
         String sessionTag = etBazarTitle.getText().toString().trim();
 
+        // Check if backdated entry
+        String today = dateFormat.format(new Date());
+        boolean isBackdated = date.compareTo(today) < 0;
+
         // Build item highlights summary
         StringBuilder highlights = new StringBuilder();
+        List<BazarItem> collectedItems = new ArrayList<>();
         for (int i = 0; i < itemRows.size(); i++) {
             ItemRowHolder it = itemRows.get(i);
             if (i > 0) highlights.append(", ");
@@ -669,6 +823,7 @@ public class ActivityAddBazar extends AppCompatActivity {
             if (!it.getItemQty().isEmpty()) {
                 highlights.append(" (").append(it.getItemQty()).append(")");
             }
+            collectedItems.add(new BazarItem(it.getItemName(), it.getCategoryKey(), it.getItemQty(), it.getPrice()));
         }
 
         String baseTitle = sessionTag.isEmpty() ? highlights.toString() : (sessionTag + ": " + highlights.toString());
@@ -694,15 +849,42 @@ public class ActivityAddBazar extends AppCompatActivity {
 
         long messId = sessionManager.getMessId();
         String now = DateTimeUtils.getCurrentDateTime();
+        String sessionUuid = (isEditMode && editBazarUuid != null && !editBazarUuid.trim().isEmpty())
+                ? editBazarUuid : UUID.randomUUID().toString();
 
-        // Multi-Payer Proportional Ledger Assignment
+        // 1. If in edit mode, remove previous expense rows linked to this session
+        if (isEditMode) {
+            expenseDao.deleteByBazarSessionUuid(messId, sessionUuid);
+            if (editExpenseId > 0) {
+                expenseDao.delete(editExpenseId);
+            }
+        }
+
+        // 2. Persist BazarSession object into bazar_sessions table
+        List<BazarPayer> collectedPayers = new ArrayList<>();
+        BazarSession session = new BazarSession();
+        session.setUuid(sessionUuid);
+        session.setMessId(messId);
+        session.setDate(date);
+        session.setTitle(baseTitle);
+        session.setMealType(getSelectedMealType());
+        session.setVoucherImageUrl(voucherPath);
+        session.setCreatedBy(sessionManager.getUserId());
+        session.setIsBackdated(isBackdated ? 1 : 0);
+        session.setItems(collectedItems);
+        session.setCreatedAt(originalCreatedAt != null ? originalCreatedAt : now);
+        session.setUpdatedAt(now);
+
+        // 3. Multi-Payer Proportional Ledger Assignment
         for (PayerRowHolder payer : payerRows) {
             double payerPaid = payer.getAmount();
             if (payerPaid <= 0) continue;
 
-            double ratio = payerPaid / totalBill;
             long buyerId = payer.getSelectedUserId();
             String payerName = payer.getSelectedUserName();
+            collectedPayers.add(new BazarPayer(buyerId, payerName, payerPaid));
+
+            double ratio = payerPaid / totalBill;
 
             // 1. Raw Meal Portion
             if (rawSub > 0) {
@@ -710,6 +892,7 @@ public class ActivityAddBazar extends AppCompatActivity {
                 if (rawPortion > 0) {
                     Expense exp = new Expense();
                     exp.setUuid(UUID.randomUUID().toString());
+                    exp.setBazarSessionUuid(sessionUuid);
                     exp.setMessId(messId);
                     exp.setBuyerUserId(buyerId);
                     exp.setExpenseCategory(Expense.CAT_RAW_MEAL);
@@ -731,6 +914,7 @@ public class ActivityAddBazar extends AppCompatActivity {
                 if (sharedPortion > 0) {
                     Expense exp = new Expense();
                     exp.setUuid(UUID.randomUUID().toString());
+                    exp.setBazarSessionUuid(sessionUuid);
                     exp.setMessId(messId);
                     exp.setBuyerUserId(buyerId);
                     exp.setExpenseCategory(Expense.CAT_SHARED_FOOD);
@@ -752,6 +936,7 @@ public class ActivityAddBazar extends AppCompatActivity {
                 if (utilPortion > 0) {
                     Expense exp = new Expense();
                     exp.setUuid(UUID.randomUUID().toString());
+                    exp.setBazarSessionUuid(sessionUuid);
                     exp.setMessId(messId);
                     exp.setBuyerUserId(buyerId);
                     exp.setExpenseCategory(Expense.CAT_UTILITY_ASSET);
@@ -768,19 +953,40 @@ public class ActivityAddBazar extends AppCompatActivity {
             }
         }
 
-        // Post in-app notification to SQLite Notification Center
-        com.smartmess.android.utils.NotificationCenterHelper.postNotification(
+        session.setPayers(collectedPayers);
+        bazarSessionDao.insertOrUpdate(session);
+
+        // 4. Real-time Audit Push Notification Broadcast to all Mess Members
+        String notificationTitle;
+        String notificationBody;
+        String currentUserName = sessionManager.getUserName() != null ? sessionManager.getUserName() : "মেস সদস্য";
+
+        if (isEditMode) {
+            notificationTitle = "✏️ বাজার খরচ সংশোধন করা হয়েছে";
+            notificationBody = currentUserName + " " + date + " তারিখের বাজার তথ্য পরিবর্তন করেছেন (মোট: " + CurrencyUtils.format(totalBill) + ", আইটেম: " + collectedItems.size() + " টি)।";
+        } else if (isBackdated) {
+            notificationTitle = "📅 পূর্ববর্তী (ব্যাকডেটেড) বাজার যুক্ত হয়েছে";
+            notificationBody = currentUserName + " পূর্ববর্তী তারিখের (" + date + ") " + CurrencyUtils.format(totalBill) + " টাকার বাজার এন্ট্রি করেছেন।";
+        } else {
+            notificationTitle = "🛒 নতুন বাজার খরচ যুক্ত হয়েছে";
+            notificationBody = "৳" + String.format(Locale.US, "%.2f", totalBill) + " বাজার খরচ এন্ট্রি (" + date + ", " + getSelectedMealType() + "), প্রদানকারী: " + payerRows.size() + " জন";
+        }
+
+        NotificationCenterHelper.postNotification(
                 getApplicationContext(),
                 messId,
-                "নতুন বাজার খরচ যুক্ত হয়েছে",
-                "৳" + String.format(java.util.Locale.US, "%.2f", totalBill) + " বাজার খরচ এন্ট্রি (" + date + "), প্রদানকারী: " + payerRows.size() + " জন",
-                com.smartmess.android.utils.NotificationCenterHelper.TYPE_EXPENSE
+                notificationTitle,
+                notificationBody,
+                NotificationCenterHelper.TYPE_EXPENSE
         );
 
-        // Trigger background sync
+        // 5. Trigger background sync
         SyncManager.triggerSync(getApplicationContext());
 
-        Toast.makeText(this, "বাজারের হিসাব ও সদস্যদের খরচ সফলভাবে সংরক্ষিত হয়েছে!", Toast.LENGTH_LONG).show();
+        String successMsg = isEditMode
+                ? "বাজারের বিবরণ ও সদস্যদের খরচ সফলভাবে আপডেট হয়েছে!"
+                : "বাজারের হিসাব ও সদস্যদের খরচ সফলভাবে সংরক্ষিত হয়েছে!";
+        Toast.makeText(this, successMsg, Toast.LENGTH_LONG).show();
         finish();
     }
 

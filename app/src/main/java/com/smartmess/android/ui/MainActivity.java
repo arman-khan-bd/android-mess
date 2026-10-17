@@ -56,9 +56,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvNotificationBadge;
     private View btnOpenProfileDrawer;
     private TextView tvAvatarInitials;
+    private ImageView ivAvatarMockup;
     private BottomNavigationView bottomNavigation;
 
     // Right Drawer Views
+    private ImageView ivDrawerAvatar;
+    private View btnDrawerEditPhoto;
     private TextView tvDrawerAvatarInitials;
     private TextView tvDrawerUserName;
     private TextView tvDrawerUserPhone;
@@ -309,9 +312,12 @@ public class MainActivity extends AppCompatActivity {
         tvNotificationBadge = findViewById(R.id.tvNotificationBadge);
         btnOpenProfileDrawer = findViewById(R.id.btnOpenProfileDrawer);
         tvAvatarInitials = findViewById(R.id.tvAvatarInitials);
+        ivAvatarMockup = findViewById(R.id.ivAvatarMockup);
         bottomNavigation = findViewById(R.id.bottom_navigation);
 
         // Right Drawer views
+        ivDrawerAvatar = findViewById(R.id.ivDrawerAvatar);
+        btnDrawerEditPhoto = findViewById(R.id.btnDrawerEditPhoto);
         tvDrawerAvatarInitials = findViewById(R.id.tvDrawerAvatarInitials);
         tvDrawerUserName = findViewById(R.id.tvDrawerUserName);
         tvDrawerUserPhone = findViewById(R.id.tvDrawerUserPhone);
@@ -424,8 +430,19 @@ public class MainActivity extends AppCompatActivity {
                     initials = ("" + parts[0].charAt(0)).toUpperCase(java.util.Locale.ROOT);
                 }
             }
-            if (tvAvatarInitials != null) {
+
+            String avatarUrl = sessionManager.getAvatarUrl();
+            if (ivAvatarMockup != null) {
+                if (avatarUrl != null && !avatarUrl.trim().isEmpty()) {
+                    com.smartmess.android.utils.ImageLoaderHelper.loadAvatar(this, avatarUrl, ivAvatarMockup);
+                    if (tvAvatarInitials != null) tvAvatarInitials.setVisibility(View.GONE);
+                } else if (tvAvatarInitials != null) {
+                    tvAvatarInitials.setText(initials);
+                    tvAvatarInitials.setVisibility(View.VISIBLE);
+                }
+            } else if (tvAvatarInitials != null) {
                 tvAvatarInitials.setText(initials);
+                tvAvatarInitials.setVisibility(View.VISIBLE);
             }
 
             // Calculate Personal Ledger Balance
@@ -483,7 +500,20 @@ public class MainActivity extends AppCompatActivity {
                     initials = ("" + parts[0].charAt(0)).toUpperCase(java.util.Locale.ROOT);
                 }
             }
-            if (tvDrawerAvatarInitials != null) {
+            String avatarUrl = sessionManager.getAvatarUrl();
+            if (ivDrawerAvatar != null) {
+                if (avatarUrl != null && !avatarUrl.trim().isEmpty()) {
+                    ivDrawerAvatar.setVisibility(View.VISIBLE);
+                    if (tvDrawerAvatarInitials != null) tvDrawerAvatarInitials.setVisibility(View.GONE);
+                    com.smartmess.android.utils.ImageLoaderHelper.loadAvatar(this, avatarUrl, ivDrawerAvatar);
+                } else {
+                    ivDrawerAvatar.setVisibility(View.GONE);
+                    if (tvDrawerAvatarInitials != null) {
+                        tvDrawerAvatarInitials.setVisibility(View.VISIBLE);
+                        tvDrawerAvatarInitials.setText(initials);
+                    }
+                }
+            } else if (tvDrawerAvatarInitials != null) {
                 tvDrawerAvatarInitials.setText(initials);
             }
 
@@ -510,6 +540,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupDrawerActions() {
+        if (btnDrawerEditPhoto != null) {
+            btnDrawerEditPhoto.setOnClickListener(v -> {
+                closeDrawer();
+                Intent intent = new Intent(MainActivity.this, com.smartmess.android.ui.members.ActivityUserProfile.class);
+                intent.putExtra(com.smartmess.android.ui.members.ActivityUserProfile.EXTRA_USER_ID, sessionManager.getUserId());
+                startActivity(intent);
+            });
+        }
+
         if (drawerItemProfile != null) {
             drawerItemProfile.setOnClickListener(v -> {
                 closeDrawer();

@@ -56,11 +56,17 @@ public class Expense {
     @SerializedName(value = "syncStatus", alternate = {"sync_status"})
     private int syncStatus; // 0=pending, 1=synced
 
+    @SerializedName(value = "bazarSessionUuid", alternate = {"bazar_session_uuid"})
+    private String bazarSessionUuid;
+
     @SerializedName(value = "createdAt", alternate = {"created_at"})
     private String createdAt;
 
     @SerializedName(value = "updatedAt", alternate = {"updated_at"})
     private String updatedAt;
+
+    public String getBazarSessionUuid() { return bazarSessionUuid; }
+    public void setBazarSessionUuid(String bazarSessionUuid) { this.bazarSessionUuid = bazarSessionUuid; }
 
     public Expense() {}
 

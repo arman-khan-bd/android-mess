@@ -73,6 +73,15 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
             holder.tvVoucherIndicator.setVisibility(View.GONE);
             holder.tvVoucherIndicator.setOnClickListener(null);
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(holder.itemView.getContext(), ActivityBazarDetails.class);
+            if (expense.getBazarSessionUuid() != null && !expense.getBazarSessionUuid().trim().isEmpty()) {
+                intent.putExtra(ActivityBazarDetails.EXTRA_BAZAR_UUID, expense.getBazarSessionUuid());
+            }
+            intent.putExtra(ActivityBazarDetails.EXTRA_EXPENSE_ID, expense.getId());
+            holder.itemView.getContext().startActivity(intent);
+        });
     }
 
     @Override

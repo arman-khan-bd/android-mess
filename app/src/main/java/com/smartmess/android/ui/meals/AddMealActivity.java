@@ -37,10 +37,12 @@ import com.smartmess.android.data.sync.SyncManager;
 import com.smartmess.android.model.AppNotification;
 import com.smartmess.android.model.Expense;
 import com.smartmess.android.model.Meal;
+import com.smartmess.android.model.ItemizedConsumptionLog;
 import com.smartmess.android.model.MealRequest;
 import com.smartmess.android.model.User;
 import com.smartmess.android.utils.CurrencyUtils;
 import com.smartmess.android.utils.DateTimeUtils;
+import com.smartmess.android.utils.NotificationCenterHelper;
 import com.smartmess.android.utils.SessionManager;
 
 import java.text.SimpleDateFormat;
@@ -73,18 +75,24 @@ public class AddMealActivity extends AppCompatActivity {
     // Flexible Meal Views
     private MaterialCheckBox cbFlexibleMeal;
     private View layoutFlexibleOptions;
+    private Spinner spLinkedBazarSession;
     private Spinner spFlexibleMealType;
     private Spinner spRawBazarItem;
     private EditText etCustomRawBazar;
     private EditText etRawMealAmount;
     private TextView tvSharedPricePreview;
     private ExpenseDao expenseDao;
+    private BazarSessionDao bazarSessionDao;
+    private ItemizedConsumptionDao itemizedConsumptionDao;
 
     private boolean isFlexibleMeal = false;
     private String selectedMealType = "lunch";
     private String selectedRawBazarName = "গরুর মাংস (Beef)";
     private double currentRawMealAmount = 0.0;
     private double calculatedPerMealRate = 0.0;
+    private int activeDinersCount = 0;
+    private String selectedBazarSessionUuid = null;
+    private final List<BazarSession> linkedBazarSessionList = new ArrayList<>();
     private final List<String> rawBazarOptions = new ArrayList<>();
 
     // Tab 2 Views (Meal Request)
@@ -147,6 +155,8 @@ public class AddMealActivity extends AppCompatActivity {
         mealRequestDao = new MealRequestDao(helper);
         notificationDao = new AppNotificationDao(helper);
         expenseDao = new ExpenseDao(helper);
+        bazarSessionDao = new BazarSessionDao(this);
+        itemizedConsumptionDao = new ItemizedConsumptionDao(this);
         sessionManager = new SessionManager(this);
 
         currentMessId = sessionManager.getMessId();
@@ -188,6 +198,7 @@ public class AddMealActivity extends AppCompatActivity {
         // Flexible Meal Views
         cbFlexibleMeal = findViewById(R.id.cbFlexibleMeal);
         layoutFlexibleOptions = findViewById(R.id.layoutFlexibleOptions);
+        spLinkedBazarSession = findViewById(R.id.spLinkedBazarSession);
         spFlexibleMealType = findViewById(R.id.spFlexibleMealType);
         spRawBazarItem = findViewById(R.id.spRawBazarItem);
         etCustomRawBazar = findViewById(R.id.etCustomRawBazar);
@@ -297,7 +308,10 @@ public class AddMealActivity extends AppCompatActivity {
     }
 
     private void setupFlexibleMealSection() {
-        // 1. Setup Meal Type Spinner
+        // 1. Setup Linked Bazar Session Dropdown
+        loadLinkedBazarSessions();
+
+        // 2. Setup Meal Type Spinner
         List<String> mealTypeLabels = new ArrayList<>();
         mealTypeLabels.add("দুপুরের মিল (Lunch)");
         mealTypeLabels.add("রাতের মিল (Dinner)");
@@ -324,7 +338,7 @@ public class AddMealActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // 2. Setup Raw Bazar Item Selector
+        // 3. Setup Raw Bazar Item Selector
         rawBazarOptions.clear();
         rawBazarOptions.add("গরুর মাংস (Beef)");
         rawBazarOptions.add("মুরগির মাংস (Chicken)");
@@ -373,14 +387,14 @@ public class AddMealActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // 3. Checkbox Listener
+        // 4. Checkbox Listener
         cbFlexibleMeal.setOnCheckedChangeListener((buttonView, isChecked) -> {
             isFlexibleMeal = isChecked;
             layoutFlexibleOptions.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             updateFlexibleCalculations();
         });
 
-        // 4. Amount input watcher
+        // 5. Amount input watcher
         etRawMealAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -408,6 +422,54 @@ public class AddMealActivity extends AppCompatActivity {
         });
     }
 
+    private void loadLinkedBazarSessions() {
+        if (spLinkedBazarSession == null) return;
+        linkedBazarSessionList.clear();
+        List<String> labels = new ArrayList<>();
+        labels.add("কোনো নির্দিষ্ট বাজার লিংক নেই (ম্যানুয়াল এন্ট্রি)");
+
+        List<com.smartmess.android.model.BazarSession> sessions = bazarSessionDao.getAll(currentMessId);
+        if (sessions != null && !sessions.isEmpty()) {
+            for (com.smartmess.android.model.BazarSession bs : sessions) {
+                linkedBazarSessionList.add(bs);
+                String title = bs.buildSummaryTitle();
+                labels.add("[" + bs.getDate() + "] " + title + " (৳" + String.format(Locale.US, "%.0f", bs.getTotalItemCost()) + ")");
+            }
+        }
+
+        ArrayAdapter<String> sessionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, labels);
+        spLinkedBazarSession.setAdapter(sessionAdapter);
+
+        spLinkedBazarSession.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    selectedBazarSessionUuid = null;
+                } else if (position - 1 < linkedBazarSessionList.size()) {
+                    com.smartmess.android.model.BazarSession bs = linkedBazarSessionList.get(position - 1);
+                    selectedBazarSessionUuid = bs.getUuid();
+                    if (bs.getMealType() != null) {
+                        setMealTypeSpinnerSelection(bs.getMealType());
+                    }
+                    double cost = bs.getCategoryTotal(com.smartmess.android.model.BazarItem.CAT_RAW_MEAL);
+                    if (cost <= 0) cost = bs.getTotalItemCost();
+                    etRawMealAmount.setText(String.format(Locale.US, "%.2f", cost));
+
+                    if (bs.getItems() != null && !bs.getItems().isEmpty()) {
+                        String firstItemName = bs.getItems().get(0).getName();
+                        if (firstItemName != null && !firstItemName.trim().isEmpty()) {
+                            setRawBazarSpinnerSelection(firstItemName.trim());
+                        }
+                    }
+                    updateFlexibleCalculations();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
     private String getEffectiveRawItemName() {
         if (spRawBazarItem.getSelectedItem() != null) {
             String selected = spRawBazarItem.getSelectedItem().toString();
@@ -423,25 +485,32 @@ public class AddMealActivity extends AppCompatActivity {
     private void updateFlexibleCalculations() {
         if (!isFlexibleMeal) {
             calculatedPerMealRate = 0.0;
+            activeDinersCount = 0;
             if (bulkMealAdapter != null) bulkMealAdapter.notifyDataSetChanged();
             return;
         }
 
-        double totalTypeMeals = 0.0;
+        int activeDiners = 0;
         for (User u : displayedMembers) {
             MemberMealState s = memberMealMap.get(u.getId());
             if (s == null || s.isOnVacation) continue;
 
+            double mealCount = 0.0;
             if ("breakfast".equals(selectedMealType)) {
-                totalTypeMeals += s.breakfast;
+                mealCount = s.breakfast;
             } else if ("lunch".equals(selectedMealType)) {
-                totalTypeMeals += s.lunch + s.guest;
+                mealCount = s.lunch + s.guest;
             } else if ("dinner".equals(selectedMealType)) {
-                totalTypeMeals += s.dinner;
+                mealCount = s.dinner;
             } else {
-                totalTypeMeals += s.getTotal();
+                mealCount = s.getTotal();
+            }
+
+            if (mealCount > 0) {
+                activeDiners++;
             }
         }
+        activeDinersCount = activeDiners;
 
         String amtStr = etRawMealAmount.getText() != null ? etRawMealAmount.getText().toString().trim() : "";
         try {
@@ -450,16 +519,16 @@ public class AddMealActivity extends AppCompatActivity {
             currentRawMealAmount = 0.0;
         }
 
-        if (totalTypeMeals > 0 && currentRawMealAmount > 0) {
-            calculatedPerMealRate = currentRawMealAmount / totalTypeMeals;
+        if (activeDiners > 0 && currentRawMealAmount > 0) {
+            calculatedPerMealRate = currentRawMealAmount / activeDiners;
         } else {
             calculatedPerMealRate = 0.0;
         }
 
         tvSharedPricePreview.setText(String.format(Locale.US,
-                "মোট বাজার: %s • মিল গ্রহণকারী: %s টি • জনপ্রতি শেয়ার: %s",
+                "মোট বাজার: %s • সক্রিয় মিল গ্রহণকারী: %d জন • জনপ্রতি খরচ: %s (অনুপস্থিত মেম্বার: ৳০.০০)",
                 CurrencyUtils.format(currentRawMealAmount),
-                formatNumber(totalTypeMeals),
+                activeDiners,
                 CurrencyUtils.format(calculatedPerMealRate)
         ));
 
@@ -645,24 +714,29 @@ public class AddMealActivity extends AppCompatActivity {
         String nowIso = DateTimeUtils.nowIso();
         String rawItemName = isFlexibleMeal ? getEffectiveRawItemName() : null;
         int savedCount = 0;
+        boolean hasEditedExisting = false;
+        boolean isBackdated = dateStr.compareTo(DateTimeUtils.todayIso()) < 0;
+
+        List<ItemizedConsumptionLog> consumptionLogs = new ArrayList<>();
 
         for (User user : displayedMembers) {
             MemberMealState state = memberMealMap.get(user.getId());
             if (state == null) continue;
 
-            double userShare = 0.0;
-            if (isFlexibleMeal && calculatedPerMealRate > 0 && !state.isOnVacation) {
-                double userTypeMeals = 0.0;
-                if ("breakfast".equals(selectedMealType)) userTypeMeals = state.breakfast;
-                else if ("lunch".equals(selectedMealType)) userTypeMeals = state.lunch + state.guest;
-                else if ("dinner".equals(selectedMealType)) userTypeMeals = state.dinner;
-                else userTypeMeals = state.getTotal();
+            double userTypeMeals = 0.0;
+            if ("breakfast".equals(selectedMealType)) userTypeMeals = state.breakfast;
+            else if ("lunch".equals(selectedMealType)) userTypeMeals = state.lunch + state.guest;
+            else if ("dinner".equals(selectedMealType)) userTypeMeals = state.dinner;
+            else userTypeMeals = state.getTotal();
 
-                userShare = userTypeMeals * calculatedPerMealRate;
+            double userShare = 0.0;
+            if (isFlexibleMeal && calculatedPerMealRate > 0 && !state.isOnVacation && userTypeMeals > 0) {
+                userShare = calculatedPerMealRate; // Active diner cost splitting
             }
 
             Meal existing = mealDao.getUserMealForDate(currentMessId, user.getId(), dateStr);
             if (existing != null) {
+                hasEditedExisting = true;
                 existing.setBreakfastCount(state.breakfast);
                 existing.setLunchCount(state.lunch);
                 existing.setDinnerCount(state.dinner);
@@ -672,6 +746,7 @@ public class AddMealActivity extends AppCompatActivity {
                 existing.setRawBazarName(isFlexibleMeal ? rawItemName : null);
                 existing.setRawBazarAmount(isFlexibleMeal ? currentRawMealAmount : 0.0);
                 existing.setSharedPrice(isFlexibleMeal ? userShare : 0.0);
+                existing.setBazarSessionUuid(selectedBazarSessionUuid);
                 existing.setUpdatedAt(nowIso);
                 mealDao.insertOrUpdate(existing);
             } else {
@@ -690,11 +765,53 @@ public class AddMealActivity extends AppCompatActivity {
                 newMeal.setRawBazarName(isFlexibleMeal ? rawItemName : null);
                 newMeal.setRawBazarAmount(isFlexibleMeal ? currentRawMealAmount : 0.0);
                 newMeal.setSharedPrice(isFlexibleMeal ? userShare : 0.0);
+                newMeal.setBazarSessionUuid(selectedBazarSessionUuid);
                 newMeal.setCreatedAt(nowIso);
                 newMeal.setUpdatedAt(nowIso);
                 mealDao.insertOrUpdate(newMeal);
             }
+
+            // If flexible meal and active diner ate, create itemized consumption log
+            if (isFlexibleMeal && currentRawMealAmount > 0 && activeDinersCount > 0 && !state.isOnVacation && userTypeMeals > 0) {
+                ItemizedConsumptionLog log = new ItemizedConsumptionLog();
+                log.setUuid(UUID.randomUUID().toString());
+                log.setMessId(currentMessId);
+                log.setUserId(user.getId());
+                log.setMealDate(dateStr);
+                log.setMealType(selectedMealType);
+                log.setBazarSessionUuid(selectedBazarSessionUuid);
+                log.setItemName(rawItemName != null ? rawItemName : "কাঁচা বাজার আইটেম");
+                log.setItemCategory("raw_meal");
+                log.setTotalItemCost(currentRawMealAmount);
+                log.setActiveDinersCount(activeDinersCount);
+                log.setCostShare(calculatedPerMealRate);
+                log.setMealCount(userTypeMeals);
+                log.setCreatedAt(nowIso);
+                log.setUpdatedAt(nowIso);
+                consumptionLogs.add(log);
+            }
+
             savedCount++;
+        }
+
+        // Persist itemized consumption logs
+        if (itemizedConsumptionDao != null) {
+            itemizedConsumptionDao.deleteByMealDetails(currentMessId, dateStr, isFlexibleMeal ? selectedMealType : "mixed");
+            if (!consumptionLogs.isEmpty()) {
+                itemizedConsumptionDao.insertOrUpdateBatch(consumptionLogs);
+            }
+        }
+
+        // Audit notification broadcast if modified or backdated
+        if (hasEditedExisting || isBackdated) {
+            String actionType = isBackdated ? "পূর্বের তারিখের মিল যুক্ত" : "মিল এন্ট্রি পরিবর্তন";
+            String modifierName = sessionManager.getUserName();
+            if (modifierName == null || modifierName.trim().isEmpty()) modifierName = "ম্যানেজার";
+            String notifTitle = "🔔 " + actionType + " করা হয়েছে";
+            String notifMsg = String.format(Locale.US,
+                    "%s তারিখের মিলের তথ্য %s কর্তৃক %s হালনাগাদ করা হয়েছে। মোট সক্রিয় ডিনার: %d জন।",
+                    dateStr, modifierName, DateTimeUtils.nowDisplay(), activeDinersCount);
+            NotificationCenterHelper.postNotification(AddMealActivity.this, currentMessId, notifTitle, notifMsg, NotificationCenterHelper.TYPE_NOTICE);
         }
 
         SyncManager.triggerSync(getApplicationContext());
@@ -901,22 +1018,30 @@ public class AddMealActivity extends AppCompatActivity {
             updateCardViews(holder, state);
 
             // Flexible meal share badge
-            if (isFlexibleMeal && calculatedPerMealRate > 0 && !state.isOnVacation) {
-                double userTypeMeals = 0.0;
-                if ("breakfast".equals(selectedMealType)) userTypeMeals = state.breakfast;
-                else if ("lunch".equals(selectedMealType)) userTypeMeals = state.lunch + state.guest;
-                else if ("dinner".equals(selectedMealType)) userTypeMeals = state.dinner;
-                else userTypeMeals = state.getTotal();
-
-                if (userTypeMeals > 0) {
-                    double userCost = userTypeMeals * calculatedPerMealRate;
-                    String itemName = getEffectiveRawItemName();
+            if (isFlexibleMeal && calculatedPerMealRate > 0) {
+                if (state.isOnVacation) {
                     holder.tvFlexibleSharedInfo.setVisibility(View.VISIBLE);
-                    holder.tvFlexibleSharedInfo.setText(String.format(Locale.US,
-                            "নমনীয় মিল শেয়ার: %s (%s মিল • %s)",
-                            CurrencyUtils.format(userCost), formatNumber(userTypeMeals), itemName));
+                    holder.tvFlexibleSharedInfo.setText("🏖️ ছুটিতে আছেন (মিল বন্ধ • ৳০.০০)");
+                    holder.tvFlexibleSharedInfo.setTextColor(ContextCompat.getColor(AddMealActivity.this, R.color.text_secondary));
                 } else {
-                    holder.tvFlexibleSharedInfo.setVisibility(View.GONE);
+                    double userTypeMeals = 0.0;
+                    if ("breakfast".equals(selectedMealType)) userTypeMeals = state.breakfast;
+                    else if ("lunch".equals(selectedMealType)) userTypeMeals = state.lunch + state.guest;
+                    else if ("dinner".equals(selectedMealType)) userTypeMeals = state.dinner;
+                    else userTypeMeals = state.getTotal();
+
+                    holder.tvFlexibleSharedInfo.setVisibility(View.VISIBLE);
+                    if (userTypeMeals > 0) {
+                        double userCost = calculatedPerMealRate;
+                        String itemName = getEffectiveRawItemName();
+                        holder.tvFlexibleSharedInfo.setText(String.format(Locale.US,
+                                "খাবার শেয়ার: %s (%s মিল • %s)",
+                                CurrencyUtils.format(userCost), formatNumber(userTypeMeals), itemName));
+                        holder.tvFlexibleSharedInfo.setTextColor(ContextCompat.getColor(AddMealActivity.this, R.color.credit_green));
+                    } else {
+                        holder.tvFlexibleSharedInfo.setText("মিল নেননি: ৳০.০০ (খরচ প্রযোজ্য নয়)");
+                        holder.tvFlexibleSharedInfo.setTextColor(ContextCompat.getColor(AddMealActivity.this, R.color.text_secondary));
+                    }
                 }
             } else {
                 holder.tvFlexibleSharedInfo.setVisibility(View.GONE);

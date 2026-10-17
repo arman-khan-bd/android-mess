@@ -71,6 +71,10 @@
             android:name=".ui.expenses.ActivityAddBazar"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.expenses.ActivityBazarDetails"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- Meals -->
         <activity

@@ -148,6 +148,82 @@
                 android:orientation="vertical"
                 android:padding="14dp">
 
+                <!-- Meal Type Selector at Top of Bazaar Item Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="মিলের ধরণ (Meal Type)"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:scrollbars="none">
+
+                        <RadioGroup
+                            android:id="@+id/rgMealType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/rbMealLunch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="দুপুর (Lunch)"
+                                android:textSize="13sp" />
+
+                            <RadioButton
+                                android:id="@+id/rbMealDinner"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="রাত (Dinner)"
+                                android:textSize="13sp" />
+
+                            <RadioButton
+                                android:id="@+id/rbMealBreakfast"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="সকাল (Breakfast)"
+                                android:textSize="13sp" />
+
+                            <RadioButton
+                                android:id="@+id/rbMealSpecial"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="বিশেষ (Special)"
+                                android:textSize="13sp" />
+
+                            <RadioButton
+                                android:id="@+id/rbMealMixed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="মিক্সড (Mixed)"
+                                android:textSize="13sp" />
+                        </RadioGroup>
+                    </HorizontalScrollView>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@color/border_stroke" />
+
                 <!-- Card Header -->
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -318,41 +394,18 @@
                 </RelativeLayout>
 
                 <!-- Quick Presets for Split Payment -->
-                <LinearLayout
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPaidByMe"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnPaidByMe"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_marginEnd="6dp"
-                        android:layout_weight="1"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        android:text="আমি একা দিয়েছি (১০০%)"
-                        android:textAllCaps="false"
-                        android:textSize="11sp"
-                        app:strokeColor="@color/border_stroke" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnSplitEqually"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="6dp"
-                        android:layout_weight="1"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        android:text="সমান ভাগ"
-                        android:textAllCaps="false"
-                        android:textSize="11sp"
-                        app:strokeColor="@color/border_stroke" />
-                </LinearLayout>
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="আমি একা দিয়েছি (১০০% বরাদ্দ)"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    app:strokeColor="@color/border_stroke" />
 
                 <!-- Dynamic Payers Repeater Container -->
                 <LinearLayout

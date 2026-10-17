@@ -41,6 +41,11 @@ public class ExpenseDao {
             values.putNull(ExpenseEntry.COL_TARGET_USER_ID);
         }
         values.put(ExpenseEntry.COL_SYNC_STATUS, expense.getSyncStatus());
+        if (expense.getBazarSessionUuid() != null) {
+            values.put(ExpenseEntry.COL_BAZAR_SESSION_UUID, expense.getBazarSessionUuid());
+        } else {
+            values.putNull(ExpenseEntry.COL_BAZAR_SESSION_UUID);
+        }
         values.put(ExpenseEntry.COL_CREATED_AT, expense.getCreatedAt());
         values.put(ExpenseEntry.COL_UPDATED_AT, expense.getUpdatedAt());
 
@@ -229,9 +234,96 @@ public class ExpenseDao {
         if (!cursor.isNull(targetCol)) {
             expense.setTargetUserId(cursor.getLong(targetCol));
         }
+        int sessCol = cursor.getColumnIndex(ExpenseEntry.COL_BAZAR_SESSION_UUID);
+        if (sessCol >= 0 && !cursor.isNull(sessCol)) {
+            expense.setBazarSessionUuid(cursor.getString(sessCol));
+        }
         expense.setSyncStatus(cursor.getInt(cursor.getColumnIndexOrThrow(ExpenseEntry.COL_SYNC_STATUS)));
         expense.setCreatedAt(cursor.getString(cursor.getColumnIndexOrThrow(ExpenseEntry.COL_CREATED_AT)));
         expense.setUpdatedAt(cursor.getString(cursor.getColumnIndexOrThrow(ExpenseEntry.COL_UPDATED_AT)));
         return expense;
+    }
+
+    public Expense getById(long id) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT e.*, u." + UserEntry.COL_NAME + " as buyer_name, tu." + UserEntry.COL_NAME + " as target_name "
+                + "FROM " + ExpenseEntry.TABLE_NAME + " e "
+                + "LEFT JOIN " + UserEntry.TABLE_NAME + " u ON e." + ExpenseEntry.COL_BUYER_USER_ID + " = u." + UserEntry.COL_ID + " "
+                + "LEFT JOIN " + UserEntry.TABLE_NAME + " tu ON e." + ExpenseEntry.COL_TARGET_USER_ID + " = tu." + UserEntry.COL_ID + " "
+                + "WHERE e." + ExpenseEntry.COL_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id)});
+        Expense expense = null;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                expense = cursorToExpense(cursor);
+                int buyerIdx = cursor.getColumnIndex("buyer_name");
+                if (buyerIdx >= 0) expense.setBuyerName(cursor.getString(buyerIdx));
+                int targetIdx = cursor.getColumnIndex("target_name");
+                if (targetIdx >= 0 && !cursor.isNull(targetIdx)) expense.setTargetUserName(cursor.getString(targetIdx));
+            }
+            cursor.close();
+        }
+        return expense;
+    }
+
+    public Expense getByUuid(String uuid) {
+        if (uuid == null || uuid.isEmpty()) return null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT e.*, u." + UserEntry.COL_NAME + " as buyer_name, tu." + UserEntry.COL_NAME + " as target_name "
+                + "FROM " + ExpenseEntry.TABLE_NAME + " e "
+                + "LEFT JOIN " + UserEntry.TABLE_NAME + " u ON e." + ExpenseEntry.COL_BUYER_USER_ID + " = u." + UserEntry.COL_ID + " "
+                + "LEFT JOIN " + UserEntry.TABLE_NAME + " tu ON e." + ExpenseEntry.COL_TARGET_USER_ID + " = tu." + UserEntry.COL_ID + " "
+                + "WHERE e." + ExpenseEntry.COL_UUID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{uuid});
+        Expense expense = null;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                expense = cursorToExpense(cursor);
+                int buyerIdx = cursor.getColumnIndex("buyer_name");
+                if (buyerIdx >= 0) expense.setBuyerName(cursor.getString(buyerIdx));
+                int targetIdx = cursor.getColumnIndex("target_name");
+                if (targetIdx >= 0 && !cursor.isNull(targetIdx)) expense.setTargetUserName(cursor.getString(targetIdx));
+            }
+            cursor.close();
+        }
+        return expense;
+    }
+
+    public List<Expense> getByBazarSessionUuid(long messId, String sessionUuid) {
+        List<Expense> list = new ArrayList<>();
+        if (sessionUuid == null || sessionUuid.isEmpty()) return list;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT e.*, u." + UserEntry.COL_NAME + " as buyer_name, tu." + UserEntry.COL_NAME + " as target_name "
+                + "FROM " + ExpenseEntry.TABLE_NAME + " e "
+                + "LEFT JOIN " + UserEntry.TABLE_NAME + " u ON e." + ExpenseEntry.COL_BUYER_USER_ID + " = u." + UserEntry.COL_ID + " "
+                + "LEFT JOIN " + UserEntry.TABLE_NAME + " tu ON e." + ExpenseEntry.COL_TARGET_USER_ID + " = tu." + UserEntry.COL_ID + " "
+                + "WHERE e." + ExpenseEntry.COL_MESS_ID + " = ? AND e." + ExpenseEntry.COL_BAZAR_SESSION_UUID + " = ? "
+                + "ORDER BY e." + ExpenseEntry.COL_ID + " ASC";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(messId), sessionUuid});
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Expense expense = cursorToExpense(cursor);
+                int buyerIdx = cursor.getColumnIndex("buyer_name");
+                if (buyerIdx >= 0) expense.setBuyerName(cursor.getString(buyerIdx));
+                int targetIdx = cursor.getColumnIndex("target_name");
+                if (targetIdx >= 0 && !cursor.isNull(targetIdx)) expense.setTargetUserName(cursor.getString(targetIdx));
+                list.add(expense);
+            }
+            cursor.close();
+        }
+        return list;
+    }
+
+    public int deleteByBazarSessionUuid(long messId, String sessionUuid) {
+        if (sessionUuid == null || sessionUuid.isEmpty()) return 0;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        return db.delete(ExpenseEntry.TABLE_NAME,
+                ExpenseEntry.COL_MESS_ID + " = ? AND " + ExpenseEntry.COL_BAZAR_SESSION_UUID + " = ?",
+                new String[]{String.valueOf(messId), sessionUuid});
+    }
+
+    public int delete(long id) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        return db.delete(ExpenseEntry.TABLE_NAME, ExpenseEntry.COL_ID + " = ?", new String[]{String.valueOf(id)});
     }
 }

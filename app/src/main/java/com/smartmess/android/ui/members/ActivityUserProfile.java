@@ -29,6 +29,7 @@ import com.smartmess.android.R;
 import com.smartmess.android.data.local.DatabaseHelper;
 import com.smartmess.android.data.local.dao.DepositDao;
 import com.smartmess.android.data.local.dao.ExpenseDao;
+import com.smartmess.android.data.local.dao.ItemizedConsumptionDao;
 import com.smartmess.android.data.local.dao.MessDao;
 import com.smartmess.android.data.local.dao.UserDao;
 import com.smartmess.android.data.remote.ApiClient;
@@ -38,6 +39,7 @@ import com.smartmess.android.engine.CalculationModels.CycleSummary;
 import com.smartmess.android.engine.CalculationModels.MemberBalanceSheet;
 import com.smartmess.android.model.Deposit;
 import com.smartmess.android.model.Expense;
+import com.smartmess.android.model.ItemizedConsumptionLog;
 import com.smartmess.android.model.Meal;
 import com.smartmess.android.model.Mess;
 import com.smartmess.android.model.User;
@@ -381,79 +383,48 @@ public class ActivityUserProfile extends AppCompatActivity {
     private void showEditProfileDialog() {
         if (targetUser == null) return;
 
-        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
-        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
-        layout.setPadding(48, 24, 48, 16);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_update_user_profile, null);
+        final com.google.android.material.textfield.TextInputEditText etName = dialogView.findViewById(R.id.etProfileName);
+        final com.google.android.material.textfield.TextInputEditText etPhone = dialogView.findViewById(R.id.etProfilePhone);
+        final com.google.android.material.textfield.TextInputEditText etEmail = dialogView.findViewById(R.id.etProfileEmail);
+        final com.google.android.material.textfield.TextInputEditText etFacebook = dialogView.findViewById(R.id.etProfileFacebook);
+        final MaterialButton btnCancel = dialogView.findViewById(R.id.btnCancelEditProfile);
+        final MaterialButton btnSave = dialogView.findViewById(R.id.btnSaveEditProfile);
 
-        final com.google.android.material.textfield.TextInputLayout tilName = new com.google.android.material.textfield.TextInputLayout(this);
-        tilName.setHint("নাম");
-        final com.google.android.material.textfield.TextInputEditText etName = new com.google.android.material.textfield.TextInputEditText(this);
-        etName.setText(targetUser.getName());
-        tilName.addView(etName);
-        layout.addView(tilName);
-
-        final com.google.android.material.textfield.TextInputLayout tilPhone = new com.google.android.material.textfield.TextInputLayout(this);
-        tilPhone.setHint("ফোন নম্বর");
-        android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
-                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        lp.topMargin = 18;
-        tilPhone.setLayoutParams(lp);
-        final com.google.android.material.textfield.TextInputEditText etPhone = new com.google.android.material.textfield.TextInputEditText(this);
-        etPhone.setText(targetUser.getPhone());
-        etPhone.setInputType(android.text.InputType.TYPE_CLASS_PHONE);
-        tilPhone.addView(etPhone);
-        layout.addView(tilPhone);
-
-        final com.google.android.material.textfield.TextInputLayout tilEmail = new com.google.android.material.textfield.TextInputLayout(this);
-        tilEmail.setHint("ইমেইল অ্যাড্রেস");
-        android.widget.LinearLayout.LayoutParams lpEmail = new android.widget.LinearLayout.LayoutParams(
-                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        lpEmail.topMargin = 18;
-        tilEmail.setLayoutParams(lpEmail);
-        final com.google.android.material.textfield.TextInputEditText etEmail = new com.google.android.material.textfield.TextInputEditText(this);
+        etName.setText(targetUser.getName() != null ? targetUser.getName() : "");
+        etPhone.setText(targetUser.getPhone() != null ? targetUser.getPhone() : "");
         etEmail.setText(targetUser.getEmail() != null ? targetUser.getEmail() : "");
-        etEmail.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        tilEmail.addView(etEmail);
-        layout.addView(tilEmail);
-
-        final com.google.android.material.textfield.TextInputLayout tilFacebook = new com.google.android.material.textfield.TextInputLayout(this);
-        tilFacebook.setHint("ফেসবুক প্রোফাইল লিংক (URL)");
-        android.widget.LinearLayout.LayoutParams lpFb = new android.widget.LinearLayout.LayoutParams(
-                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        lpFb.topMargin = 18;
-        tilFacebook.setLayoutParams(lpFb);
-        final com.google.android.material.textfield.TextInputEditText etFacebook = new com.google.android.material.textfield.TextInputEditText(this);
         etFacebook.setText(targetUser.getFacebookUrl() != null ? targetUser.getFacebookUrl() : "");
-        etFacebook.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_URI);
-        tilFacebook.addView(etFacebook);
-        layout.addView(tilFacebook);
 
-        new MaterialAlertDialogBuilder(this)
-                .setTitle("প্রোফাইল তথ্য পরিবর্তন")
-                .setView(layout)
-                .setPositiveButton("সংরক্ষণ করুন", (dialog, which) -> {
-                    String newName = etName.getText() != null ? etName.getText().toString().trim() : "";
-                    String newPhone = etPhone.getText() != null ? etPhone.getText().toString().trim() : "";
-                    String newEmail = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
-                    String newFacebook = etFacebook.getText() != null ? etFacebook.getText().toString().trim() : "";
-                    if (newName.isEmpty()) {
-                        Toast.makeText(this, "নাম খালি রাখা যাবে না", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if (newPhone.isEmpty()) {
-                        Toast.makeText(this, "ফোন নম্বর খালি রাখা যাবে না", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    saveProfileChanges(newName, newPhone, newEmail, newFacebook);
-                })
-                .setNegativeButton("বাতিল", null)
-                .show();
+        final androidx.appcompat.app.AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setView(dialogView)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnSave.setOnClickListener(v -> {
+            String newName = etName.getText() != null ? etName.getText().toString().trim() : "";
+            String newPhone = etPhone.getText() != null ? etPhone.getText().toString().trim() : "";
+            String newEmail = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+            String newFacebook = etFacebook.getText() != null ? etFacebook.getText().toString().trim() : "";
+
+            if (newName.isEmpty()) {
+                Toast.makeText(this, "নাম খালি রাখা যাবে না", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (newPhone.isEmpty()) {
+                Toast.makeText(this, "ফোন নম্বর খালি রাখা যাবে না", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            dialog.dismiss();
+            saveProfileChanges(newName, newPhone, newEmail, newFacebook);
+        });
+
+        dialog.show();
     }
 
     private void saveProfileChanges(String newName, String newPhone, String newEmail, String newFacebook) {
@@ -652,9 +623,14 @@ public class ActivityUserProfile extends AppCompatActivity {
         List<Meal> flexMeals = mealDao.getFlexibleMealsForUser(messId, targetUserId,
                 DateTimeUtils.getCurrentMonthStart(), DateTimeUtils.getCurrentMonthEnd());
 
+        ItemizedConsumptionDao itemizedDao = new ItemizedConsumptionDao(this);
+        List<ItemizedConsumptionLog> itemLogs = itemizedDao.getLogsForUser(messId, targetUserId,
+                DateTimeUtils.getCurrentMonthStart(), DateTimeUtils.getCurrentMonthEnd());
+
         boolean hasEntries = (bazarTrips != null && !bazarTrips.isEmpty())
                 || (deposits != null && !deposits.isEmpty())
-                || (flexMeals != null && !flexMeals.isEmpty());
+                || (flexMeals != null && !flexMeals.isEmpty())
+                || (itemLogs != null && !itemLogs.isEmpty());
 
         if (!hasEntries) {
             tvEmptyHistory.setVisibility(View.VISIBLE);
@@ -663,6 +639,28 @@ public class ActivityUserProfile extends AppCompatActivity {
 
         tvEmptyHistory.setVisibility(View.GONE);
         LayoutInflater inflater = LayoutInflater.from(this);
+
+        // Display itemized consumption logs (exact meal item splits)
+        if (itemLogs != null && !itemLogs.isEmpty()) {
+            for (ItemizedConsumptionLog log : itemLogs) {
+                View row = inflater.inflate(R.layout.item_profile_activity_row, layoutActivityHistoryContainer, false);
+                ImageView ivIcon = row.findViewById(R.id.ivActivityIcon);
+                TextView tvTitle = row.findViewById(R.id.tvActivityTitle);
+                TextView tvDate = row.findViewById(R.id.tvActivityDate);
+                TextView tvAmount = row.findViewById(R.id.tvActivityAmount);
+
+                ivIcon.setImageResource(R.drawable.ic_lucide_cart);
+                ivIcon.setColorFilter(ContextCompat.getColor(this, R.color.accent));
+
+                String itemName = log.getItemName() != null ? log.getItemName() : "বাজার আইটেম";
+                tvTitle.setText("আইটেম শেয়ার: " + itemName + " (" + getMealTypeLabel(log.getMealType()) + ")");
+                tvDate.setText(log.getMealDate() + " • " + log.getActiveDinersCount() + " জন সক্রিয় ডিনার");
+                tvAmount.setText(CurrencyUtils.format(log.getCostShare()));
+                tvAmount.setTextColor(ContextCompat.getColor(this, R.color.accent));
+
+                layoutActivityHistoryContainer.addView(row);
+            }
+        }
 
         // Display recent bazar trips
         if (bazarTrips != null) {
@@ -833,42 +831,65 @@ public class ActivityUserProfile extends AppCompatActivity {
         Bitmap cropped = Bitmap.createBitmap(originalBitmap, x, y, size, size);
         Bitmap scaled = Bitmap.createScaledBitmap(cropped, 300, 300, true);
 
-        // 2. Compress to WebP file
-        File cacheFile = new File(getCacheDir(), "avatar_" + targetUserId + "_" + System.currentTimeMillis() + ".webp");
-        try (FileOutputStream fos = new FileOutputStream(cacheFile)) {
+        // 2. Compress to WebP bytes & persist in app internal storage
+        byte[] webpBytes;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                scaled.compress(Bitmap.CompressFormat.WEBP_LOSSY, 80, fos);
+                scaled.compress(Bitmap.CompressFormat.WEBP_LOSSY, 80, baos);
             } else {
                 @SuppressWarnings("deprecation")
                 Bitmap.CompressFormat format = Bitmap.CompressFormat.WEBP;
-                scaled.compress(format, 80, fos);
+                scaled.compress(format, 80, baos);
             }
-            fos.flush();
+            webpBytes = baos.toByteArray();
         } catch (Exception e) {
             Toast.makeText(this, "ছবি প্রসেস করতে ত্রুটি: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             return;
         }
 
+        File avatarDir = new File(getFilesDir(), "avatars");
+        if (!avatarDir.exists()) avatarDir.mkdirs();
+        File permanentFile = new File(avatarDir, "avatar_" + targetUserId + "_" + System.currentTimeMillis() + ".webp");
+        try (FileOutputStream fos = new FileOutputStream(permanentFile)) {
+            fos.write(webpBytes);
+            fos.flush();
+        } catch (Exception e) {
+            Toast.makeText(this, "ছবি সেভ করতে ত্রুটি: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // Preview locally immediately
-        Glide.with(this).load(scaled).circleCrop().into(ivProfileAvatar);
+        Glide.with(this).load(permanentFile).circleCrop().into(ivProfileAvatar);
+        userDao.updateAvatar(targetUserId, permanentFile.getAbsolutePath());
+        if (targetUserId == sessionManager.getUserId()) {
+            sessionManager.setAvatarUrl(permanentFile.getAbsolutePath());
+        }
+
+        String base64Image = android.util.Base64.encodeToString(webpBytes, android.util.Base64.NO_WRAP);
 
         // 3. Upload to cPanel Laravel backend via POST /api/v1/uploads/avatar
-        uploadAvatarToServer(cacheFile);
+        uploadAvatarToServer(permanentFile, base64Image);
     }
 
-    private void uploadAvatarToServer(File webpFile) {
+    private void uploadAvatarToServer(File webpFile, String base64Image) {
         OkHttpClient client = ApiClient.getOkHttpClient(getApplicationContext());
         String url = ApiConfig.BASE_URL + "uploads/avatar";
 
         RequestBody fileBody = RequestBody.create(webpFile, MediaType.parse("image/webp"));
         String userUuid = targetUser.getUuid() != null ? targetUser.getUuid() : "user_" + targetUserId;
 
-        MultipartBody requestBody = new MultipartBody.Builder()
+        MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("avatar_image", webpFile.getName(), fileBody)
+                .addFormDataPart("avatar", webpFile.getName(), fileBody)
                 .addFormDataPart("user_uuid", userUuid)
-                .addFormDataPart("user_id", String.valueOf(targetUserId))
-                .build();
+                .addFormDataPart("user_id", String.valueOf(targetUserId));
+
+        if (base64Image != null && !base64Image.isEmpty()) {
+            builder.addFormDataPart("avatar_base64", base64Image);
+        }
+
+        MultipartBody requestBody = builder.build();
 
         Request request = new Request.Builder()
                 .url(url)
@@ -879,8 +900,7 @@ public class ActivityUserProfile extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 mainHandler.post(() -> {
-                    // Save local cached file path as fallback
-                    userDao.updateAvatar(targetUserId, webpFile.getAbsolutePath());
+                    // Persistent local file path remains saved
                     Toast.makeText(ActivityUserProfile.this, "ছবি অফলাইনে সংরক্ষিত। ইন্টারনেট পেলে সিঙ্ক হবে।", Toast.LENGTH_SHORT).show();
                 });
             }
@@ -891,7 +911,7 @@ public class ActivityUserProfile extends AppCompatActivity {
                     String respStr = response.body() != null ? response.body().string() : "";
                     if (response.isSuccessful()) {
                         JSONObject json = new JSONObject(respStr);
-                        String avatarUrl = json.optString("avatar_url", webpFile.getAbsolutePath());
+                        String avatarUrl = json.optString("avatar_url", json.optString("url", webpFile.getAbsolutePath()));
 
                         mainHandler.post(() -> {
                             userDao.updateAvatar(targetUserId, avatarUrl);
@@ -903,12 +923,11 @@ public class ActivityUserProfile extends AppCompatActivity {
                         });
                     } else {
                         mainHandler.post(() -> {
-                            userDao.updateAvatar(targetUserId, webpFile.getAbsolutePath());
-                            Toast.makeText(ActivityUserProfile.this, "অফলাইনে সংরক্ষিত। সার্ভার সমস্যা: " + response.code(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityUserProfile.this, "অফলাইনে সংরক্ষিত।", Toast.LENGTH_SHORT).show();
                         });
                     }
                 } catch (Exception ex) {
-                    mainHandler.post(() -> userDao.updateAvatar(targetUserId, webpFile.getAbsolutePath()));
+                    mainHandler.post(() -> {});
                 }
             }
         });

@@ -190,6 +190,15 @@ public class FragmentMealSheet extends Fragment {
                 m.setCreatedAt(DateTimeUtils.getCurrentDateTime());
                 m.setUpdatedAt(DateTimeUtils.getCurrentDateTime());
                 mealDao.insertOrUpdate(m);
+            } else if (onVacation && (m.getBreakfastCount() > 0 || m.getLunchCount() > 0 || m.getDinnerCount() > 0)) {
+                // Member is on vacation, automatically zero out existing meals
+                m.setBreakfastCount(0.0);
+                m.setLunchCount(0.0);
+                m.setDinnerCount(0.0);
+                m.setGuestMealCount(0.0);
+                m.setIsLocked(1);
+                m.setUpdatedAt(DateTimeUtils.getCurrentDateTime());
+                mealDao.insertOrUpdate(m);
             }
 
             totalBf += m.getBreakfastCount();

@@ -21,9 +21,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.smartmess.android.R;
 import com.smartmess.android.data.local.DatabaseHelper;
 import com.smartmess.android.data.local.dao.ExpenseDao;
+import com.smartmess.android.data.local.dao.ItemizedConsumptionDao;
 import com.smartmess.android.data.local.dao.MealDao;
 import com.smartmess.android.engine.PlanGateManager;
 import com.smartmess.android.model.Expense;
+import com.smartmess.android.model.ItemizedConsumptionLog;
 import com.smartmess.android.model.Meal;
 import com.smartmess.android.utils.CurrencyUtils;
 import com.smartmess.android.utils.DateTimeUtils;
@@ -230,10 +232,14 @@ public class ActivityBazarLedger extends AppCompatActivity {
         List<Expense> expenses = expenseDao.getExpensesInDateRange(messId, currentStartDate, currentEndDate);
         List<Meal> flexibleMeals = mealDao.getAllFlexibleMealsForMess(messId, currentStartDate, currentEndDate);
 
+        ItemizedConsumptionDao itemizedConsumptionDao = new ItemizedConsumptionDao(this);
+        List<ItemizedConsumptionLog> itemizedLogs = itemizedConsumptionDao.getLogsForMess(messId, currentStartDate, currentEndDate);
+
         boolean hasExpenses = expenses != null && !expenses.isEmpty();
         boolean hasFlexible = flexibleMeals != null && !flexibleMeals.isEmpty();
+        boolean hasItemized = itemizedLogs != null && !itemizedLogs.isEmpty();
 
-        if (!hasExpenses && !hasFlexible) {
+        if (!hasExpenses && !hasFlexible && !hasItemized) {
             tvEmptyLedger.setVisibility(View.VISIBLE);
             tvLedgerTotalCost.setText("৳ 0.00");
             tvLedgerTotalCount.setText("0 Entries");
@@ -299,6 +305,16 @@ public class ActivityBazarLedger extends AppCompatActivity {
                     tvCategory.setBackgroundResource(R.drawable.badge_credit);
                 }
 
+                // Click opens Bazaar Details
+                rowView.setOnClickListener(v -> {
+                    android.content.Intent intent = new android.content.Intent(ActivityBazarLedger.this, ActivityBazarDetails.class);
+                    intent.putExtra("expense_id", e.getId());
+                    if (e.getBazarSessionUuid() != null) {
+                        intent.putExtra("bazar_session_uuid", e.getBazarSessionUuid());
+                    }
+                    startActivity(intent);
+                });
+
                 // Voucher thumbnail or modal preview
                 final String voucherUrl = e.getVoucherImageUrl();
                 if (voucherUrl != null && !voucherUrl.trim().isEmpty()) {
@@ -359,6 +375,14 @@ public class ActivityBazarLedger extends AppCompatActivity {
                 tvVoucher.setTextColor(ContextCompat.getColor(this, R.color.coral_primary_dark));
                 tvVoucher.setOnClickListener(null);
 
+                if (m.getBazarSessionUuid() != null && !m.getBazarSessionUuid().isEmpty()) {
+                    rowView.setOnClickListener(v -> {
+                        android.content.Intent intent = new android.content.Intent(ActivityBazarLedger.this, ActivityBazarDetails.class);
+                        intent.putExtra("bazar_session_uuid", m.getBazarSessionUuid());
+                        startActivity(intent);
+                    });
+                }
+
                 if (rowIndex % 2 == 1) {
                     rowView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface_variant));
                 } else {
@@ -375,7 +399,68 @@ public class ActivityBazarLedger extends AppCompatActivity {
             }
         }
 
-        int totalEntries = (expenses != null ? expenses.size() : 0) + (flexibleMeals != null ? flexibleMeals.size() : 0);
+        // 3. Render Itemized Meal Consumptions (Active Diner Splits)
+        if (hasItemized) {
+            for (ItemizedConsumptionLog log : itemizedLogs) {
+                totalAmount += log.getCostShare();
+                flexibleAmount += log.getCostShare();
+
+                View rowView = inflater.inflate(R.layout.item_ledger_table_row, layoutLedgerTableRows, false);
+
+                TextView tvDate = rowView.findViewById(R.id.tvRowDate);
+                TextView tvTitle = rowView.findViewById(R.id.tvRowTitle);
+                TextView tvCategory = rowView.findViewById(R.id.tvRowCategory);
+                TextView tvAmount = rowView.findViewById(R.id.tvRowAmount);
+                TextView tvBuyer = rowView.findViewById(R.id.tvRowBuyer);
+                TextView tvVoucher = rowView.findViewById(R.id.tvRowVoucher);
+
+                tvDate.setText(log.getMealDate());
+                String itemName = log.getItemName() != null ? log.getItemName() : "আইটেম";
+                tvTitle.setText(itemName + " (" + getMealTypeLabel(log.getMealType()) + ")");
+
+                tvCategory.setText("আইটেম শেয়ার");
+                tvCategory.setTextColor(ContextCompat.getColor(this, R.color.accent));
+                tvCategory.setBackgroundResource(R.drawable.badge_credit);
+
+                tvAmount.setText(CurrencyUtils.format(log.getCostShare()));
+                String userName = log.getUserName() != null ? log.getUserName() : "মেম্বার #" + log.getUserId();
+                tvBuyer.setText(userName + " (" + log.getActiveDinersCount() + " ডিনার)");
+
+                tvVoucher.setText("বিস্তারিত");
+                tvVoucher.setTextColor(ContextCompat.getColor(this, R.color.accent));
+                tvVoucher.setOnClickListener(v -> {
+                    if (log.getBazarSessionUuid() != null && !log.getBazarSessionUuid().isEmpty()) {
+                        android.content.Intent intent = new android.content.Intent(ActivityBazarLedger.this, ActivityBazarDetails.class);
+                        intent.putExtra("bazar_session_uuid", log.getBazarSessionUuid());
+                        startActivity(intent);
+                    }
+                });
+
+                if (log.getBazarSessionUuid() != null && !log.getBazarSessionUuid().isEmpty()) {
+                    rowView.setOnClickListener(v -> {
+                        android.content.Intent intent = new android.content.Intent(ActivityBazarLedger.this, ActivityBazarDetails.class);
+                        intent.putExtra("bazar_session_uuid", log.getBazarSessionUuid());
+                        startActivity(intent);
+                    });
+                }
+
+                if (rowIndex % 2 == 1) {
+                    rowView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface_variant));
+                } else {
+                    rowView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface));
+                }
+                rowIndex++;
+
+                layoutLedgerTableRows.addView(rowView);
+
+                View divider = new View(this);
+                divider.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1));
+                divider.setBackgroundColor(ContextCompat.getColor(this, R.color.border_stroke));
+                layoutLedgerTableRows.addView(divider);
+            }
+        }
+
+        int totalEntries = (expenses != null ? expenses.size() : 0) + (flexibleMeals != null ? flexibleMeals.size() : 0) + (itemizedLogs != null ? itemizedLogs.size() : 0);
         tvLedgerTotalCost.setText(CurrencyUtils.format(totalAmount));
         tvLedgerTotalCount.setText(totalEntries + (totalEntries == 1 ? " Entry" : " Entries"));
         tvRawSubtotal.setText("Raw: " + CurrencyUtils.format(rawAmount));

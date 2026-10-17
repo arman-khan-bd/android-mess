@@ -222,11 +222,37 @@
                         android:orientation="vertical"
                         android:visibility="gone">
 
-                        <View
+                        <!-- Bazar Session Link Selection -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="বাজার এন্ট্রি সিলেক্ট করুন (Linked Bazaar Record)"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+
+                        <FrameLayout
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
+                            android:layout_height="44dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="10dp"
-                            android:background="@color/border_stroke" />
+                            android:background="@drawable/bg_dropdown_card">
+
+                            <Spinner
+                                android:id="@+id/spLinkedBazarSession"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:color/transparent"
+                                android:paddingStart="12dp"
+                                android:paddingEnd="36dp" />
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="end|center_vertical"
+                                android:layout_marginEnd="12dp"
+                                android:src="@drawable/ic_chevron_down"
+                                app:tint="@color/text_secondary" />
+                        </FrameLayout>
 
                         <!-- Meal Type Selection -->
                         <TextView

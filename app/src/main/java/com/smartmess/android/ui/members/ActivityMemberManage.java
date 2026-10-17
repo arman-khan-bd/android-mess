@@ -289,38 +289,61 @@ public class ActivityMemberManage extends AppCompatActivity {
         Bitmap cropped = Bitmap.createBitmap(originalBitmap, x, y, size, size);
         Bitmap scaled = Bitmap.createScaledBitmap(cropped, 300, 300, true);
 
-        File cacheFile = new File(getCacheDir(), "avatar_" + targetUserId + "_" + System.currentTimeMillis() + ".webp");
-        try (FileOutputStream fos = new FileOutputStream(cacheFile)) {
+        byte[] webpBytes;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                scaled.compress(Bitmap.CompressFormat.WEBP_LOSSY, 80, fos);
+                scaled.compress(Bitmap.CompressFormat.WEBP_LOSSY, 80, baos);
             } else {
                 @SuppressWarnings("deprecation")
                 Bitmap.CompressFormat format = Bitmap.CompressFormat.WEBP;
-                scaled.compress(format, 80, fos);
+                scaled.compress(format, 80, baos);
             }
-            fos.flush();
+            webpBytes = baos.toByteArray();
         } catch (Exception e) {
             Toast.makeText(this, "ছবি প্রসেস করতে ত্রুটি: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Glide.with(this).load(scaled).circleCrop().into(ivMemberAvatar);
-        uploadAvatarToServer(cacheFile);
+        File avatarDir = new File(getFilesDir(), "avatars");
+        if (!avatarDir.exists()) avatarDir.mkdirs();
+        File permanentFile = new File(avatarDir, "avatar_" + targetUserId + "_" + System.currentTimeMillis() + ".webp");
+        try (FileOutputStream fos = new FileOutputStream(permanentFile)) {
+            fos.write(webpBytes);
+            fos.flush();
+        } catch (Exception e) {
+            Toast.makeText(this, "ছবি সেভ করতে ত্রুটি: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Glide.with(this).load(permanentFile).circleCrop().into(ivMemberAvatar);
+        userDao.updateAvatar(targetUserId, permanentFile.getAbsolutePath());
+        if (targetUserId == sessionManager.getUserId()) {
+            sessionManager.setAvatarUrl(permanentFile.getAbsolutePath());
+        }
+
+        String base64Image = android.util.Base64.encodeToString(webpBytes, android.util.Base64.NO_WRAP);
+        uploadAvatarToServer(permanentFile, base64Image);
     }
 
-    private void uploadAvatarToServer(File webpFile) {
+    private void uploadAvatarToServer(File webpFile, String base64Image) {
         OkHttpClient client = ApiClient.getOkHttpClient(getApplicationContext());
         String url = ApiConfig.BASE_URL + "uploads/avatar";
 
         RequestBody fileBody = RequestBody.create(webpFile, MediaType.parse("image/webp"));
         String userUuid = targetUser.getUuid() != null ? targetUser.getUuid() : "user_" + targetUserId;
 
-        MultipartBody requestBody = new MultipartBody.Builder()
+        MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("avatar_image", webpFile.getName(), fileBody)
+                .addFormDataPart("avatar", webpFile.getName(), fileBody)
                 .addFormDataPart("user_uuid", userUuid)
-                .addFormDataPart("user_id", String.valueOf(targetUserId))
-                .build();
+                .addFormDataPart("user_id", String.valueOf(targetUserId));
+
+        if (base64Image != null && !base64Image.isEmpty()) {
+            builder.addFormDataPart("avatar_base64", base64Image);
+        }
+
+        MultipartBody requestBody = builder.build();
 
         Request request = new Request.Builder()
                 .url(url)
@@ -331,7 +354,6 @@ public class ActivityMemberManage extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 mainHandler.post(() -> {
-                    userDao.updateAvatar(targetUserId, webpFile.getAbsolutePath());
                     Toast.makeText(ActivityMemberManage.this, "ছবি অফলাইনে সংরক্ষিত।", Toast.LENGTH_SHORT).show();
                 });
             }
@@ -342,13 +364,13 @@ public class ActivityMemberManage extends AppCompatActivity {
                     String respStr = response.body() != null ? response.body().string() : "";
                     if (response.isSuccessful()) {
                         JSONObject json = new JSONObject(respStr);
-                        String avatarUrl = json.optString("avatar_url", webpFile.getAbsolutePath());
+                        String avatarUrl = json.optString("avatar_url", json.optString("url", webpFile.getAbsolutePath()));
                         mainHandler.post(() -> {
                             userDao.updateAvatar(targetUserId, avatarUrl);
                             if (targetUserId == sessionManager.getUserId()) {
                                 sessionManager.setAvatarUrl(avatarUrl);
                             }
-                            Glide.with(ActivityMemberManage.this).load(avatarUrl).circleCrop().into(ivMemberAvatar);
+                            com.smartmess.android.utils.ImageLoaderHelper.loadAvatar(ActivityMemberManage.this, avatarUrl, ivMemberAvatar);
                             Toast.makeText(ActivityMemberManage.this, "ছবি সফলভাবে আপডেট হয়েছে!", Toast.LENGTH_SHORT).show();
                         });
                     } else {

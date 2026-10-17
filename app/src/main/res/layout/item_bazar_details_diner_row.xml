@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="6dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvDinerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="মেম্বার নাম"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvMealStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✓ মিল খেয়েছেন (Lunch)"
+            android:textColor="@color/credit_green"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvCostShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="৳ ১০০.০০"
+        android:textColor="@color/coral_primary"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+</LinearLayout>

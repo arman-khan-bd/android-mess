@@ -54,6 +54,9 @@ public class Meal {
     @SerializedName(value = "bazarId", alternate = {"bazar_id"})
     private long bazarId;
 
+    @SerializedName(value = "bazarSessionUuid", alternate = {"bazar_session_uuid"})
+    private String bazarSessionUuid;
+
     @SerializedName(value = "syncStatus", alternate = {"sync_status"})
     private int syncStatus; // 0=pending, 1=synced
 
@@ -138,6 +141,9 @@ public class Meal {
 
     public long getBazarId() { return bazarId; }
     public void setBazarId(long bazarId) { this.bazarId = bazarId; }
+
+    public String getBazarSessionUuid() { return bazarSessionUuid; }
+    public void setBazarSessionUuid(String bazarSessionUuid) { this.bazarSessionUuid = bazarSessionUuid; }
 
     public double getTotalMeals() {
         return breakfastCount + lunchCount + dinnerCount + guestMealCount;

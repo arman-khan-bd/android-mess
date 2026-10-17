@@ -50,6 +50,23 @@ public class MealVacationDao {
 
     public boolean isUserOnVacation(long messId, long userId, String date) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // Check 1: User table status flag
+        String userQuery = "SELECT " + UserEntry.COL_STATUS + " FROM " + UserEntry.TABLE_NAME
+                + " WHERE " + UserEntry.COL_ID + " = ?";
+        Cursor uCursor = db.rawQuery(userQuery, new String[]{String.valueOf(userId)});
+        if (uCursor != null) {
+            if (uCursor.moveToFirst()) {
+                String status = uCursor.getString(0);
+                if (status != null && (status.equalsIgnoreCase("on_leave") || status.equalsIgnoreCase("vacation") || status.equalsIgnoreCase("on_vacation"))) {
+                    uCursor.close();
+                    return true;
+                }
+            }
+            uCursor.close();
+        }
+
+        // Check 2: Active vacation date range in meal_vacations table
         String query = "SELECT COUNT(*) FROM " + MealVacationEntry.TABLE_NAME
                 + " WHERE " + MealVacationEntry.COL_MESS_ID + " = ? AND "
                 + MealVacationEntry.COL_USER_ID + " = ? AND "

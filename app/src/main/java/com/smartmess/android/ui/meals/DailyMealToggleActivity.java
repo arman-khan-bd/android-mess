@@ -75,6 +75,9 @@ public class DailyMealToggleActivity extends AppCompatActivity {
             tvCutoffStatusText.setText("🏖️ Scheduled Vacation Active: Tomorrow's meals are auto-locked to 0.0.");
             tvCutoffStatusText.setTextColor(getResources().getColor(R.color.accent));
 
+            switchBreakfast.setChecked(false);
+            switchLunch.setChecked(false);
+            switchDinner.setChecked(false);
             switchBreakfast.setEnabled(false);
             switchLunch.setEnabled(false);
             switchDinner.setEnabled(false);

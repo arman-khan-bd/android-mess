@@ -37,6 +37,11 @@ public class MealDao {
         values.put(MealEntry.COL_RAW_BAZAR_AMOUNT, meal.getRawBazarAmount());
         values.put(MealEntry.COL_SHARED_PRICE, meal.getSharedPrice());
         values.put(MealEntry.COL_BAZAR_ID, meal.getBazarId());
+        if (meal.getBazarSessionUuid() != null) {
+            values.put(MealEntry.COL_BAZAR_SESSION_UUID, meal.getBazarSessionUuid());
+        } else {
+            values.putNull(MealEntry.COL_BAZAR_SESSION_UUID);
+        }
         values.put(MealEntry.COL_SYNC_STATUS, meal.getSyncStatus());
         values.put(MealEntry.COL_CREATED_AT, meal.getCreatedAt());
         values.put(MealEntry.COL_UPDATED_AT, meal.getUpdatedAt());
@@ -205,7 +210,31 @@ public class MealDao {
         int bIdIdx = cursor.getColumnIndex(MealEntry.COL_BAZAR_ID);
         if (bIdIdx >= 0) meal.setBazarId(cursor.getLong(bIdIdx));
 
+        int bSessIdx = cursor.getColumnIndex(MealEntry.COL_BAZAR_SESSION_UUID);
+        if (bSessIdx >= 0) meal.setBazarSessionUuid(cursor.getString(bSessIdx));
+
         return meal;
+    }
+
+    public List<Meal> getMealsByBazarSessionUuid(long messId, String sessionUuid) {
+        List<Meal> list = new ArrayList<>();
+        if (sessionUuid == null) return list;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT m.*, u." + UserEntry.COL_NAME + " as user_name FROM " + MealEntry.TABLE_NAME + " m "
+                + "LEFT JOIN " + UserEntry.TABLE_NAME + " u ON m." + MealEntry.COL_USER_ID + " = u." + UserEntry.COL_ID + " "
+                + "WHERE m." + MealEntry.COL_MESS_ID + " = ? AND m." + MealEntry.COL_BAZAR_SESSION_UUID + " = ? "
+                + "ORDER BY u." + UserEntry.COL_NAME + " ASC";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(messId), sessionUuid});
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Meal meal = cursorToMeal(cursor);
+                int uNameIdx = cursor.getColumnIndex("user_name");
+                if (uNameIdx >= 0) meal.setUserName(cursor.getString(uNameIdx));
+                list.add(meal);
+            }
+            cursor.close();
+        }
+        return list;
     }
 
     public List<Meal> getFlexibleMealsForUser(long messId, long userId, String startDate, String endDate) {

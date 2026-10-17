@@ -31,6 +31,23 @@
         android:textSize="14sp"
         android:textStyle="bold" />
 
+    <!-- Fill Remaining / Total Amount Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnFillAmount"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginEnd="2dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:minWidth="0dp"
+        android:paddingHorizontal="10dp"
+        android:text="Fill"
+        android:textAllCaps="false"
+        android:textColor="@color/primary"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
     <!-- Delete Payer Button -->
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/btnDeletePayerRow"

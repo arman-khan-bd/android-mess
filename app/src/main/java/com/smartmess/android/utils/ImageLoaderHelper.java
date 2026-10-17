@@ -43,12 +43,12 @@ public final class ImageLoaderHelper {
             return trimmed;
         }
 
-        if (trimmed.startsWith("file://")) {
+        if (trimmed.startsWith("file://") || trimmed.startsWith("content://") || trimmed.startsWith("data:image/")) {
             return trimmed;
         }
 
         // Local device file path
-        if (trimmed.startsWith("/data/") || trimmed.startsWith("/storage/emulated/")) {
+        if (trimmed.startsWith("/data/") || trimmed.startsWith("/storage/emulated/") || new File(trimmed).exists()) {
             return trimmed;
         }
 
@@ -80,6 +80,29 @@ public final class ImageLoaderHelper {
         }
 
         String raw = path.trim();
+        if (raw.startsWith("content://")) {
+            Glide.with(context)
+                    .load(Uri.parse(raw))
+                    .placeholder(fallbackRes)
+                    .error(fallbackRes)
+                    .into(imageView);
+            return;
+        }
+
+        if (raw.startsWith("data:image/")) {
+            try {
+                int commaIdx = raw.indexOf(',');
+                String b64 = commaIdx >= 0 ? raw.substring(commaIdx + 1) : raw;
+                byte[] decoded = android.util.Base64.decode(b64, android.util.Base64.DEFAULT);
+                Glide.with(context)
+                        .load(decoded)
+                        .placeholder(fallbackRes)
+                        .error(fallbackRes)
+                        .into(imageView);
+                return;
+            } catch (Exception ignored) {}
+        }
+
         if (raw.startsWith("file://")) {
             raw = raw.substring(7);
         }
@@ -88,6 +111,7 @@ public final class ImageLoaderHelper {
         if (localFile.exists() && localFile.isFile()) {
             Glide.with(context)
                     .load(localFile)
+                    .signature(new com.bumptech.glide.signature.ObjectKey(localFile.lastModified()))
                     .placeholder(fallbackRes)
                     .error(fallbackRes)
                     .into(imageView);
@@ -114,6 +138,31 @@ public final class ImageLoaderHelper {
         }
 
         String raw = path.trim();
+        if (raw.startsWith("content://")) {
+            Glide.with(context)
+                    .load(Uri.parse(raw))
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_member)
+                    .error(R.drawable.ic_member)
+                    .into(imageView);
+            return;
+        }
+
+        if (raw.startsWith("data:image/")) {
+            try {
+                int commaIdx = raw.indexOf(',');
+                String b64 = commaIdx >= 0 ? raw.substring(commaIdx + 1) : raw;
+                byte[] decoded = android.util.Base64.decode(b64, android.util.Base64.DEFAULT);
+                Glide.with(context)
+                        .load(decoded)
+                        .circleCrop()
+                        .placeholder(R.drawable.ic_member)
+                        .error(R.drawable.ic_member)
+                        .into(imageView);
+                return;
+            } catch (Exception ignored) {}
+        }
+
         if (raw.startsWith("file://")) {
             raw = raw.substring(7);
         }
@@ -122,6 +171,7 @@ public final class ImageLoaderHelper {
         if (localFile.exists() && localFile.isFile()) {
             Glide.with(context)
                     .load(localFile)
+                    .signature(new com.bumptech.glide.signature.ObjectKey(localFile.lastModified()))
                     .circleCrop()
                     .placeholder(R.drawable.ic_member)
                     .error(R.drawable.ic_member)

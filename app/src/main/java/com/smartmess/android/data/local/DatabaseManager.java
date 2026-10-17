@@ -98,6 +98,10 @@ public class DatabaseManager {
                 if (!expCursor.isNull(targetCol)) {
                     e.setTargetUserId(expCursor.getLong(targetCol));
                 }
+                int bSessCol = expCursor.getColumnIndex(ExpenseEntry.COL_BAZAR_SESSION_UUID);
+                if (bSessCol >= 0 && !expCursor.isNull(bSessCol)) {
+                    e.setBazarSessionUuid(expCursor.getString(bSessCol));
+                }
                 e.setSyncStatus(0);
                 e.setCreatedAt(expCursor.getString(expCursor.getColumnIndexOrThrow(ExpenseEntry.COL_CREATED_AT)));
                 e.setUpdatedAt(expCursor.getString(expCursor.getColumnIndexOrThrow(ExpenseEntry.COL_UPDATED_AT)));
@@ -134,6 +138,8 @@ public class DatabaseManager {
                 if (sharedPriceIdx >= 0) m.setSharedPrice(mealCursor.getDouble(sharedPriceIdx));
                 int bazarIdIdx = mealCursor.getColumnIndex(MealEntry.COL_BAZAR_ID);
                 if (bazarIdIdx >= 0 && !mealCursor.isNull(bazarIdIdx)) m.setBazarId(mealCursor.getLong(bazarIdIdx));
+                int bSessMealIdx = mealCursor.getColumnIndex(MealEntry.COL_BAZAR_SESSION_UUID);
+                if (bSessMealIdx >= 0 && !mealCursor.isNull(bSessMealIdx)) m.setBazarSessionUuid(mealCursor.getString(bSessMealIdx));
                 m.setSyncStatus(0);
                 m.setCreatedAt(mealCursor.getString(mealCursor.getColumnIndexOrThrow(MealEntry.COL_CREATED_AT)));
                 m.setUpdatedAt(mealCursor.getString(mealCursor.getColumnIndexOrThrow(MealEntry.COL_UPDATED_AT)));
@@ -343,6 +349,9 @@ public class DatabaseManager {
                     } else {
                         ev.putNull(ExpenseEntry.COL_TARGET_USER_ID);
                     }
+                    if (e.getBazarSessionUuid() != null) {
+                        ev.put(ExpenseEntry.COL_BAZAR_SESSION_UUID, e.getBazarSessionUuid());
+                    }
                     ev.put(ExpenseEntry.COL_SYNC_STATUS, 1);
                     if (e.getCreatedAt() != null) ev.put(ExpenseEntry.COL_CREATED_AT, e.getCreatedAt());
                     if (e.getUpdatedAt() != null) ev.put(ExpenseEntry.COL_UPDATED_AT, e.getUpdatedAt());
@@ -375,6 +384,9 @@ public class DatabaseManager {
                         mv.put(MealEntry.COL_BAZAR_ID, m.getBazarId());
                     } else {
                         mv.putNull(MealEntry.COL_BAZAR_ID);
+                    }
+                    if (m.getBazarSessionUuid() != null) {
+                        mv.put(MealEntry.COL_BAZAR_SESSION_UUID, m.getBazarSessionUuid());
                     }
                     mv.put(MealEntry.COL_SYNC_STATUS, 1);
                     if (m.getCreatedAt() != null) mv.put(MealEntry.COL_CREATED_AT, m.getCreatedAt());

@@ -8,15 +8,31 @@ import java.util.List;
 
 public class BazarSession implements Serializable {
 
+    private long id;
     private String uuid;
     private long messId;
     private String date;
     private String title;
+    private String mealType = "lunch";
+    private String voucherImageUrl;
+    private long createdBy;
+    private int isBackdated;
+    private int syncStatus;
+    private String createdAt;
+    private String updatedAt;
     private List<BazarItem> items = new ArrayList<>();
     private List<BazarPayer> payers = new ArrayList<>();
     private List<String> receiptUris = new ArrayList<>();
 
     public BazarSession() {}
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getUuid() {
         return uuid;
@@ -48,6 +64,66 @@ public class BazarSession implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getMealType() {
+        return mealType != null ? mealType : "lunch";
+    }
+
+    public void setMealType(String mealType) {
+        this.mealType = mealType;
+    }
+
+    public String getVoucherImageUrl() {
+        return voucherImageUrl;
+    }
+
+    public void setVoucherImageUrl(String voucherImageUrl) {
+        this.voucherImageUrl = voucherImageUrl;
+    }
+
+    public long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(long createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public int getIsBackdated() {
+        return isBackdated;
+    }
+
+    public void setIsBackdated(int isBackdated) {
+        this.isBackdated = isBackdated;
+    }
+
+    public boolean isBackdated() {
+        return isBackdated == 1;
+    }
+
+    public int getSyncStatus() {
+        return syncStatus;
+    }
+
+    public void setSyncStatus(int syncStatus) {
+        this.syncStatus = syncStatus;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public List<BazarItem> getItems() {

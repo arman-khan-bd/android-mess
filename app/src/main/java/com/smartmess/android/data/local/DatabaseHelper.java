@@ -175,6 +175,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + MealRequestEntry.COL_CREATED_AT + " TEXT, "
                 + MealRequestEntry.COL_UPDATED_AT + " TEXT);");
 
+        // 11. bazar_sessions
+        db.execSQL("CREATE TABLE " + BazarSessionEntry.TABLE_NAME + " ("
+                + BazarSessionEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + BazarSessionEntry.COL_UUID + " TEXT UNIQUE NOT NULL, "
+                + BazarSessionEntry.COL_MESS_ID + " INTEGER NOT NULL, "
+                + BazarSessionEntry.COL_DATE + " TEXT NOT NULL, "
+                + BazarSessionEntry.COL_TITLE + " TEXT, "
+                + BazarSessionEntry.COL_MEAL_TYPE + " TEXT DEFAULT 'mixed', "
+                + BazarSessionEntry.COL_TOTAL_COST + " REAL DEFAULT 0.0, "
+                + BazarSessionEntry.COL_TOTAL_PAID + " REAL DEFAULT 0.0, "
+                + BazarSessionEntry.COL_ITEMS_JSON + " TEXT, "
+                + BazarSessionEntry.COL_PAYERS_JSON + " TEXT, "
+                + BazarSessionEntry.COL_VOUCHER_IMAGE_URL + " TEXT, "
+                + BazarSessionEntry.COL_CREATED_BY + " INTEGER DEFAULT 0, "
+                + BazarSessionEntry.COL_IS_BACKDATED + " INTEGER DEFAULT 0, "
+                + BazarSessionEntry.COL_SYNC_STATUS + " INTEGER DEFAULT 0, "
+                + BazarSessionEntry.COL_CREATED_AT + " TEXT, "
+                + BazarSessionEntry.COL_UPDATED_AT + " TEXT);");
+
+        // 12. itemized_consumption_logs
+        db.execSQL("CREATE TABLE " + ItemizedConsumptionEntry.TABLE_NAME + " ("
+                + ItemizedConsumptionEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + ItemizedConsumptionEntry.COL_UUID + " TEXT UNIQUE NOT NULL, "
+                + ItemizedConsumptionEntry.COL_MESS_ID + " INTEGER NOT NULL, "
+                + ItemizedConsumptionEntry.COL_BAZAR_SESSION_UUID + " TEXT, "
+                + ItemizedConsumptionEntry.COL_BAZAR_ID + " INTEGER DEFAULT 0, "
+                + ItemizedConsumptionEntry.COL_MEAL_ID + " INTEGER DEFAULT 0, "
+                + ItemizedConsumptionEntry.COL_USER_ID + " INTEGER NOT NULL, "
+                + ItemizedConsumptionEntry.COL_USER_NAME + " TEXT, "
+                + ItemizedConsumptionEntry.COL_ITEM_NAME + " TEXT NOT NULL, "
+                + ItemizedConsumptionEntry.COL_ITEM_CATEGORY + " TEXT, "
+                + ItemizedConsumptionEntry.COL_ITEM_PRICE + " REAL DEFAULT 0.0, "
+                + ItemizedConsumptionEntry.COL_MEAL_DATE + " TEXT NOT NULL, "
+                + ItemizedConsumptionEntry.COL_MEAL_TYPE + " TEXT, "
+                + ItemizedConsumptionEntry.COL_ACTIVE_DINERS_COUNT + " INTEGER DEFAULT 1, "
+                + ItemizedConsumptionEntry.COL_COST_SHARE + " REAL DEFAULT 0.0, "
+                + ItemizedConsumptionEntry.COL_IS_CONSUMED + " INTEGER DEFAULT 1, "
+                + ItemizedConsumptionEntry.COL_CREATED_AT + " TEXT);");
+
         // Indexes for high performance queries
         db.execSQL("CREATE INDEX idx_meals_mess_date ON " + MealEntry.TABLE_NAME + " (" + MealEntry.COL_MESS_ID + ", " + MealEntry.COL_MEAL_DATE + ");");
         db.execSQL("CREATE INDEX idx_expenses_mess_date ON " + ExpenseEntry.TABLE_NAME + " (" + ExpenseEntry.COL_MESS_ID + ", " + ExpenseEntry.COL_EXPENSE_DATE + ");");
@@ -183,6 +222,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE INDEX idx_vacations_user ON " + MealVacationEntry.TABLE_NAME + " (" + MealVacationEntry.COL_MESS_ID + ", " + MealVacationEntry.COL_USER_ID + ");");
         db.execSQL("CREATE INDEX idx_notifications_mess ON " + NotificationEntry.TABLE_NAME + " (" + NotificationEntry.COL_MESS_ID + ");");
         db.execSQL("CREATE INDEX idx_meal_requests_mess ON " + MealRequestEntry.TABLE_NAME + " (" + MealRequestEntry.COL_MESS_ID + ", " + MealRequestEntry.COL_REQUEST_DATE + ");");
+        db.execSQL("CREATE INDEX idx_bazar_sessions_mess_date ON " + BazarSessionEntry.TABLE_NAME + " (" + BazarSessionEntry.COL_MESS_ID + ", " + BazarSessionEntry.COL_DATE + ");");
+        db.execSQL("CREATE INDEX idx_itemized_consumption ON " + ItemizedConsumptionEntry.TABLE_NAME + " (" + ItemizedConsumptionEntry.COL_MESS_ID + ", " + ItemizedConsumptionEntry.COL_MEAL_DATE + ");");
     }
 
     @Override
@@ -201,6 +242,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + UserEntry.TABLE_NAME + " ADD COLUMN " + UserEntry.COL_FACEBOOK_URL + " TEXT;");
         } catch (Exception ignored) {}
         try {
+            db.execSQL("ALTER TABLE " + ExpenseEntry.TABLE_NAME + " ADD COLUMN " + ExpenseEntry.COL_BAZAR_SESSION_UUID + " TEXT;");
+        } catch (Exception ignored) {}
+        try {
             db.execSQL("ALTER TABLE " + MealEntry.TABLE_NAME + " ADD COLUMN " + MealEntry.COL_IS_FLEXIBLE + " INTEGER DEFAULT 0;");
         } catch (Exception ignored) {}
         try {
@@ -217,6 +261,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (Exception ignored) {}
         try {
             db.execSQL("ALTER TABLE " + MealEntry.TABLE_NAME + " ADD COLUMN " + MealEntry.COL_BAZAR_ID + " INTEGER DEFAULT 0;");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("ALTER TABLE " + MealEntry.TABLE_NAME + " ADD COLUMN " + MealEntry.COL_BAZAR_SESSION_UUID + " TEXT;");
         } catch (Exception ignored) {}
         try {
             db.execSQL("CREATE TABLE IF NOT EXISTS " + MealVacationEntry.TABLE_NAME + " ("
@@ -258,6 +305,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + MealRequestEntry.COL_STATUS + " TEXT DEFAULT 'pending', "
                     + MealRequestEntry.COL_CREATED_AT + " TEXT, "
                     + MealRequestEntry.COL_UPDATED_AT + " TEXT);");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + BazarSessionEntry.TABLE_NAME + " ("
+                    + BazarSessionEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + BazarSessionEntry.COL_UUID + " TEXT UNIQUE NOT NULL, "
+                    + BazarSessionEntry.COL_MESS_ID + " INTEGER NOT NULL, "
+                    + BazarSessionEntry.COL_DATE + " TEXT NOT NULL, "
+                    + BazarSessionEntry.COL_TITLE + " TEXT, "
+                    + BazarSessionEntry.COL_MEAL_TYPE + " TEXT DEFAULT 'mixed', "
+                    + BazarSessionEntry.COL_TOTAL_COST + " REAL DEFAULT 0.0, "
+                    + BazarSessionEntry.COL_TOTAL_PAID + " REAL DEFAULT 0.0, "
+                    + BazarSessionEntry.COL_ITEMS_JSON + " TEXT, "
+                    + BazarSessionEntry.COL_PAYERS_JSON + " TEXT, "
+                    + BazarSessionEntry.COL_VOUCHER_IMAGE_URL + " TEXT, "
+                    + BazarSessionEntry.COL_CREATED_BY + " INTEGER DEFAULT 0, "
+                    + BazarSessionEntry.COL_IS_BACKDATED + " INTEGER DEFAULT 0, "
+                    + BazarSessionEntry.COL_SYNC_STATUS + " INTEGER DEFAULT 0, "
+                    + BazarSessionEntry.COL_CREATED_AT + " TEXT, "
+                    + BazarSessionEntry.COL_UPDATED_AT + " TEXT);");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + ItemizedConsumptionEntry.TABLE_NAME + " ("
+                    + ItemizedConsumptionEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + ItemizedConsumptionEntry.COL_UUID + " TEXT UNIQUE NOT NULL, "
+                    + ItemizedConsumptionEntry.COL_MESS_ID + " INTEGER NOT NULL, "
+                    + ItemizedConsumptionEntry.COL_BAZAR_SESSION_UUID + " TEXT, "
+                    + ItemizedConsumptionEntry.COL_BAZAR_ID + " INTEGER DEFAULT 0, "
+                    + ItemizedConsumptionEntry.COL_MEAL_ID + " INTEGER DEFAULT 0, "
+                    + ItemizedConsumptionEntry.COL_USER_ID + " INTEGER NOT NULL, "
+                    + ItemizedConsumptionEntry.COL_USER_NAME + " TEXT, "
+                    + ItemizedConsumptionEntry.COL_ITEM_NAME + " TEXT NOT NULL, "
+                    + ItemizedConsumptionEntry.COL_ITEM_CATEGORY + " TEXT, "
+                    + ItemizedConsumptionEntry.COL_ITEM_PRICE + " REAL DEFAULT 0.0, "
+                    + ItemizedConsumptionEntry.COL_MEAL_DATE + " TEXT NOT NULL, "
+                    + ItemizedConsumptionEntry.COL_MEAL_TYPE + " TEXT, "
+                    + ItemizedConsumptionEntry.COL_ACTIVE_DINERS_COUNT + " INTEGER DEFAULT 1, "
+                    + ItemizedConsumptionEntry.COL_COST_SHARE + " REAL DEFAULT 0.0, "
+                    + ItemizedConsumptionEntry.COL_IS_CONSUMED + " INTEGER DEFAULT 1, "
+                    + ItemizedConsumptionEntry.COL_CREATED_AT + " TEXT);");
         } catch (Exception ignored) {}
     }
 
