@@ -361,6 +361,8 @@
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
             </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Manager Admin Hub & Data Reset Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardSettingsAdminDashboard"
