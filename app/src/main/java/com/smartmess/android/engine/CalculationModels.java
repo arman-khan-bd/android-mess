@@ -150,5 +150,17 @@ public class CalculationModels {
         public double getDueAmount() {
             return isDue() ? Math.abs(netBalance) : 0.0;
         }
+
+        public double getTotalMeals() {
+            return getConsumedMeals();
+        }
+
+        public double getMealsCost() {
+            return getMealCost();
+        }
+
+        public double getTotalDeposits() {
+            return getTotalDeposit();
+        }
     }
 }

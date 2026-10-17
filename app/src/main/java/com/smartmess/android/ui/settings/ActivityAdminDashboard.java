@@ -92,7 +92,7 @@ public class ActivityAdminDashboard extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         // Security check: only mess manager or admin can access
-        if (!sessionManager.isManager() && !"admin".equalsIgnoreCase(sessionManager.getRole())) {
+        if (!sessionManager.isManager() && !"admin".equalsIgnoreCase(sessionManager.getUserRole())) {
             Toast.makeText(this, "শুধুমাত্র মেস ম্যানেজার এই ড্যাশবোর্ড ব্যবহার করতে পারবেন", Toast.LENGTH_SHORT).show();
             finish();
             return;

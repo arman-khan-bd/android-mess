@@ -162,7 +162,7 @@ public class SettingsActivity extends AppCompatActivity {
             tvCurrentThemeBadge.setText(com.smartmess.android.utils.ThemeManager.getThemeName(this));
         }
 
-        boolean isManager = sessionManager.isManager() || "admin".equalsIgnoreCase(sessionManager.getRole());
+        boolean isManager = sessionManager.isManager() || "admin".equalsIgnoreCase(sessionManager.getUserRole());
         if (cardSettingsAdminDashboard != null) {
             cardSettingsAdminDashboard.setVisibility(isManager ? View.VISIBLE : View.GONE);
         }

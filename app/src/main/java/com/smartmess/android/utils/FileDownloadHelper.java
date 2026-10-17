@@ -276,9 +276,9 @@ public class FileDownloadHelper {
 
             canvas.drawText(String.valueOf(sl++), 38, y + 15, paint);
             canvas.drawText(truncateText(m.getUserName(), 20), 75, y + 15, paint);
-            canvas.drawText(String.format(Locale.US, "%.1f", m.getTotalMeals()), 225, y + 15, paint);
-            canvas.drawText(CurrencyUtils.format(m.getMealsCost()), 285, y + 15, paint);
-            canvas.drawText(CurrencyUtils.format(m.getTotalDeposits()), 365, y + 15, paint);
+            canvas.drawText(String.format(Locale.US, "%.1f", m.getConsumedMeals()), 225, y + 15, paint);
+            canvas.drawText(CurrencyUtils.format(m.getMealCost()), 285, y + 15, paint);
+            canvas.drawText(CurrencyUtils.format(m.getTotalDeposit()), 365, y + 15, paint);
 
             double balance = m.getNetBalance();
             if (balance >= 0) {
@@ -378,7 +378,7 @@ public class FileDownloadHelper {
         }
 
         ExpenseDao expenseDao = new ExpenseDao(helper);
-        List<Expense> expenses = expenseDao.getExpensesByMessAndDateRange(messId, startDate, endDate);
+        List<Expense> expenses = expenseDao.getExpensesInDateRange(messId, startDate, endDate);
 
         StringBuilder csv = new StringBuilder();
 
@@ -417,9 +417,9 @@ public class FileDownloadHelper {
                     .append("\"").append(escapeCsv(m.getUserName())).append("\",")
                     .append("\"").append(escapeCsv(phone)).append("\",")
                     .append("\"").append(role).append("\",")
-                    .append("\"").append(String.format(Locale.US, "%.1f", m.getTotalMeals())).append("\",")
-                    .append("\"").append(String.format(Locale.US, "%.2f", m.getMealsCost())).append("\",")
-                    .append("\"").append(String.format(Locale.US, "%.2f", m.getTotalDeposits())).append("\",")
+                    .append("\"").append(String.format(Locale.US, "%.1f", m.getConsumedMeals())).append("\",")
+                    .append("\"").append(String.format(Locale.US, "%.2f", m.getMealCost())).append("\",")
+                    .append("\"").append(String.format(Locale.US, "%.2f", m.getTotalDeposit())).append("\",")
                     .append("\"").append(balanceFormatted).append("\",")
                     .append("\"").append(status).append("\"\n");
         }

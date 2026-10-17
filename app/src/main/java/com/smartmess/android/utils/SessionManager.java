@@ -98,6 +98,10 @@ public class SessionManager {
         return prefs.getString(KEY_USER_ROLE, "member");
     }
 
+    public String getRole() {
+        return getUserRole();
+    }
+
     public void setUserRole(String role) {
         prefs.edit().putString(KEY_USER_ROLE, role).apply();
     }

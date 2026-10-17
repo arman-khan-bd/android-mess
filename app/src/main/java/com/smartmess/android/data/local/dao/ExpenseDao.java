@@ -52,6 +52,10 @@ public class ExpenseDao {
         return db.insertWithOnConflict(ExpenseEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
+    public List<Expense> getExpensesByMessAndDateRange(long messId, String startDate, String endDate) {
+        return getExpensesInDateRange(messId, startDate, endDate);
+    }
+
     public List<Expense> getExpensesInDateRange(long messId, String startDate, String endDate) {
         List<Expense> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
