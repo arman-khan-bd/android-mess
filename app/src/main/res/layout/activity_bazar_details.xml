@@ -33,7 +33,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="ফিরে যান"
                     android:padding="8dp"
-                    android:src="@drawable/ic_lucide_arrow_left"
+                    android:src="@drawable/ic_back"
                     app:tint="@color/text_primary" />
 
                 <LinearLayout
@@ -65,7 +65,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnEditBazarTop"
-                    style="@style/Widget.MaterialComponents.Button.TonalButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="38dp"
                     android:insetTop="0dp"
@@ -75,7 +75,9 @@
                     android:textColor="@color/primary"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    app:icon="@drawable/ic_edit"
+                    app:strokeColor="@color/primary"
+                    app:strokeWidth="1dp"
+                    app:icon="@drawable/ic_pencil"
                     app:iconGravity="textStart"
                     app:iconSize="14dp"
                     app:iconTint="@color/primary" />
@@ -463,7 +465,7 @@
         android:text="সম্পাদনা করুন (Edit)"
         android:textColor="@android:color/white"
         app:backgroundTint="@color/primary"
-        app:icon="@drawable/ic_edit"
+        app:icon="@drawable/ic_pencil"
         app:iconTint="@android:color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
