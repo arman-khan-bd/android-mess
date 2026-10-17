@@ -159,4 +159,33 @@ public class ItemizedConsumptionLog implements Serializable {
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
+
+    public void setTotalItemCost(double cost) {
+        this.itemPrice = cost;
+    }
+
+    public double getTotalItemCost() {
+        return this.itemPrice;
+    }
+
+    private double mealCount = 1.0;
+
+    public double getMealCount() {
+        return mealCount;
+    }
+
+    public void setMealCount(double mealCount) {
+        this.mealCount = mealCount;
+        this.isConsumed = mealCount > 0 ? 1 : 0;
+    }
+
+    private String updatedAt;
+
+    public String getUpdatedAt() {
+        return updatedAt != null ? updatedAt : createdAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

@@ -99,6 +99,14 @@ public class ItemizedConsumptionDao {
                 new String[]{sessionUuid});
     }
 
+    public void insertOrUpdateBatch(List<ItemizedConsumptionLog> logs) {
+        insertBatch(logs);
+    }
+
+    public void deleteByMealDetails(long messId, String mealDate, String mealType) {
+        deleteByDateAndMealType(messId, mealDate, mealType);
+    }
+
     public void deleteByDateAndMealType(long messId, String mealDate, String mealType) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(ItemizedConsumptionEntry.TABLE_NAME,

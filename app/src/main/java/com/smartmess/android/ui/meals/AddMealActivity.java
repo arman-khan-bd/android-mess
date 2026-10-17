@@ -718,7 +718,7 @@ public class AddMealActivity extends AppCompatActivity {
         String rawItemName = isFlexibleMeal ? getEffectiveRawItemName() : null;
         int savedCount = 0;
         boolean hasEditedExisting = false;
-        boolean isBackdated = dateStr.compareTo(DateTimeUtils.todayIso()) < 0;
+        boolean isBackdated = dateStr.compareTo(DateTimeUtils.currentDate()) < 0;
 
         List<ItemizedConsumptionLog> consumptionLogs = new ArrayList<>();
 
@@ -813,7 +813,7 @@ public class AddMealActivity extends AppCompatActivity {
             String notifTitle = "🔔 " + actionType + " করা হয়েছে";
             String notifMsg = String.format(Locale.US,
                     "%s তারিখের মিলের তথ্য %s কর্তৃক %s হালনাগাদ করা হয়েছে। মোট সক্রিয় ডিনার: %d জন।",
-                    dateStr, modifierName, DateTimeUtils.nowDisplay(), activeDinersCount);
+                    dateStr, modifierName, DateTimeUtils.getCurrentDateTime(), activeDinersCount);
             NotificationCenterHelper.postNotification(AddMealActivity.this, currentMessId, notifTitle, notifMsg, NotificationCenterHelper.TYPE_NOTICE);
         }
 
