@@ -31,6 +31,12 @@ public class MealDao {
         values.put(MealEntry.COL_DINNER_COUNT, meal.getDinnerCount());
         values.put(MealEntry.COL_GUEST_MEAL_COUNT, meal.getGuestMealCount());
         values.put(MealEntry.COL_IS_LOCKED, meal.getIsLocked());
+        values.put(MealEntry.COL_IS_FLEXIBLE, meal.getIsFlexible());
+        values.put(MealEntry.COL_MEAL_TYPE, meal.getMealType() != null ? meal.getMealType() : "mixed");
+        values.put(MealEntry.COL_RAW_BAZAR_NAME, meal.getRawBazarName());
+        values.put(MealEntry.COL_RAW_BAZAR_AMOUNT, meal.getRawBazarAmount());
+        values.put(MealEntry.COL_SHARED_PRICE, meal.getSharedPrice());
+        values.put(MealEntry.COL_BAZAR_ID, meal.getBazarId());
         values.put(MealEntry.COL_SYNC_STATUS, meal.getSyncStatus());
         values.put(MealEntry.COL_CREATED_AT, meal.getCreatedAt());
         values.put(MealEntry.COL_UPDATED_AT, meal.getUpdatedAt());
@@ -180,6 +186,94 @@ public class MealDao {
         meal.setSyncStatus(cursor.getInt(cursor.getColumnIndexOrThrow(MealEntry.COL_SYNC_STATUS)));
         meal.setCreatedAt(cursor.getString(cursor.getColumnIndexOrThrow(MealEntry.COL_CREATED_AT)));
         meal.setUpdatedAt(cursor.getString(cursor.getColumnIndexOrThrow(MealEntry.COL_UPDATED_AT)));
+
+        int flexIdx = cursor.getColumnIndex(MealEntry.COL_IS_FLEXIBLE);
+        if (flexIdx >= 0) meal.setIsFlexible(cursor.getInt(flexIdx));
+
+        int typeIdx = cursor.getColumnIndex(MealEntry.COL_MEAL_TYPE);
+        if (typeIdx >= 0) meal.setMealType(cursor.getString(typeIdx));
+
+        int rawNameIdx = cursor.getColumnIndex(MealEntry.COL_RAW_BAZAR_NAME);
+        if (rawNameIdx >= 0) meal.setRawBazarName(cursor.getString(rawNameIdx));
+
+        int rawAmtIdx = cursor.getColumnIndex(MealEntry.COL_RAW_BAZAR_AMOUNT);
+        if (rawAmtIdx >= 0) meal.setRawBazarAmount(cursor.getDouble(rawAmtIdx));
+
+        int sharedIdx = cursor.getColumnIndex(MealEntry.COL_SHARED_PRICE);
+        if (sharedIdx >= 0) meal.setSharedPrice(cursor.getDouble(sharedIdx));
+
+        int bIdIdx = cursor.getColumnIndex(MealEntry.COL_BAZAR_ID);
+        if (bIdIdx >= 0) meal.setBazarId(cursor.getLong(bIdIdx));
+
         return meal;
+    }
+
+    public List<Meal> getFlexibleMealsForUser(long messId, long userId, String startDate, String endDate) {
+        List<Meal> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT m.*, u." + UserEntry.COL_NAME + " as user_name FROM " + MealEntry.TABLE_NAME + " m "
+                + "LEFT JOIN " + UserEntry.TABLE_NAME + " u ON m." + MealEntry.COL_USER_ID + " = u." + UserEntry.COL_ID + " "
+                + "WHERE m." + MealEntry.COL_MESS_ID + " = ? AND m." + MealEntry.COL_USER_ID + " = ? AND m."
+                + MealEntry.COL_IS_FLEXIBLE + " = 1 AND m."
+                + MealEntry.COL_MEAL_DATE + " BETWEEN ? AND ? ORDER BY m." + MealEntry.COL_MEAL_DATE + " DESC";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(messId), String.valueOf(userId), startDate, endDate});
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Meal meal = cursorToMeal(cursor);
+                int uNameIdx = cursor.getColumnIndex("user_name");
+                if (uNameIdx >= 0) meal.setUserName(cursor.getString(uNameIdx));
+                list.add(meal);
+            }
+            cursor.close();
+        }
+        return list;
+    }
+
+    public double getTotalFlexibleMealCostForUser(long messId, long userId, String startDate, String endDate) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT SUM(" + MealEntry.COL_SHARED_PRICE + ") FROM " + MealEntry.TABLE_NAME
+                + " WHERE " + MealEntry.COL_MESS_ID + " = ? AND " + MealEntry.COL_USER_ID + " = ? AND "
+                + MealEntry.COL_IS_FLEXIBLE + " = 1 AND " + MealEntry.COL_MEAL_DATE + " BETWEEN ? AND ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(messId), String.valueOf(userId), startDate, endDate});
+        double total = 0.0;
+        if (cursor != null && cursor.moveToFirst()) {
+            total = cursor.getDouble(0);
+            cursor.close();
+        }
+        return total;
+    }
+
+    public List<Meal> getAllFlexibleMealsForMess(long messId, String startDate, String endDate) {
+        List<Meal> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT m.*, u." + UserEntry.COL_NAME + " as user_name FROM " + MealEntry.TABLE_NAME + " m "
+                + "LEFT JOIN " + UserEntry.TABLE_NAME + " u ON m." + MealEntry.COL_USER_ID + " = u." + UserEntry.COL_ID + " "
+                + "WHERE m." + MealEntry.COL_MESS_ID + " = ? AND m." + MealEntry.COL_IS_FLEXIBLE + " = 1 AND m."
+                + MealEntry.COL_MEAL_DATE + " BETWEEN ? AND ? ORDER BY m." + MealEntry.COL_MEAL_DATE + " DESC";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(messId), startDate, endDate});
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Meal meal = cursorToMeal(cursor);
+                int uNameIdx = cursor.getColumnIndex("user_name");
+                if (uNameIdx >= 0) meal.setUserName(cursor.getString(uNameIdx));
+                list.add(meal);
+            }
+            cursor.close();
+        }
+        return list;
+    }
+
+    public double getTotalMessFlexibleMealCost(long messId, String startDate, String endDate) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT SUM(" + MealEntry.COL_SHARED_PRICE + ") FROM " + MealEntry.TABLE_NAME
+                + " WHERE " + MealEntry.COL_MESS_ID + " = ? AND " + MealEntry.COL_IS_FLEXIBLE + " = 1 AND "
+                + MealEntry.COL_MEAL_DATE + " BETWEEN ? AND ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(messId), startDate, endDate});
+        double total = 0.0;
+        if (cursor != null && cursor.moveToFirst()) {
+            total = cursor.getDouble(0);
+            cursor.close();
+        }
+        return total;
     }
 }

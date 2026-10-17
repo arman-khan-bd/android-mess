@@ -20,6 +20,17 @@ public class SplashActivity extends AppCompatActivity {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (isFinishing()) return;
             try {
+                // Auto-detect if app crashed previously and hasn't been reported
+                android.content.SharedPreferences crashPrefs = com.smartmess.android.engine.CrashTelemetryHandler.getCrashPrefs(this);
+                if (crashPrefs.getBoolean(com.smartmess.android.engine.CrashTelemetryHandler.KEY_HAS_CRASH, false)
+                        && !crashPrefs.getBoolean(com.smartmess.android.engine.CrashTelemetryHandler.KEY_CRASH_SENT, false)) {
+                    Intent crashIntent = new Intent(SplashActivity.this, com.smartmess.android.ui.telemetry.CrashReportActivity.class);
+                    crashIntent.putExtra(com.smartmess.android.ui.telemetry.CrashReportActivity.EXTRA_AUTO_SHOW_DIALOG, true);
+                    startActivity(crashIntent);
+                    finish();
+                    return;
+                }
+
                 SessionManager sessionManager = new SessionManager(this);
                 if (sessionManager.isLoggedIn()) {
                     startActivity(new Intent(SplashActivity.this, com.smartmess.android.ui.MainActivity.class));

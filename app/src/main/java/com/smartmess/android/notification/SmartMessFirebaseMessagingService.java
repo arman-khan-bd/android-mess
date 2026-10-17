@@ -145,14 +145,16 @@ public class SmartMessFirebaseMessagingService extends FirebaseMessagingService 
                 PushNotificationManager.showSystemNotification(this, rowId, title, message, type, channel);
             }
 
-            // 2. Handle Member Joined Event data
-            if ("role".equalsIgnoreCase(type) || "member_joined".equalsIgnoreCase(data.get("event"))) {
-                handleMemberJoinedPayload(data, dbHelper);
+            // 2. Handle Member Joined or Manager Transferred Event data
+            if ("role".equalsIgnoreCase(type) || "member_joined".equalsIgnoreCase(data.get("event")) || "manager_transferred".equalsIgnoreCase(data.get("event"))) {
+                handleRoleOrMemberEvent(data, dbHelper, sessionManager);
             }
 
-            // 3. Trigger immediate sync when bazar or expense is created by others
-            if ("bazar".equalsIgnoreCase(type) || "expense".equalsIgnoreCase(type) || "meal".equalsIgnoreCase(type)) {
+            // 3. Trigger immediate sync when bazar, expense, deposit, meal, or role is updated
+            if ("bazar".equalsIgnoreCase(type) || "expense".equalsIgnoreCase(type) || "meal".equalsIgnoreCase(type)
+                    || "deposit".equalsIgnoreCase(type) || "role".equalsIgnoreCase(type)) {
                 PushNotificationSyncWorker.runImmediateSync(this);
+                com.smartmess.android.data.sync.SyncManager.triggerSync(this);
             }
 
             // 4. Notify all actively visible UI screens (ActivityNotificationCenter, FragmentNotifications, MainActivity)
@@ -163,12 +165,34 @@ public class SmartMessFirebaseMessagingService extends FirebaseMessagingService 
         }
     }
 
-    private void handleMemberJoinedPayload(Map<String, String> data, DatabaseHelper dbHelper) {
+    private void handleRoleOrMemberEvent(Map<String, String> data, DatabaseHelper dbHelper, SessionManager sessionManager) {
         try {
+            UserDao userDao = new UserDao(dbHelper);
+            long myUserId = sessionManager.getUserId();
+
+            // Manager transfer event
+            String newManagerIdStr = data.get("new_manager_id");
+            String oldManagerIdStr = data.get("old_manager_id");
+            if (newManagerIdStr != null && !newManagerIdStr.isEmpty()) {
+                long newManagerId = Long.parseLong(newManagerIdStr);
+                userDao.updateRole(newManagerId, User.ROLE_MANAGER);
+                if (oldManagerIdStr != null && !oldManagerIdStr.isEmpty()) {
+                    long oldManagerId = Long.parseLong(oldManagerIdStr);
+                    userDao.updateRole(oldManagerId, User.ROLE_MEMBER);
+                }
+
+                // If this device belongs to the new manager, update session
+                if (myUserId == newManagerId) {
+                    sessionManager.setUserRole(User.ROLE_MANAGER);
+                } else if (oldManagerIdStr != null && myUserId == Long.parseLong(oldManagerIdStr)) {
+                    sessionManager.setUserRole(User.ROLE_MEMBER);
+                }
+            }
+
+            // Member joined event
             String userIdStr = data.get("user_id");
             if (userIdStr != null && !userIdStr.isEmpty()) {
                 long userId = Long.parseLong(userIdStr);
-                UserDao userDao = new UserDao(dbHelper);
                 User existing = userDao.getById(userId);
                 if (existing == null) {
                     User newUser = new User();
@@ -176,17 +200,17 @@ public class SmartMessFirebaseMessagingService extends FirebaseMessagingService 
                     newUser.setName(data.get("user_name"));
                     newUser.setPhone(data.get("phone"));
                     newUser.setEmail(data.get("email"));
-                    newUser.setRole(data.get("user_role") != null ? data.get("user_role") : "member");
+                    newUser.setRole(data.get("user_role") != null ? data.get("user_role") : User.ROLE_MEMBER);
                     newUser.setAvatarUrl(data.get("avatar_url"));
-                    newUser.setStatus("active");
+                    newUser.setStatus(User.STATUS_ACTIVE);
                     userDao.insertOrUpdate(newUser);
                 }
             }
 
             // Trigger background sync to keep SQLite full parity
-            PushNotificationSyncWorker.runImmediateSync(this);
+            com.smartmess.android.data.sync.SyncManager.triggerSync(this);
         } catch (Throwable t) {
-            Log.e(TAG, "Error processing member joined payload: " + t.getMessage());
+            Log.e(TAG, "Error processing role/member event: " + t.getMessage());
         }
     }
 }

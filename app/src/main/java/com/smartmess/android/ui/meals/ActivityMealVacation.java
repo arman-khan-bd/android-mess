@@ -163,6 +163,7 @@ public class ActivityMealVacation extends AppCompatActivity {
         String msg = sessionManager.getUserName() + " মিলের ছুটি চালু করেছেন: "
                 + DateTimeUtils.formatDisplayDate(selectedStartDate) + " থেকে " + DateTimeUtils.formatDisplayDate(selectedEndDate) + " (" + lockedDays + " দিনের মিল ০ করা হয়েছে)।";
         NotificationCenterHelper.postNotification(this, messId, "🏖️ মিলের ছুটি নির্ধারিত", msg, NotificationCenterHelper.TYPE_VACATION);
+        com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
 
         Toast.makeText(this, "মিলের ছুটি সফলভাবে চালু হয়েছে! (" + lockedDays + " দিনের মিল ০ করা হয়েছে)", Toast.LENGTH_LONG).show();
         etVacationReason.setText("");
@@ -226,6 +227,7 @@ public class ActivityMealVacation extends AppCompatActivity {
                             NotificationCenterHelper.postNotification(ActivityMealVacation.this, currentMessId, "মিলের ছুটি বাতিল করা হয়েছে",
                                     sessionManager.getUserName() + " মিলের ছুটি বাতিল করেছেন (" + DateTimeUtils.formatDisplayDate(v.getStartDate()) + " থেকে " + DateTimeUtils.formatDisplayDate(v.getEndDate()) + ")",
                                     NotificationCenterHelper.TYPE_VACATION);
+                            com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
                             Toast.makeText(ActivityMealVacation.this, "ছুটির সূচি বাতিল করা হয়েছে।", Toast.LENGTH_SHORT).show();
                             loadVacations();
                         })

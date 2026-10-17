@@ -117,6 +117,9 @@ public class AddDepositActivity extends AppCompatActivity {
                 com.smartmess.android.utils.NotificationCenterHelper.TYPE_DEPOSIT
         );
 
+        // Immediately trigger sync so server receives deposit and broadcasts real-time FCM notification
+        com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
+
         Toast.makeText(this, selected.getName() + " এর জন্য ৳" + amount + " সফলভাবে জমা হয়েছে!", Toast.LENGTH_SHORT).show();
         finish();
     }

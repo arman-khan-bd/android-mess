@@ -149,9 +149,7 @@ public class DailyMealToggleActivity extends AppCompatActivity {
         meal.setUpdatedAt(now);
 
         mealDao.insertOrUpdate(meal);
-        if (sessionManager.isPro()) {
-            com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
-        }
+        com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
         Toast.makeText(this, "আগামীকালের মিলের পছন্দ সফলভাবে সংরক্ষিত হয়েছে!", Toast.LENGTH_SHORT).show();
         finish();
     }

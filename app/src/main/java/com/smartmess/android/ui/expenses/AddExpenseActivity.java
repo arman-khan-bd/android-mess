@@ -270,6 +270,9 @@ public class AddExpenseActivity extends AppCompatActivity {
                 com.smartmess.android.utils.NotificationCenterHelper.TYPE_EXPENSE
         );
 
+        // Immediately trigger sync so server receives expense and broadcasts real-time FCM notification
+        com.smartmess.android.data.sync.SyncManager.triggerSync(getApplicationContext());
+
         Toast.makeText(this, "খরচের হিসাব সফলভাবে সংরক্ষিত হয়েছে!", Toast.LENGTH_SHORT).show();
         finish();
     }

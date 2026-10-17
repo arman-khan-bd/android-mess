@@ -693,19 +693,43 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("দায়িত্ব হস্তান্তরের নিশ্চিতকরণ")
                 .setMessage("Are you sure you want to transfer full Manager privileges to " + targetUser.getName() + "? You will become a general member.")
-                .setPositiveButton("হস্তান্তর করুন", (dialog, which) -> {
-                    try {
-                        long currentUserId = sessionManager.getUserId();
-                        // Update in local DB
-                        userDao.updateRole(currentUserId, "member");
-                        userDao.updateRole(targetUser.getId(), "manager");
+                .setPositiveButton("হস্তান্তর করুন", (dialog, which) -> executeManagerTransfer(targetUser))
+                .setNegativeButton("বাতিল", null)
+                .show();
+    }
 
+    private void executeManagerTransfer(User targetUser) {
+        android.app.ProgressDialog progress = new android.app.ProgressDialog(this);
+        progress.setMessage("ম্যানেজার দায়িত্ব সার্ভারে হস্তান্তর করা হচ্ছে...");
+        progress.setCancelable(false);
+        progress.show();
+
+        long currentUserId = sessionManager.getUserId();
+        com.smartmess.android.data.remote.ApiService apiService = com.smartmess.android.data.remote.ApiClient.getApiService(getApplicationContext());
+        com.smartmess.android.data.remote.dto.RoleTransferRequest request =
+                new com.smartmess.android.data.remote.dto.RoleTransferRequest(targetUser.getId(), "Handover from Manager via Android App");
+
+        apiService.transferManagerRole(request).enqueue(new retrofit2.Callback<com.smartmess.android.data.remote.dto.RoleTransferResponse>() {
+            @Override
+            public void onResponse(@androidx.annotation.NonNull retrofit2.Call<com.smartmess.android.data.remote.dto.RoleTransferResponse> call,
+                                   @androidx.annotation.NonNull retrofit2.Response<com.smartmess.android.data.remote.dto.RoleTransferResponse> response) {
+                if (!isFinishing() && !isDestroyed()) {
+                    progress.dismiss();
+                }
+
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    try {
+                        // 1. Update roles in local SQLite database
+                        userDao.updateRole(currentUserId, User.ROLE_MEMBER);
+                        userDao.updateRole(targetUser.getId(), User.ROLE_MANAGER);
+
+                        // 2. Update local SessionManager to member role
                         sessionManager.createSession(
                                 sessionManager.getUserId(),
                                 sessionManager.getUserUuid(),
                                 sessionManager.getUserName(),
                                 sessionManager.getUserPhone(),
-                                "member",
+                                User.ROLE_MEMBER,
                                 sessionManager.getMessId(),
                                 sessionManager.getMessUuid(),
                                 sessionManager.getMessName(),
@@ -715,6 +739,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "ম্যানেজার দায়িত্ব সফলভাবে হস্তান্তর করা হয়েছে: " + targetUser.getName(), Toast.LENGTH_LONG).show();
                         loadHeaderData();
                         populateDrawerProfile();
+                        invalidateOptionsMenu();
 
                         com.smartmess.android.utils.NotificationCenterHelper.postNotification(
                                 getApplicationContext(),
@@ -725,14 +750,44 @@ public class MainActivity extends AppCompatActivity {
                         );
                         updateNotificationBadge();
 
-                        // Background sync
+                        // 3. Immediately trigger two-way sync
                         SyncManager.triggerSync(getApplicationContext());
                     } catch (Exception e) {
-                        Toast.makeText(MainActivity.this, "হস্তান্তরের সময় ত্রুটি: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        android.util.Log.e("MainActivity", "Error applying manager handover: " + e.getMessage(), e);
                     }
-                })
-                .setNegativeButton("বাতিল", null)
-                .show();
+                } else {
+                    String errorMsg = "সার্ভারে দায়িত্ব হস্তান্তর আপডেট করা সম্ভব হয়নি।";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errStr = response.errorBody().string();
+                            org.json.JSONObject jObj = new org.json.JSONObject(errStr);
+                            if (jObj.has("message")) {
+                                errorMsg = jObj.getString("message");
+                            }
+                        }
+                    } catch (Exception ignored) {}
+
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("হস্তান্তর ব্যর্থ হয়েছে")
+                            .setMessage(errorMsg + "\n\nসার্ভার আপডেট না হওয়ায় ম্যানেজার দায়িত্ব পরিবর্তন করা হয়নি।")
+                            .setPositiveButton("ঠিক আছে", null)
+                            .show();
+                }
+            }
+
+            @Override
+            public void onFailure(@androidx.annotation.NonNull retrofit2.Call<com.smartmess.android.data.remote.dto.RoleTransferResponse> call,
+                                  @androidx.annotation.NonNull Throwable t) {
+                if (!isFinishing() && !isDestroyed()) {
+                    progress.dismiss();
+                }
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("ইন্টারনেট সংযোগ প্রয়োজন")
+                        .setMessage("সার্ভারে দায়িত্ব হস্তান্তর আপডেট করতে সক্রিয় ইন্টারনেট সংযোগ প্রয়োজন।\n\nত্রুটি: " + t.getMessage())
+                        .setPositiveButton("ঠিক আছে", null)
+                        .show();
+            }
+        });
     }
 
     private void confirmSignOut() {

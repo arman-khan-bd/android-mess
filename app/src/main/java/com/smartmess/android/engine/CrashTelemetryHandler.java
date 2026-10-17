@@ -2,6 +2,8 @@ package com.smartmess.android.engine;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -9,10 +11,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
 
-import com.smartmess.android.data.remote.ApiClient;
-import com.smartmess.android.data.remote.ApiService;
-import com.smartmess.android.data.remote.dto.TelemetryReportRequest;
-import com.smartmess.android.utils.SessionManager;
+import com.smartmess.android.ui.telemetry.CrashReportActivity;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -22,6 +21,16 @@ import java.util.Map;
 public class CrashTelemetryHandler implements Thread.UncaughtExceptionHandler {
 
     private static final String TAG = "CrashTelemetry";
+    public static final String PREF_NAME = "smartmess_crash_prefs";
+    public static final String KEY_HAS_CRASH = "has_crash";
+    public static final String KEY_CRASH_TITLE = "crash_title";
+    public static final String KEY_CRASH_MESSAGE = "crash_message";
+    public static final String KEY_CRASH_STACK = "crash_stack";
+    public static final String KEY_CRASH_THREAD = "crash_thread";
+    public static final String KEY_CRASH_TIME = "crash_time";
+    public static final String KEY_CRASH_SENT = "crash_sent";
+    public static final String KEY_CRASH_REPORT_ID = "crash_report_id";
+
     private final Context context;
     private final Thread.UncaughtExceptionHandler defaultHandler;
 
@@ -41,20 +50,19 @@ public class CrashTelemetryHandler implements Thread.UncaughtExceptionHandler {
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
         try {
-            reportCrash(thread, throwable);
+            handleCrashAndLaunchRecovery(thread, throwable);
         } catch (Throwable t) {
             Log.e(TAG, "Failed during crash telemetry dispatch", t);
-        } finally {
             if (defaultHandler != null) {
                 defaultHandler.uncaughtException(thread, throwable);
-            } else {
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(10);
             }
+        } finally {
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(10);
         }
     }
 
-    private void reportCrash(Thread thread, Throwable throwable) {
+    private void handleCrashAndLaunchRecovery(Thread thread, Throwable throwable) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         throwable.printStackTrace(pw);
@@ -64,43 +72,62 @@ public class CrashTelemetryHandler implements Thread.UncaughtExceptionHandler {
                 ? throwable.getClass().getSimpleName() + ": " + throwable.getMessage()
                 : throwable.getClass().getSimpleName() + " in thread " + thread.getName();
 
-        Map<String, String> metadata = getDeviceDiagnostics(context);
+        long crashTime = System.currentTimeMillis();
 
-        TelemetryReportRequest request = new TelemetryReportRequest(
-                "crash_auto",
-                title,
-                "Uncaught fatal exception occurred in thread: " + thread.getName(),
-                stackTrace,
-                metadata,
-                "critical"
-        );
+        // 1. Save crash details into SharedPreferences for persistent recovery
+        saveCrashRecord(context, title, throwable.getMessage(), stackTrace, thread.getName(), crashTime);
 
+        // 2. Launch CrashReportActivity in a separate clean process
         try {
-            SessionManager session = new SessionManager(context);
-            if (session.isLoggedIn()) {
-                request.setMessId(session.getMessId());
-                request.setUserId(session.getUserId());
-            }
+            Intent intent = new Intent(context, CrashReportActivity.class);
+            intent.putExtra(CrashReportActivity.EXTRA_CRASH_TITLE, title);
+            intent.putExtra(CrashReportActivity.EXTRA_CRASH_MESSAGE, throwable.getMessage());
+            intent.putExtra(CrashReportActivity.EXTRA_CRASH_STACK, stackTrace);
+            intent.putExtra(CrashReportActivity.EXTRA_CRASH_THREAD, thread.getName());
+            intent.putExtra(CrashReportActivity.EXTRA_CRASH_TIME, crashTime);
+            intent.putExtra(CrashReportActivity.EXTRA_AUTO_SHOW_DIALOG, true);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(intent);
+            Log.i(TAG, "Crash recovery page launched successfully.");
+        } catch (Throwable launchEx) {
+            Log.e(TAG, "Failed to launch CrashReportActivity", launchEx);
+        }
+    }
+
+    public static SharedPreferences getCrashPrefs(Context context) {
+        return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+    }
+
+    public static void saveCrashRecord(Context context, String title, String message, String stackTrace, String threadName, long time) {
+        try {
+            getCrashPrefs(context).edit()
+                    .putBoolean(KEY_HAS_CRASH, true)
+                    .putString(KEY_CRASH_TITLE, title)
+                    .putString(KEY_CRASH_MESSAGE, message != null ? message : "")
+                    .putString(KEY_CRASH_STACK, stackTrace)
+                    .putString(KEY_CRASH_THREAD, threadName != null ? threadName : "main")
+                    .putLong(KEY_CRASH_TIME, time)
+                    .putBoolean(KEY_CRASH_SENT, false)
+                    .apply();
         } catch (Throwable ignored) {}
+    }
 
-        // Send crash report on background thread to prevent NetworkOnMainThreadException
-        Thread networkThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ApiService apiService = ApiClient.getApiService(context);
-                    apiService.sendTelemetryReport(request).execute();
-                    Log.i(TAG, "Crash report successfully transmitted to server.");
-                } catch (Throwable netEx) {
-                    Log.w(TAG, "Could not upload crash report: " + netEx.getMessage());
-                }
-            }
-        });
-        networkThread.start();
+    public static void markCrashSent(Context context, long reportId) {
         try {
-            // Wait briefly to allow crash packet to hit network without freezing UI
-            networkThread.join(100);
-        } catch (InterruptedException ignored) {}
+            getCrashPrefs(context).edit()
+                    .putBoolean(KEY_CRASH_SENT, true)
+                    .putLong(KEY_CRASH_REPORT_ID, reportId)
+                    .apply();
+        } catch (Throwable ignored) {}
+    }
+
+    public static void clearCrashRecord(Context context) {
+        try {
+            getCrashPrefs(context).edit()
+                    .putBoolean(KEY_HAS_CRASH, false)
+                    .putBoolean(KEY_CRASH_SENT, true)
+                    .apply();
+        } catch (Throwable ignored) {}
     }
 
     public static Map<String, String> getDeviceDiagnostics(Context context) {

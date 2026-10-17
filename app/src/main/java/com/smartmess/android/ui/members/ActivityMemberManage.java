@@ -506,12 +506,18 @@ public class ActivityMemberManage extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                // Silently fails for offline mode; local changes already saved
+                Log.w("ActivityMemberManage", "syncMemberToServer network failure: " + e.getMessage());
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
-                // Server successfully synced role, status, name, phone
+                if (response.isSuccessful()) {
+                    Log.i("ActivityMemberManage", "syncMemberToServer succeeded for user " + userId);
+                    // Trigger sync to guarantee SQLite & server full consistency
+                    SyncManager.triggerSync(getApplicationContext());
+                } else {
+                    Log.w("ActivityMemberManage", "syncMemberToServer HTTP error: " + response.code());
+                }
                 response.close();
             }
         });

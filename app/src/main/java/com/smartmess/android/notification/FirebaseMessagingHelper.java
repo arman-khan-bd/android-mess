@@ -70,31 +70,21 @@ public class FirebaseMessagingHelper {
                     return;
                 }
 
-                String baseUrl = ApiConfig.getBaseUrl();
-                URL url = new URL(baseUrl.replaceAll("/+$", "") + "/notifications/register-token");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setRequestProperty("Authorization", "Bearer " + authToken);
-                conn.setDoOutput(true);
-                conn.setConnectTimeout(6000);
-                conn.setReadTimeout(6000);
+                java.util.Map<String, Object> body = new java.util.HashMap<>();
+                body.put("token", token);
+                body.put("platform", "android");
+                body.put("device_brand", Build.MANUFACTURER);
+                body.put("device_model", Build.MODEL);
 
-                JSONObject payload = new JSONObject();
-                payload.put("token", token);
-                payload.put("platform", "android");
-                payload.put("device_brand", Build.MANUFACTURER);
-                payload.put("device_model", Build.MODEL);
-
-                try (OutputStream os = conn.getOutputStream()) {
-                    os.write(payload.toString().getBytes("UTF-8"));
+                com.smartmess.android.data.remote.ApiService apiService = com.smartmess.android.data.remote.ApiClient.getApiService(context);
+                retrofit2.Response<java.util.Map<String, Object>> response = apiService.registerPushToken(body).execute();
+                if (response.isSuccessful()) {
+                    Log.i(TAG, "Device push token registered successfully with backend.");
+                } else {
+                    Log.w(TAG, "registerTokenWithBackend server response: " + response.code());
                 }
-                int code = conn.getResponseCode();
-                Log.d(TAG, "registerTokenWithBackend status code: " + code);
-                conn.disconnect();
             } catch (Throwable t) {
-                Log.d(TAG, "registerTokenWithBackend failed: " + t.getMessage());
+                Log.w(TAG, "registerTokenWithBackend failed: " + t.getMessage());
             }
         }).start();
     }

@@ -286,7 +286,17 @@
                     android:id="@+id/btnReportIssue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="সমস্যা রিপোর্ট / ডায়াগনস্টিক পাঠান"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCrashDiagnostics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ক্র্যাশ ও ত্রুটি ডায়াগনস্টিক রিপোর্ট"
+                    app:icon="@drawable/ic_lucide_shield_alert"
+                    app:iconTint="@color/primary"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
             </LinearLayout>

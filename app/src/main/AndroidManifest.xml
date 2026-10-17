@@ -190,6 +190,14 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Auto-Detect Crash & Error Recovery Page -->
+        <activity
+            android:name=".ui.telemetry.CrashReportActivity"
+            android:exported="false"
+            android:process=":crash"
+            android:theme="@style/Theme.SmartMess.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Two-Way Support Desk -->
         <activity
             android:name=".ui.support.ActivitySupportTickets"

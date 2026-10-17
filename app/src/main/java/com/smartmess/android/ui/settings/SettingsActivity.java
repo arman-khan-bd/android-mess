@@ -105,6 +105,11 @@ public class SettingsActivity extends AppCompatActivity {
             btnReportIssue.setOnClickListener(v ->
                     startActivity(new Intent(this, ActivityReportIssue.class)));
         }
+        View btnCrashDiagnostics = findViewById(R.id.btnCrashDiagnostics);
+        if (btnCrashDiagnostics != null) {
+            btnCrashDiagnostics.setOnClickListener(v ->
+                    startActivity(new Intent(this, com.smartmess.android.ui.telemetry.CrashReportActivity.class)));
+        }
         if (btnChangeTheme != null) {
             btnChangeTheme.setOnClickListener(v -> showThemeSelectionDialog());
         }

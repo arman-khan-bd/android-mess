@@ -310,6 +310,22 @@
 
         </LinearLayout>
 
+        <!-- Flexible Meal Shared Info Badge -->
+        <TextView
+            android:id="@+id/tvFlexibleSharedInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_pill_selected"
+            android:backgroundTint="#FFF1F1"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:text="নমনীয় মিল শেয়ার: ৳ 0.00"
+            android:textColor="@color/coral_primary_dark"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

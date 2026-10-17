@@ -75,7 +75,10 @@ public class AccountingEngine {
         summary.setBillingMealRate(round(billingMealRate));
         summary.setMealRate(round(billingMealRate)); // primary displayed meal rate
 
-        double totalMealsCost = totalMessMeals * billingMealRate;
+        double totalMessFlexibleMealCost = mealDao.getTotalMessFlexibleMealCost(messId, startDate, endDate);
+        summary.setTotalFlexibleMealExpense(round(totalMessFlexibleMealCost));
+
+        double totalMealsCost = (totalMessMeals * billingMealRate) + totalMessFlexibleMealCost;
         summary.setTotalMealsCost(round(totalMealsCost));
         summary.setBudgetSurplusDeficit(round(totalMealsCost - rawMealTotal));
 
@@ -95,16 +98,21 @@ public class AccountingEngine {
             double consumedMeals = mealDao.getTotalUserMeals(messId, member.getId(), startDate, endDate);
             sheet.setConsumedMeals(round(consumedMeals));
 
-            // Bill consumed meals at the fixed 70.00 Tk budget rate
+            // Bill consumed meals at the fixed budget rate
             double mealCost = consumedMeals * billingMealRate;
             sheet.setMealCost(round(mealCost));
+
+            // Flexible meal shared costs specific to this member
+            double flexibleCost = mealDao.getTotalFlexibleMealCostForUser(messId, member.getId(), startDate, endDate);
+            sheet.setFlexibleMealCost(round(flexibleCost));
+
             sheet.setSharedFoodCost(round(sharedFoodPerMember));
             sheet.setUtilityAssetCost(round(sharedUtilityPerMember));
 
             double individualCost = expenseDao.getIndividualTargetExpenses(messId, member.getId(), startDate, endDate);
             sheet.setIndividualCost(round(individualCost));
 
-            double totalCost = mealCost + sharedFoodPerMember + sharedUtilityPerMember + individualCost;
+            double totalCost = mealCost + flexibleCost + sharedFoodPerMember + sharedUtilityPerMember + individualCost;
             sheet.setTotalCost(round(totalCost));
 
             double totalDeposit = depositDao.getTotalUserDeposits(messId, member.getId(), startDate, endDate);

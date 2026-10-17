@@ -108,6 +108,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + MealEntry.COL_DINNER_COUNT + " REAL DEFAULT 0.0, "
                 + MealEntry.COL_GUEST_MEAL_COUNT + " REAL DEFAULT 0.0, "
                 + MealEntry.COL_IS_LOCKED + " INTEGER DEFAULT 0, "
+                + MealEntry.COL_IS_FLEXIBLE + " INTEGER DEFAULT 0, "
+                + MealEntry.COL_MEAL_TYPE + " TEXT DEFAULT 'mixed', "
+                + MealEntry.COL_RAW_BAZAR_NAME + " TEXT, "
+                + MealEntry.COL_RAW_BAZAR_AMOUNT + " REAL DEFAULT 0.0, "
+                + MealEntry.COL_SHARED_PRICE + " REAL DEFAULT 0.0, "
+                + MealEntry.COL_BAZAR_ID + " INTEGER DEFAULT 0, "
                 + MealEntry.COL_SYNC_STATUS + " INTEGER DEFAULT 0, "
                 + MealEntry.COL_CREATED_AT + " TEXT, "
                 + MealEntry.COL_UPDATED_AT + " TEXT);");
@@ -193,6 +199,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (Exception ignored) {}
         try {
             db.execSQL("ALTER TABLE " + UserEntry.TABLE_NAME + " ADD COLUMN " + UserEntry.COL_FACEBOOK_URL + " TEXT;");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("ALTER TABLE " + MealEntry.TABLE_NAME + " ADD COLUMN " + MealEntry.COL_IS_FLEXIBLE + " INTEGER DEFAULT 0;");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("ALTER TABLE " + MealEntry.TABLE_NAME + " ADD COLUMN " + MealEntry.COL_MEAL_TYPE + " TEXT DEFAULT 'mixed';");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("ALTER TABLE " + MealEntry.TABLE_NAME + " ADD COLUMN " + MealEntry.COL_RAW_BAZAR_NAME + " TEXT;");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("ALTER TABLE " + MealEntry.TABLE_NAME + " ADD COLUMN " + MealEntry.COL_RAW_BAZAR_AMOUNT + " REAL DEFAULT 0.0;");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("ALTER TABLE " + MealEntry.TABLE_NAME + " ADD COLUMN " + MealEntry.COL_SHARED_PRICE + " REAL DEFAULT 0.0;");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("ALTER TABLE " + MealEntry.TABLE_NAME + " ADD COLUMN " + MealEntry.COL_BAZAR_ID + " INTEGER DEFAULT 0;");
         } catch (Exception ignored) {}
         try {
             db.execSQL("CREATE TABLE IF NOT EXISTS " + MealVacationEntry.TABLE_NAME + " ("

@@ -17,23 +17,29 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.smartmess.android.R;
 import com.smartmess.android.data.local.DatabaseHelper;
 import com.smartmess.android.data.local.dao.AppNotificationDao;
+import com.smartmess.android.data.local.dao.ExpenseDao;
 import com.smartmess.android.data.local.dao.MealDao;
 import com.smartmess.android.data.local.dao.MealRequestDao;
 import com.smartmess.android.data.local.dao.MealVacationDao;
 import com.smartmess.android.data.local.dao.UserDao;
 import com.smartmess.android.data.sync.SyncManager;
 import com.smartmess.android.model.AppNotification;
+import com.smartmess.android.model.Expense;
 import com.smartmess.android.model.Meal;
 import com.smartmess.android.model.MealRequest;
 import com.smartmess.android.model.User;
+import com.smartmess.android.utils.CurrencyUtils;
 import com.smartmess.android.utils.DateTimeUtils;
 import com.smartmess.android.utils.SessionManager;
 
@@ -63,6 +69,23 @@ public class AddMealActivity extends AppCompatActivity {
     private ImageButton btnAutoResetMeals;
     private RecyclerView rvBulkMembers;
     private MaterialButton btnConfirmMeals;
+
+    // Flexible Meal Views
+    private MaterialCheckBox cbFlexibleMeal;
+    private View layoutFlexibleOptions;
+    private Spinner spFlexibleMealType;
+    private Spinner spRawBazarItem;
+    private EditText etCustomRawBazar;
+    private EditText etRawMealAmount;
+    private TextView tvSharedPricePreview;
+    private ExpenseDao expenseDao;
+
+    private boolean isFlexibleMeal = false;
+    private String selectedMealType = "lunch";
+    private String selectedRawBazarName = "গরুর মাংস (Beef)";
+    private double currentRawMealAmount = 0.0;
+    private double calculatedPerMealRate = 0.0;
+    private final List<String> rawBazarOptions = new ArrayList<>();
 
     // Tab 2 Views (Meal Request)
     private View layoutMealRequestTab;
@@ -123,6 +146,7 @@ public class AddMealActivity extends AppCompatActivity {
         vacationDao = new MealVacationDao(helper);
         mealRequestDao = new MealRequestDao(helper);
         notificationDao = new AppNotificationDao(helper);
+        expenseDao = new ExpenseDao(helper);
         sessionManager = new SessionManager(this);
 
         currentMessId = sessionManager.getMessId();
@@ -133,6 +157,7 @@ public class AddMealActivity extends AppCompatActivity {
         setupTabs();
         setupDatePickers();
         setupBulkMealRecycler();
+        setupFlexibleMealSection();
         setupRequestSteppers();
         setupRequestRecycler();
 
@@ -159,6 +184,15 @@ public class AddMealActivity extends AppCompatActivity {
         btnAutoResetMeals = findViewById(R.id.btnAutoResetMeals);
         rvBulkMembers = findViewById(R.id.rvBulkMembers);
         btnConfirmMeals = findViewById(R.id.btnConfirmMeals);
+
+        // Flexible Meal Views
+        cbFlexibleMeal = findViewById(R.id.cbFlexibleMeal);
+        layoutFlexibleOptions = findViewById(R.id.layoutFlexibleOptions);
+        spFlexibleMealType = findViewById(R.id.spFlexibleMealType);
+        spRawBazarItem = findViewById(R.id.spRawBazarItem);
+        etCustomRawBazar = findViewById(R.id.etCustomRawBazar);
+        etRawMealAmount = findViewById(R.id.etRawMealAmount);
+        tvSharedPricePreview = findViewById(R.id.tvSharedPricePreview);
 
         // Tab 2 Views
         layoutMealRequestTab = findViewById(R.id.layoutMealRequestTab);
@@ -262,6 +296,200 @@ public class AddMealActivity extends AppCompatActivity {
         btnConfirmMeals.setOnClickListener(v -> confirmAndSaveMeals());
     }
 
+    private void setupFlexibleMealSection() {
+        // 1. Setup Meal Type Spinner
+        List<String> mealTypeLabels = new ArrayList<>();
+        mealTypeLabels.add("দুপুরের মিল (Lunch)");
+        mealTypeLabels.add("রাতের মিল (Dinner)");
+        mealTypeLabels.add("সকালের মিল (Breakfast)");
+        mealTypeLabels.add("বিশেষ / দাওয়াত মিল (Special)");
+
+        ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mealTypeLabels);
+        spFlexibleMealType.setAdapter(typeAdapter);
+
+        spFlexibleMealType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0: selectedMealType = "lunch"; break;
+                    case 1: selectedMealType = "dinner"; break;
+                    case 2: selectedMealType = "breakfast"; break;
+                    case 3: selectedMealType = "special"; break;
+                    default: selectedMealType = "lunch"; break;
+                }
+                updateFlexibleCalculations();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        // 2. Setup Raw Bazar Item Selector
+        rawBazarOptions.clear();
+        rawBazarOptions.add("গরুর মাংস (Beef)");
+        rawBazarOptions.add("মুরগির মাংস (Chicken)");
+        rawBazarOptions.add("রুই / কাতলা / ইলিশ মাছ (Fish)");
+        rawBazarOptions.add("বেগুন ও ভাজি (Begun / Bhaji)");
+        rawBazarOptions.add("সবজি ও ডাল (Sobji / Dal)");
+        rawBazarOptions.add("ডিম ভুনা (Egg Curry)");
+        rawBazarOptions.add("বিরিয়ানি / তেহারি (Biryani)");
+        rawBazarOptions.add("খিচুড়ি ও ডিম (Khichuri)");
+
+        // Include any recent raw meal titles from Bazar expenses
+        try {
+            List<Expense> recentBazar = expenseDao.getExpensesInDateRange(currentMessId,
+                    DateTimeUtils.getCurrentMonthStart(), DateTimeUtils.getCurrentMonthEnd());
+            if (recentBazar != null) {
+                for (Expense exp : recentBazar) {
+                    if (exp.isRawMeal() && exp.getTitle() != null && !exp.getTitle().trim().isEmpty()) {
+                        String title = exp.getTitle().trim();
+                        if (!rawBazarOptions.contains(title)) {
+                            rawBazarOptions.add(title);
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+
+        rawBazarOptions.add("অন্যান্য / কাস্টম আইটেম...");
+
+        ArrayAdapter<String> rawAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, rawBazarOptions);
+        spRawBazarItem.setAdapter(rawAdapter);
+
+        spRawBazarItem.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = rawBazarOptions.get(position);
+                if (selected.contains("অন্যান্য / কাস্টম")) {
+                    etCustomRawBazar.setVisibility(View.VISIBLE);
+                } else {
+                    etCustomRawBazar.setVisibility(View.GONE);
+                }
+                selectedRawBazarName = selected;
+                updateFlexibleCalculations();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        // 3. Checkbox Listener
+        cbFlexibleMeal.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isFlexibleMeal = isChecked;
+            layoutFlexibleOptions.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            updateFlexibleCalculations();
+        });
+
+        // 4. Amount input watcher
+        etRawMealAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateFlexibleCalculations();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        etCustomRawBazar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateFlexibleCalculations();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    private String getEffectiveRawItemName() {
+        if (spRawBazarItem.getSelectedItem() != null) {
+            String selected = spRawBazarItem.getSelectedItem().toString();
+            if (selected.contains("অন্যান্য / কাস্টম") && etCustomRawBazar.getText() != null) {
+                String custom = etCustomRawBazar.getText().toString().trim();
+                if (!custom.isEmpty()) return custom;
+            }
+            return selected;
+        }
+        return "কাঁচা বাজার আইটেম";
+    }
+
+    private void updateFlexibleCalculations() {
+        if (!isFlexibleMeal) {
+            calculatedPerMealRate = 0.0;
+            if (bulkMealAdapter != null) bulkMealAdapter.notifyDataSetChanged();
+            return;
+        }
+
+        double totalTypeMeals = 0.0;
+        for (User u : displayedMembers) {
+            MemberMealState s = memberMealMap.get(u.getId());
+            if (s == null || s.isOnVacation) continue;
+
+            if ("breakfast".equals(selectedMealType)) {
+                totalTypeMeals += s.breakfast;
+            } else if ("lunch".equals(selectedMealType)) {
+                totalTypeMeals += s.lunch + s.guest;
+            } else if ("dinner".equals(selectedMealType)) {
+                totalTypeMeals += s.dinner;
+            } else {
+                totalTypeMeals += s.getTotal();
+            }
+        }
+
+        String amtStr = etRawMealAmount.getText() != null ? etRawMealAmount.getText().toString().trim() : "";
+        try {
+            currentRawMealAmount = !amtStr.isEmpty() ? Double.parseDouble(amtStr) : 0.0;
+        } catch (Exception e) {
+            currentRawMealAmount = 0.0;
+        }
+
+        if (totalTypeMeals > 0 && currentRawMealAmount > 0) {
+            calculatedPerMealRate = currentRawMealAmount / totalTypeMeals;
+        } else {
+            calculatedPerMealRate = 0.0;
+        }
+
+        tvSharedPricePreview.setText(String.format(Locale.US,
+                "মোট বাজার: %s • মিল গ্রহণকারী: %s টি • জনপ্রতি শেয়ার: %s",
+                CurrencyUtils.format(currentRawMealAmount),
+                formatNumber(totalTypeMeals),
+                CurrencyUtils.format(calculatedPerMealRate)
+        ));
+
+        if (bulkMealAdapter != null) {
+            bulkMealAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void setMealTypeSpinnerSelection(String type) {
+        if ("lunch".equalsIgnoreCase(type)) spFlexibleMealType.setSelection(0);
+        else if ("dinner".equalsIgnoreCase(type)) spFlexibleMealType.setSelection(1);
+        else if ("breakfast".equalsIgnoreCase(type)) spFlexibleMealType.setSelection(2);
+        else if ("special".equalsIgnoreCase(type)) spFlexibleMealType.setSelection(3);
+    }
+
+    private void setRawBazarSpinnerSelection(String rawName) {
+        if (rawName == null) return;
+        for (int i = 0; i < rawBazarOptions.size(); i++) {
+            if (rawBazarOptions.get(i).equalsIgnoreCase(rawName.trim())) {
+                spRawBazarItem.setSelection(i);
+                return;
+            }
+        }
+        // If custom, set last and put text
+        int customPos = rawBazarOptions.size() - 1;
+        spRawBazarItem.setSelection(customPos);
+        etCustomRawBazar.setVisibility(View.VISIBLE);
+        etCustomRawBazar.setText(rawName);
+    }
+
     private void loadMembersAndInitializeMeals() {
         allActiveMembers = userDao.getActiveMembersByMess(currentMessId);
 
@@ -345,6 +573,39 @@ public class AddMealActivity extends AppCompatActivity {
             displayedMembers.add(allActiveMembers.get(selectedPos - 1));
         }
 
+        // Restore flexible meal state if already saved for this date
+        boolean foundFlexible = false;
+        String existingFlexType = "lunch";
+        String existingRawName = "";
+        double existingRawAmt = 0.0;
+        for (User user : allActiveMembers) {
+            Meal existing = mealDao.getUserMealForDate(currentMessId, user.getId(), dateStr);
+            if (existing != null && existing.getIsFlexible() == 1) {
+                foundFlexible = true;
+                if (existing.getMealType() != null) existingFlexType = existing.getMealType();
+                if (existing.getRawBazarName() != null) existingRawName = existing.getRawBazarName();
+                if (existing.getRawBazarAmount() > 0) existingRawAmt = existing.getRawBazarAmount();
+                break;
+            }
+        }
+
+        if (cbFlexibleMeal != null) {
+            cbFlexibleMeal.setChecked(foundFlexible);
+            if (foundFlexible) {
+                if (existingRawAmt > 0) {
+                    etRawMealAmount.setText(formatNumber(existingRawAmt));
+                }
+                setMealTypeSpinnerSelection(existingFlexType);
+                if (!existingRawName.isEmpty()) {
+                    setRawBazarSpinnerSelection(existingRawName);
+                }
+            } else {
+                etRawMealAmount.setText("");
+            }
+        }
+
+        updateFlexibleCalculations();
+
         if (bulkMealAdapter != null) {
             bulkMealAdapter.notifyDataSetChanged();
         }
@@ -382,11 +643,23 @@ public class AddMealActivity extends AppCompatActivity {
 
         String dateStr = isoFormat.format(selectedMealCalendar.getTime());
         String nowIso = DateTimeUtils.nowIso();
+        String rawItemName = isFlexibleMeal ? getEffectiveRawItemName() : null;
         int savedCount = 0;
 
         for (User user : displayedMembers) {
             MemberMealState state = memberMealMap.get(user.getId());
             if (state == null) continue;
+
+            double userShare = 0.0;
+            if (isFlexibleMeal && calculatedPerMealRate > 0 && !state.isOnVacation) {
+                double userTypeMeals = 0.0;
+                if ("breakfast".equals(selectedMealType)) userTypeMeals = state.breakfast;
+                else if ("lunch".equals(selectedMealType)) userTypeMeals = state.lunch + state.guest;
+                else if ("dinner".equals(selectedMealType)) userTypeMeals = state.dinner;
+                else userTypeMeals = state.getTotal();
+
+                userShare = userTypeMeals * calculatedPerMealRate;
+            }
 
             Meal existing = mealDao.getUserMealForDate(currentMessId, user.getId(), dateStr);
             if (existing != null) {
@@ -394,6 +667,11 @@ public class AddMealActivity extends AppCompatActivity {
                 existing.setLunchCount(state.lunch);
                 existing.setDinnerCount(state.dinner);
                 existing.setGuestMealCount(state.guest);
+                existing.setIsFlexible(isFlexibleMeal ? 1 : 0);
+                existing.setMealType(isFlexibleMeal ? selectedMealType : "mixed");
+                existing.setRawBazarName(isFlexibleMeal ? rawItemName : null);
+                existing.setRawBazarAmount(isFlexibleMeal ? currentRawMealAmount : 0.0);
+                existing.setSharedPrice(isFlexibleMeal ? userShare : 0.0);
                 existing.setUpdatedAt(nowIso);
                 mealDao.insertOrUpdate(existing);
             } else {
@@ -407,6 +685,11 @@ public class AddMealActivity extends AppCompatActivity {
                         state.dinner,
                         state.guest
                 );
+                newMeal.setIsFlexible(isFlexibleMeal ? 1 : 0);
+                newMeal.setMealType(isFlexibleMeal ? selectedMealType : "mixed");
+                newMeal.setRawBazarName(isFlexibleMeal ? rawItemName : null);
+                newMeal.setRawBazarAmount(isFlexibleMeal ? currentRawMealAmount : 0.0);
+                newMeal.setSharedPrice(isFlexibleMeal ? userShare : 0.0);
                 newMeal.setCreatedAt(nowIso);
                 newMeal.setUpdatedAt(nowIso);
                 mealDao.insertOrUpdate(newMeal);
@@ -414,9 +697,7 @@ public class AddMealActivity extends AppCompatActivity {
             savedCount++;
         }
 
-        if (sessionManager.isPro()) {
-            SyncManager.triggerSync(getApplicationContext());
-        }
+        SyncManager.triggerSync(getApplicationContext());
 
         Toast.makeText(this, savedCount + " জন মেম্বারের মিল সফলভাবে সংরক্ষিত হয়েছে।", Toast.LENGTH_SHORT).show();
         finish();
@@ -619,6 +900,28 @@ public class AddMealActivity extends AppCompatActivity {
 
             updateCardViews(holder, state);
 
+            // Flexible meal share badge
+            if (isFlexibleMeal && calculatedPerMealRate > 0 && !state.isOnVacation) {
+                double userTypeMeals = 0.0;
+                if ("breakfast".equals(selectedMealType)) userTypeMeals = state.breakfast;
+                else if ("lunch".equals(selectedMealType)) userTypeMeals = state.lunch + state.guest;
+                else if ("dinner".equals(selectedMealType)) userTypeMeals = state.dinner;
+                else userTypeMeals = state.getTotal();
+
+                if (userTypeMeals > 0) {
+                    double userCost = userTypeMeals * calculatedPerMealRate;
+                    String itemName = getEffectiveRawItemName();
+                    holder.tvFlexibleSharedInfo.setVisibility(View.VISIBLE);
+                    holder.tvFlexibleSharedInfo.setText(String.format(Locale.US,
+                            "নমনীয় মিল শেয়ার: %s (%s মিল • %s)",
+                            CurrencyUtils.format(userCost), formatNumber(userTypeMeals), itemName));
+                } else {
+                    holder.tvFlexibleSharedInfo.setVisibility(View.GONE);
+                }
+            } else {
+                holder.tvFlexibleSharedInfo.setVisibility(View.GONE);
+            }
+
             final MemberMealState finalState = state;
 
             // Breakfast Stepper
@@ -626,12 +929,14 @@ public class AddMealActivity extends AppCompatActivity {
                 if (finalState.breakfast >= 0.5) {
                     finalState.breakfast -= 0.5;
                     updateCardViews(holder, finalState);
+                    updateFlexibleCalculations();
                 }
             });
             holder.btnPlusBreakfast.setOnClickListener(v -> {
                 if (finalState.breakfast < 10.0) {
                     finalState.breakfast += 0.5;
                     updateCardViews(holder, finalState);
+                    updateFlexibleCalculations();
                 }
             });
 
@@ -640,12 +945,14 @@ public class AddMealActivity extends AppCompatActivity {
                 if (finalState.lunch >= 0.5) {
                     finalState.lunch -= 0.5;
                     updateCardViews(holder, finalState);
+                    updateFlexibleCalculations();
                 }
             });
             holder.btnPlusLunch.setOnClickListener(v -> {
                 if (finalState.lunch < 10.0) {
                     finalState.lunch += 0.5;
                     updateCardViews(holder, finalState);
+                    updateFlexibleCalculations();
                 }
             });
 
@@ -654,12 +961,14 @@ public class AddMealActivity extends AppCompatActivity {
                 if (finalState.dinner >= 0.5) {
                     finalState.dinner -= 0.5;
                     updateCardViews(holder, finalState);
+                    updateFlexibleCalculations();
                 }
             });
             holder.btnPlusDinner.setOnClickListener(v -> {
                 if (finalState.dinner < 10.0) {
                     finalState.dinner += 0.5;
                     updateCardViews(holder, finalState);
+                    updateFlexibleCalculations();
                 }
             });
 
@@ -668,12 +977,14 @@ public class AddMealActivity extends AppCompatActivity {
                 if (finalState.guest >= 0.5) {
                     finalState.guest -= 0.5;
                     updateCardViews(holder, finalState);
+                    updateFlexibleCalculations();
                 }
             });
             holder.btnPlusGuest.setOnClickListener(v -> {
                 if (finalState.guest < 20.0) {
                     finalState.guest += 0.5;
                     updateCardViews(holder, finalState);
+                    updateFlexibleCalculations();
                 }
             });
         }
@@ -702,6 +1013,7 @@ public class AddMealActivity extends AppCompatActivity {
             TextView tvDinner;
             ImageButton btnMinusGuest, btnPlusGuest;
             TextView tvGuest;
+            TextView tvFlexibleSharedInfo;
 
             ViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -725,6 +1037,7 @@ public class AddMealActivity extends AppCompatActivity {
                 btnMinusGuest = itemView.findViewById(R.id.btnMinusGuest);
                 tvGuest = itemView.findViewById(R.id.tvGuest);
                 btnPlusGuest = itemView.findViewById(R.id.btnPlusGuest);
+                tvFlexibleSharedInfo = itemView.findViewById(R.id.tvFlexibleSharedInfo);
             }
         }
     }

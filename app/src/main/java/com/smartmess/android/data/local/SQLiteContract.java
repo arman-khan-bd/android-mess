@@ -84,6 +84,12 @@ public final class SQLiteContract {
         public static final String COL_DINNER_COUNT = "dinner_count";
         public static final String COL_GUEST_MEAL_COUNT = "guest_meal_count";
         public static final String COL_IS_LOCKED = "is_locked";
+        public static final String COL_IS_FLEXIBLE = "is_flexible";
+        public static final String COL_MEAL_TYPE = "meal_type";
+        public static final String COL_RAW_BAZAR_NAME = "raw_bazar_name";
+        public static final String COL_RAW_BAZAR_AMOUNT = "raw_bazar_amount";
+        public static final String COL_SHARED_PRICE = "shared_price";
+        public static final String COL_BAZAR_ID = "bazar_id";
         public static final String COL_SYNC_STATUS = "sync_status";
         public static final String COL_CREATED_AT = "created_at";
         public static final String COL_UPDATED_AT = "updated_at";

@@ -88,6 +88,10 @@ public interface ApiService {
     @POST("members")
     Call<com.smartmess.android.data.remote.dto.CreateMemberResponse> addMember(@Body com.smartmess.android.data.remote.dto.CreateMemberRequest request);
 
+    // Manager Role Handover Protocol
+    @POST("roles/transfer")
+    Call<com.smartmess.android.data.remote.dto.RoleTransferResponse> transferManagerRole(@Body com.smartmess.android.data.remote.dto.RoleTransferRequest request);
+
     // E-Commerce Store & Order Management Gateway
     @GET("ecommerce/products")
     Call<com.smartmess.android.data.remote.dto.EcommerceResponse> getEcommerceProducts(

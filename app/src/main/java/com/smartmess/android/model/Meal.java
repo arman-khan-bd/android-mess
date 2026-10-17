@@ -36,6 +36,24 @@ public class Meal {
     @SerializedName(value = "isLocked", alternate = {"is_locked"})
     private int isLocked;
 
+    @SerializedName(value = "isFlexible", alternate = {"is_flexible"})
+    private int isFlexible; // 0=standard, 1=flexible
+
+    @SerializedName(value = "mealType", alternate = {"meal_type"})
+    private String mealType; // 'breakfast', 'lunch', 'dinner', 'special', 'mixed'
+
+    @SerializedName(value = "rawBazarName", alternate = {"raw_bazar_name"})
+    private String rawBazarName; // e.g. 'গরুর মাংস (Beef)', 'সবজি (Sobji)', 'বেগুন (Begun)'
+
+    @SerializedName(value = "rawBazarAmount", alternate = {"raw_bazar_amount"})
+    private double rawBazarAmount;
+
+    @SerializedName(value = "sharedPrice", alternate = {"shared_price"})
+    private double sharedPrice; // Individual shared meal price calculated for this user
+
+    @SerializedName(value = "bazarId", alternate = {"bazar_id"})
+    private long bazarId;
+
     @SerializedName(value = "syncStatus", alternate = {"sync_status"})
     private int syncStatus; // 0=pending, 1=synced
 
@@ -101,6 +119,25 @@ public class Meal {
 
     public String getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
+
+    public int getIsFlexible() { return isFlexible; }
+    public void setIsFlexible(int isFlexible) { this.isFlexible = isFlexible; }
+    public boolean isFlexible() { return isFlexible == 1; }
+
+    public String getMealType() { return mealType; }
+    public void setMealType(String mealType) { this.mealType = mealType; }
+
+    public String getRawBazarName() { return rawBazarName; }
+    public void setRawBazarName(String rawBazarName) { this.rawBazarName = rawBazarName; }
+
+    public double getRawBazarAmount() { return rawBazarAmount; }
+    public void setRawBazarAmount(double rawBazarAmount) { this.rawBazarAmount = rawBazarAmount; }
+
+    public double getSharedPrice() { return sharedPrice; }
+    public void setSharedPrice(double sharedPrice) { this.sharedPrice = sharedPrice; }
+
+    public long getBazarId() { return bazarId; }
+    public void setBazarId(long bazarId) { this.bazarId = bazarId; }
 
     public double getTotalMeals() {
         return breakfastCount + lunchCount + dinnerCount + guestMealCount;

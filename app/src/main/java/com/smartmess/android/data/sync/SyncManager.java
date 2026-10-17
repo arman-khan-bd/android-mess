@@ -223,6 +223,8 @@ public class SyncManager {
                                 }
 
                                 Log.i(TAG, "Successfully applied pulled cloud updates.");
+                                // Also trigger immediate notification check to ensure zero latency
+                                com.smartmess.android.notification.PushNotificationSyncWorker.runImmediateSync(context);
                                 notifySuccess(callback, "Sync complete. Pushed " + pushedRecords + " records.");
                             } else {
                                 notifyFailed(callback, "Pull failed: Server returned unsuccessful status.");

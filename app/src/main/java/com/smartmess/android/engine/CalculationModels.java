@@ -11,6 +11,7 @@ public class CalculationModels {
         private double totalSharedFoodExpense;   // Shared Fixed Pool (onion, oil, salt, gas)
         private double totalUtilityAssetExpense; // Utility & Asset Pool (rent, maid, wifi)
         private double totalSmsChargeExpense;    // Shared SMS charges
+        private double totalFlexibleMealExpense; // Total flexible meals shared cost
         private double totalAllExpenses;
         private double totalMessMeals;           // Total meals consumed across all members
         private double mealRate;                 // Billing meal rate (e.g. 70.00 Tk budget)
@@ -84,6 +85,8 @@ public class CalculationModels {
         public double getRawMealCost() { return totalRawMealExpense; }
         public double getSharedFoodCost() { return totalSharedFoodExpense; }
         public double getUtilityCost() { return totalUtilityAssetExpense; }
+        public double getTotalFlexibleMealExpense() { return totalFlexibleMealExpense; }
+        public void setTotalFlexibleMealExpense(double totalFlexibleMealExpense) { this.totalFlexibleMealExpense = totalFlexibleMealExpense; }
     }
 
     public static class MemberBalanceSheet {
@@ -91,11 +94,12 @@ public class CalculationModels {
         private String userName;
         private String userPhone;
         private double consumedMeals;
-        private double mealCost;             // consumedMeals * mealRate
+        private double mealCost;             // consumedMeals * mealRate (standard)
+        private double flexibleMealCost;     // Itemized flexible meal costs
         private double sharedFoodCost;       // totalSharedFoodExpense / activeMemberCount
         private double utilityAssetCost;     // totalUtilityAssetExpense / activeMemberCount
         private double individualCost;       // Specific individual debits (e.g. personal SMS, fines)
-        private double totalCost;            // mealCost + sharedFoodCost + utilityAssetCost + individualCost
+        private double totalCost;            // mealCost + flexibleMealCost + sharedFoodCost + utilityAssetCost + individualCost
         private double totalDeposit;
         private double netBalance;           // totalDeposit - totalCost (>=0 credit, <0 due)
 
@@ -113,6 +117,9 @@ public class CalculationModels {
 
         public double getMealCost() { return mealCost; }
         public void setMealCost(double mealCost) { this.mealCost = mealCost; }
+
+        public double getFlexibleMealCost() { return flexibleMealCost; }
+        public void setFlexibleMealCost(double flexibleMealCost) { this.flexibleMealCost = flexibleMealCost; }
 
         public double getSharedFoodCost() { return sharedFoodCost; }
         public void setSharedFoodCost(double sharedFoodCost) { this.sharedFoodCost = sharedFoodCost; }
