@@ -11,6 +11,7 @@ import com.google.android.material.button.MaterialButton;
 import com.smartmess.android.R;
 import com.smartmess.android.data.local.DatabaseHelper;
 import com.smartmess.android.data.local.dao.MealDao;
+import com.smartmess.android.data.local.dao.MealVacationDao;
 import com.smartmess.android.data.local.dao.MessDao;
 import com.smartmess.android.model.Meal;
 import com.smartmess.android.model.Mess;
@@ -67,8 +68,7 @@ public class DailyMealToggleActivity extends AppCompatActivity {
         long userId = sessionManager.getUserId();
 
         // Check if member is on scheduled vacation for tomorrow
-        com.smartmess.android.data.local.dao.MealVacationDao vacationDao =
-                new com.smartmess.android.data.local.dao.MealVacationDao(DatabaseHelper.getInstance(this));
+        MealVacationDao vacationDao = new MealVacationDao(DatabaseHelper.getInstance(this));
         if (vacationDao.isUserOnVacation(messId, userId, tomorrowDate)) {
             isLocked = true;
             layoutCutoffBanner.setBackgroundColor(getResources().getColor(R.color.info_blue_bg));

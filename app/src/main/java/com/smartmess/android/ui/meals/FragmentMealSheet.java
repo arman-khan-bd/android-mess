@@ -21,6 +21,7 @@ import com.google.android.material.button.MaterialButton;
 import com.smartmess.android.R;
 import com.smartmess.android.data.local.DatabaseHelper;
 import com.smartmess.android.data.local.dao.MealDao;
+import com.smartmess.android.data.local.dao.MealVacationDao;
 import com.smartmess.android.data.local.dao.UserDao;
 import com.smartmess.android.data.sync.SyncManager;
 import com.smartmess.android.model.Meal;
@@ -53,7 +54,7 @@ public class FragmentMealSheet extends Fragment {
 
     private MealDao mealDao;
     private UserDao userDao;
-    private com.smartmess.android.data.local.dao.MealVacationDao vacationDao;
+    private MealVacationDao vacationDao;
     private SessionManager sessionManager;
     private MealGridAdapter adapter;
 
@@ -73,7 +74,7 @@ public class FragmentMealSheet extends Fragment {
         DatabaseHelper helper = DatabaseHelper.getInstance(requireContext());
         mealDao = new MealDao(helper);
         userDao = new UserDao(helper);
-        vacationDao = new com.smartmess.android.data.local.dao.MealVacationDao(helper);
+        vacationDao = new MealVacationDao(helper);
         sessionManager = new SessionManager(requireContext());
 
         initViews(view);
