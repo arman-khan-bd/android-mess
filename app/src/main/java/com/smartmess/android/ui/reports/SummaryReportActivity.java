@@ -134,7 +134,7 @@ public class SummaryReportActivity extends AppCompatActivity {
 
         // Load users cache for name resolution
         java.util.Map<Long, String> userNameMap = new java.util.HashMap<>();
-        java.util.List<com.smartmess.android.model.User> allUsers = userDao.getAllByMessId(messId);
+        java.util.List<com.smartmess.android.model.User> allUsers = userDao.getAllMembersByMess(messId);
         if (allUsers != null) {
             for (com.smartmess.android.model.User u : allUsers) {
                 userNameMap.put(u.getId(), u.getName());

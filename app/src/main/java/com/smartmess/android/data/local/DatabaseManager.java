@@ -371,7 +371,7 @@ public class DatabaseManager {
                     mv.put(MealEntry.COL_RAW_BAZAR_NAME, m.getRawBazarName());
                     mv.put(MealEntry.COL_RAW_BAZAR_AMOUNT, m.getRawBazarAmount());
                     mv.put(MealEntry.COL_SHARED_PRICE, m.getSharedPrice());
-                    if (m.getBazarId() != null && m.getBazarId() > 0) {
+                    if (m.getBazarId() > 0) {
                         mv.put(MealEntry.COL_BAZAR_ID, m.getBazarId());
                     } else {
                         mv.putNull(MealEntry.COL_BAZAR_ID);

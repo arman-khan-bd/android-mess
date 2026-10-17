@@ -2,6 +2,7 @@ package com.smartmess.android.ui.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;

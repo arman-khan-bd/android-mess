@@ -102,6 +102,10 @@ public class UserDao {
         return getAllMembersByMess(messId);
     }
 
+    public List<User> getAllByMessId(long messId) {
+        return getAllMembersByMess(messId);
+    }
+
     public List<User> getAllMembersByMess(long messId) {
         List<User> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
